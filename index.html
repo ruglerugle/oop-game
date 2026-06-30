@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新人プログラマーの村</title>
+<title>新人エンジニアの銀行</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -30,7 +30,6 @@
 body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;display:flex;justify-content:center;padding:2rem 1rem}
 .wrap{width:100%;max-width:700px}
 
-/* chapter nav */
 .chapter-nav{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
 .ch-dot{padding:4px 12px;border-radius:99px;font-size:12px;border:1px solid var(--bd);background:var(--s1);color:var(--tm);transition:all .2s}
 .ch-dot.done{background:var(--ok);color:var(--tok);border-color:var(--bok)}
@@ -38,113 +37,105 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .progress{height:4px;background:var(--bd);border-radius:2px;margin-bottom:1.5rem}
 .progress-fill{height:100%;background:var(--fac);border-radius:2px;transition:width .4s}
 
-/* story panel */
 .story-panel{background:var(--s2);border:1px solid var(--bd);border-radius:16px;padding:1.5rem;margin-bottom:1rem}
 .npc{display:flex;align-items:flex-start;gap:12px;margin-bottom:1rem}
 .npc-avatar{font-size:36px;flex-shrink:0;line-height:1}
-.npc-info{flex:1}
 .npc-name{font-size:12px;font-weight:500;color:var(--tm);margin-bottom:4px}
-.bubble{background:var(--s1);border:1px solid var(--bd);border-radius:0 12px 12px 12px;padding:.75rem 1rem;font-size:14px;line-height:1.7;color:var(--tp)}
-.story-actions{display:flex;justify-content:flex-end;gap:8px}
+.bubble{background:var(--s1);border:1px solid var(--bd);border-radius:0 12px 12px 12px;padding:.75rem 1rem;font-size:14px;line-height:1.8;color:var(--tp)}
+.story-actions{display:flex;justify-content:flex-end}
 .btn{border:1px solid var(--bds);background:transparent;border-radius:var(--r);padding:.6rem 1.25rem;font-size:14px;cursor:pointer;color:var(--tp);font-family:var(--f);transition:background .15s}
 .btn:hover{background:var(--s1)}
 .btn-p{background:var(--fac);color:#fff;border-color:var(--fac)}
 .btn-p:hover{opacity:.9;background:var(--fac)}
 .btn:disabled{opacity:.4;cursor:default}
 
-/* chapter title */
 .ch-title{font-size:11px;font-weight:500;color:var(--tm);letter-spacing:.08em;margin-bottom:4px}
 .ch-heading{font-size:22px;font-weight:500;margin-bottom:1rem;color:var(--tp)}
+.game-intro{font-size:14px;color:var(--ts);margin-bottom:1rem;line-height:1.6}
 
-/* ── GAME 1: アクセス修飾子 ── */
-.castle-class{border:2px solid var(--ts);background:var(--s2);margin-bottom:1rem}
-.castle-class .cls-head{background:var(--s0);border-bottom:1.5px solid var(--ts);padding:8px 14px;font-weight:500;text-align:center;font-size:15px}
-.castle-class .cls-sec{border-bottom:1.5px solid var(--ts);padding:4px 0}
-.castle-class .cls-sec:last-child{border-bottom:none}
-.m-row{display:flex;align-items:center;gap:10px;padding:8px 14px;font-family:var(--m);font-size:13px;border-left:3px solid transparent;transition:all .2s}
-.m-row.locked{opacity:.5}
+/* ── UML クラスボックス ── */
+.uml-class{border:2px solid var(--ts);background:var(--s2)}
+.uml-head{background:var(--s0);border-bottom:1.5px solid var(--ts);padding:8px 14px;font-weight:500;text-align:center;font-size:14px}
+.uml-sec{border-bottom:1.5px solid var(--ts);padding:4px 0}
+.uml-sec:last-child{border-bottom:none}
+.m-row{display:flex;align-items:center;gap:10px;padding:7px 14px;font-family:var(--m);font-size:12px;border-left:3px solid transparent;transition:all .2s}
 .m-name{flex:1}
 .m-mod-btn{display:flex;gap:4px}
-.mod-opt{padding:3px 8px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid transparent;opacity:.4;transition:all .15s}
+.mod-opt{padding:3px 7px;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;border:1.5px solid transparent;opacity:.4;transition:all .15s}
 .mod-opt:hover{opacity:.7}
 .mod-opt.sel{opacity:1;border-color:currentColor}
 .mod-pub{color:var(--tok);background:var(--ok)}
 .mod-pri{color:var(--tng);background:var(--ng)}
 .mod-pro{color:var(--tpr);background:var(--pr)}
-.attack-result{border-radius:12px;padding:1rem 1.25rem;font-size:14px;line-height:1.8;margin-bottom:1rem}
-.attack-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-family:var(--m);font-size:13px}
-.atk-ok{color:var(--tok)}
-.atk-ng{color:var(--tng)}
 
-/* ── GAME 2: 継承ツリー ── */
+/* ── 継承ツリー ── */
 .tree-area{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
-.tree-root{display:flex;flex-direction:column;align-items:center;gap:0}
-.tree-level{display:flex;justify-content:center;gap:12px;margin-top:0;position:relative}
-.tree-node{border:2px solid var(--ts);background:var(--s2);padding:6px 14px;font-size:13px;font-weight:500;border-radius:4px;min-width:80px;text-align:center;position:relative;cursor:pointer;transition:all .15s}
-.tree-node.empty{border-style:dashed;color:var(--tm);background:var(--s1);cursor:pointer}
+.tree-node{border:2px solid var(--ts);background:var(--s2);padding:6px 12px;font-size:12px;font-weight:500;border-radius:4px;min-width:90px;text-align:center;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tree-node.fixed{cursor:default}
+.tree-node.empty{border-style:dashed;color:var(--tm);background:var(--s1)}
 .tree-node.empty:hover{border-color:var(--fac);color:var(--tac)}
 .tree-node.highlight{border-color:var(--fac);background:var(--ac);color:var(--tac)}
-.tree-connector{width:2px;height:24px;background:var(--ts);margin:0 auto}
-.tree-h-line{height:2px;background:var(--ts);position:absolute;top:0}
+.tree-connector{width:2px;height:20px;background:var(--ts);margin:0 auto}
 .cards-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
-.class-card{padding:6px 14px;border:2px solid var(--bds);border-radius:var(--r);background:var(--s2);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;user-select:none}
+.class-card{padding:5px 12px;border:2px solid var(--bds);border-radius:var(--r);background:var(--s2);cursor:pointer;font-size:12px;font-weight:500;transition:all .15s;user-select:none}
 .class-card:hover{border-color:var(--fac);color:var(--tac)}
 .class-card.selected{border-color:var(--fac);background:var(--ac);color:var(--tac)}
-.class-card.placed{opacity:.35;cursor:default;pointer-events:none}
+.class-card.placed{opacity:.3;cursor:default;pointer-events:none}
 
-/* ── GAME 3: 合成 vs 集約 ── */
+/* ── 合成/集約 ── */
 .worlds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
 .world-box{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:1rem;text-align:center}
-.world-title{font-size:13px;font-weight:500;margin-bottom:.75rem;color:var(--ts)}
-.obj-container{display:flex;flex-direction:column;align-items:center;gap:0;margin-bottom:.75rem}
-.obj-block{padding:8px 20px;border:2px solid var(--ts);background:var(--s2);font-size:14px;font-weight:500;border-radius:4px;transition:all .4s;position:relative}
+.world-title{font-size:12px;font-weight:500;margin-bottom:.75rem;color:var(--ts)}
+.obj-block{padding:8px 16px;border:2px solid var(--ts);background:var(--s2);font-size:13px;font-weight:500;border-radius:4px;transition:all .4s;display:inline-block}
 .obj-block.dead{opacity:0;transform:scale(.7)}
-.compose-line{width:3px;height:20px;margin:0 auto;transition:all .4s}
+.compose-line{width:2px;height:18px;margin:0 auto}
 .compose-line.solid{background:var(--tp)}
 .compose-line.dashed{background:repeating-linear-gradient(to bottom,var(--ts) 0,var(--ts) 4px,transparent 4px,transparent 8px)}
-.diamond{width:14px;height:14px;transform:rotate(45deg);margin:0 auto}
+.diamond{width:12px;height:12px;transform:rotate(45deg);margin:3px auto}
 .diamond.filled{background:var(--tp)}
 .diamond.empty-d{border:2px solid var(--tp)}
-.rel-label{font-size:11px;color:var(--tm);margin-bottom:.5rem}
-.world-quiz{background:var(--s1);border-radius:12px;padding:1rem;margin-bottom:1rem}
-.wq-q{font-size:14px;margin-bottom:.75rem;color:var(--tp)}
-.wq-opts{display:flex;gap:8px;flex-wrap:wrap}
+.rel-label{font-size:11px;color:var(--tm);margin:.5rem 0}
+.world-quiz{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.875rem 1rem;margin-bottom:.75rem}
+.wq-q{font-size:14px;margin-bottom:.75rem;line-height:1.6}
+.wq-opts{display:flex;gap:8px}
 .wq-opt{padding:5px 14px;border:1px solid var(--bds);border-radius:var(--r);font-size:13px;cursor:pointer;background:var(--s2);transition:all .15s}
 .wq-opt:hover{background:var(--s1)}
 .wq-opt.ok{background:var(--ok);border-color:var(--bok);color:var(--tok)}
 .wq-opt.ng{background:var(--ng);border-color:var(--bng);color:var(--tng)}
 
-/* ── GAME 4: static ── */
-.knights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
-.knight-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.75rem;text-align:center}
-.k-avatar{font-size:28px;margin-bottom:.5rem}
-.k-name{font-size:14px;font-weight:500;margin-bottom:.5rem}
-.k-field{font-size:12px;font-family:var(--m);padding:4px 8px;border-radius:4px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;gap:6px}
-.k-field.static-f{background:var(--wn);color:var(--twn)}
-.k-field.inst-f{background:var(--s1);color:var(--ts)}
-.k-val{font-weight:500;font-size:13px;min-width:24px;text-align:right;transition:all .3s}
-.k-val.flash{color:var(--fac)}
-.static-ctrl{background:var(--wn);border:1px solid var(--bwn);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.static-ctrl span{color:var(--twn);font-weight:500}
-.inst-ctrl{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;font-size:14px}
-.inst-ctrl p{color:var(--ts);margin-bottom:.5rem}
-.inst-btns{display:flex;gap:6px;flex-wrap:wrap}
-.inst-btn{padding:4px 12px;border:1px solid var(--bds);border-radius:var(--r);font-size:13px;cursor:pointer;background:var(--s2);font-family:var(--f)}
+/* ── static ── */
+.accounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+.acc-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.875rem;text-align:center}
+.acc-icon{font-size:24px;margin-bottom:.4rem}
+.acc-name{font-size:13px;font-weight:500;margin-bottom:.5rem}
+.acc-field{font-size:11px;font-family:var(--m);padding:4px 8px;border-radius:4px;margin-bottom:4px;display:flex;justify-content:space-between;gap:4px}
+.acc-field.static-f{background:var(--wn);color:var(--twn)}
+.acc-field.inst-f{background:var(--s1);color:var(--ts)}
+.acc-val{font-weight:500;font-size:12px;min-width:32px;text-align:right;transition:color .3s}
+.acc-val.flash{color:var(--fac)}
+.ctrl-box{border-radius:var(--r);padding:.875rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
+.ctrl-box.static-ctrl{background:var(--wn);border:1px solid var(--bwn)}
+.ctrl-box.inst-ctrl{background:var(--s1);border:1px solid var(--bd);flex-direction:column;align-items:flex-start}
+.ctrl-box span.label{font-weight:500}
+.static-ctrl span.label{color:var(--twn)}
+.inst-ctrl span.label{color:var(--ts)}
+.inst-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:.5rem}
+.inst-btn{padding:4px 12px;border:1px solid var(--bds);border-radius:var(--r);font-size:12px;cursor:pointer;background:var(--s2);font-family:var(--f)}
 .inst-btn:hover{background:var(--s1)}
 
-/* feedback */
 .fb{border-radius:var(--r);padding:.875rem 1rem;font-size:14px;line-height:1.6;margin-bottom:1rem;display:none}
 .fb.show{display:block}
 .fb.ok{background:var(--ok);color:var(--tok);border:1px solid var(--bok)}
 .fb.ng{background:var(--ng);color:var(--tng);border:1px solid var(--bng)}
 
-/* complete */
+.info-box{background:var(--ac);border:1px solid var(--bac);border-radius:var(--r);padding:.75rem 1rem;font-size:13px;color:var(--tac);margin-bottom:1rem;line-height:1.8}
+
 .complete{text-align:center;padding:2rem 0}
 .complete h2{font-size:24px;font-weight:500;margin-bottom:.5rem}
 .big-score{font-size:52px;font-weight:500;color:var(--fac);margin:.5rem 0}
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:1.25rem 0;text-align:left}
-.sum-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.75rem 1rem;font-size:13px}
-.sum-card strong{display:block;font-size:15px;margin-bottom:4px;color:var(--tp)}
+.sum-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.75rem 1rem}
+.sum-card strong{display:block;font-size:14px;margin-bottom:4px;color:var(--tp)}
 .sum-card p{color:var(--ts);line-height:1.6;font-size:12px}
 </style>
 </head>
@@ -154,518 +145,386 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
   <div class="progress"><div class="progress-fill" id="prog" style="width:0%"></div></div>
   <div id="screen"></div>
 </div>
-
 <script>
-const G = {
-  chapter: 0,
-  phase: 'story',    // story | game | epilogue
-  line: 0,
-  score: 0,
-  chScores: [0,0,0,0],
-};
+const G={chapter:0,phase:'story',line:0,score:0};
 
-const CHAPTERS = [
-  { name:'第1章', sub:'城の警備システム' },
-  { name:'第2章', sub:'生き物の分類図鑑' },
-  { name:'第3章', sub:'絆と契約の違い' },
-  { name:'第4章', sub:'共有の秘密' },
+const CHAPTERS=[
+  {name:'第1章',sub:'口座情報を守れ'},
+  {name:'第2章',sub:'金融商品の分類'},
+  {name:'第3章',sub:'銀行と支店と顧客'},
+  {name:'第4章',sub:'金利改定の謎'},
 ];
 
-// ═══════════════════════════════════════════
-// STORY DATA
-// ═══════════════════════════════════════════
-const stories = {
-  0: [
-    { npc:'👴 村長', text:'よく来てくれた、新米プログラマーよ。この村はオブジェクト指向の力で動いている。まずは最初の試練だ。' },
-    { npc:'👴 村長', text:'城のデータが外部から書き換えられるという事件が起きた。原因は<strong>アクセス修飾子</strong>の設定ミスだ。' },
-    { npc:'👴 村長', text:'クラスのメンバーには「誰がアクセスできるか」を設定できる。<br><br><span style="color:var(--tok)"><strong>＋ public</strong></span>：誰でもアクセス可<br><span style="color:var(--tng)"><strong>− private</strong></span>：クラス自身のみ<br><span style="color:var(--tpr)"><strong># protected</strong></span>：自クラスと子クラスのみ' },
-    { npc:'🛡️ 衛兵', text:'Castle クラスのメンバーに適切なアクセス修飾子を設定してください。secretKey と pin は絶対に外部に漏れてはいけません！' },
+const stories={
+  0:[
+    {npc:'👔 頭取',  text:'よく来てくれた。君が今日から配属される新人エンジニアだね。わが銀行のシステムを任せる。'},
+    {npc:'👔 頭取',  text:'さっそく問題が起きている。昨夜、不審なプログラムが顧客の口座残高と暗証番号を読み取ろうとした。'},
+    {npc:'🔐 セキュリティ部長', text:'原因は <code>BankAccount</code> クラスのアクセス修飾子の設定ミスだ。フィールドが全部 public になっていた。'},
+    {npc:'🔐 セキュリティ部長', text:'アクセス修飾子を正しく設定すれば、外部のコードが直接触れる情報を制限できる。<br><br><span style="color:var(--tok)"><strong>+ public</strong></span>：誰でもアクセス可<br><span style="color:var(--tng)"><strong>− private</strong></span>：クラス自身のみ<br><span style="color:var(--tpr)"><strong># protected</strong></span>：自クラスと子クラスのみ'},
+    {npc:'🔐 セキュリティ部長', text:'各フィールドとメソッドに適切な修飾子を設定してくれ。<strong>balance（残高）と pin（暗証番号）は絶対に外部から見えてはいけない。</strong>'},
   ],
-  '0e': [
-    { npc:'🛡️ 衛兵', text:'見事だ！secretKey と pin が private で守られ、侵入者をブロックできた。' },
-    { npc:'👴 村長', text:'これが private の力だ。クラスの外からは見えない「鍵のかかった金庫」のようなものだ。' },
+  '0e':[
+    {npc:'🔐 セキュリティ部長', text:'完璧だ。balance と pin を private にしたことで、外部のコードから直接アクセスできなくなった。'},
+    {npc:'👔 頭取', text:'残高を知りたければ getBalance() を通す。このように「窓口（public メソッド）だけを公開して、内部データは隠す」のが安全な設計だ。'},
   ],
-  1: [
-    { npc:'👴 村長', text:'次の試練だ。村の博士が生き物の分類図鑑を作っているが、整理ができていない。' },
-    { npc:'🔬 博士', text:'<strong>継承</strong>とは「is-a（〜は〜の一種）」の関係だ。犬は動物の一種、という関係を使ってクラスを整理する。' },
-    { npc:'🔬 博士', text:'下の生き物カードを正しい親クラスの下に配置してくれ。Animal → Mammal → Dog のような木を作るんだ。' },
+  1:[
+    {npc:'📂 システム部長', text:'次は銀行が扱う金融商品のシステム設計だ。現在、商品ごとにバラバラなコードが書かれていて管理が大変だ。'},
+    {npc:'📂 システム部長', text:'<strong>継承</strong>を使えば整理できる。「普通預金は口座の一種」「住宅ローンはローンの一種」という is-a 関係だ。'},
+    {npc:'📂 システム部長', text:'親クラスに共通の処理を書いておけば、子クラスで繰り返さなくてよい。これがコードの再利用だ。'},
+    {npc:'📂 システム部長', text:'右のカードを正しい親クラスの下に配置して、金融商品の継承ツリーを完成させてくれ。'},
   ],
-  '1e': [
-    { npc:'🔬 博士', text:'完璧だ！継承ツリーが完成した。Dog は Animal のすべての性質を引き継ぐ。これが「再利用」の本質だ。' },
-    { npc:'👴 村長', text:'is-a 関係を意識することが設計の第一歩だ。Dog is an Animal — この文が成り立つなら継承が使える。' },
+  '1e':[
+    {npc:'📂 システム部長', text:'これで整理できた。SavingsAccount も TimeDeposit も Account の is-a だから、Account に書いた「利息計算」などの処理を共有できる。'},
+    {npc:'👔 頭取', text:'「〇〇は△△の一種である」という文が成り立てば継承が使える。設計の基本だ。'},
   ],
-  2: [
-    { npc:'👴 村長', text:'三つ目の試練。村では人と組織のつながり方に二種類ある。「強い絆」と「緩い契約」だ。' },
-    { npc:'💫 賢者', text:'<strong>合成（Composition）</strong>は心臓と人間のような関係。人間が消えると心臓も消える。<strong>強いhas-a</strong>だ。' },
-    { npc:'💫 賢者', text:'<strong>集約（Aggregation）</strong>は大学と学生のような関係。大学が閉校しても学生は生き続ける。<strong>弱いhas-a</strong>だ。' },
-    { npc:'💫 賢者', text:'まずは「消したら何が起きるか」を自分の目で確かめてくれ。その後、いくつかの関係を分類してほしい。' },
+  2:[
+    {npc:'📂 システム部長', text:'設計書を見ていたら、関係の種類について議論になった。「銀行と支店」と「銀行と顧客」は同じ has-a に見えて、実は性質が異なる。'},
+    {npc:'💼 先輩エンジニア', text:'<strong>合成（Composition）</strong>は生死を共にする強い関係だ。銀行が倒産すれば支店も消滅する。塗りつぶしひし形 ◆ で表す。'},
+    {npc:'💼 先輩エンジニア', text:'<strong>集約（Aggregation）</strong>は独立して存在できる弱い関係だ。銀行が倒産しても顧客は別の銀行に移れる。空のひし形 ◇ で表す。'},
+    {npc:'💼 先輩エンジニア', text:'まず「倒産ボタン」を押して違いを目で確かめてから、クイズに答えてくれ。'},
   ],
-  '2e': [
-    { npc:'💫 賢者', text:'そうだ。合成では所有者が消えると子も消える。集約では子は独立して生き続ける。' },
-    { npc:'👴 村長', text:'設計の際は「この関係は生死を共にするか？」と問いかけてみなさい。' },
+  '2e':[
+    {npc:'💼 先輩エンジニア', text:'そうだ。「所有者が消えたとき、所有されるものも消えるか？」が判断の鍵だ。'},
+    {npc:'👔 頭取', text:'合成はクラスが「所有して管理する」もの、集約は「参照するだけ」のものに使う。'},
   ],
-  3: [
-    { npc:'👴 村長', text:'最後の試練だ。村の騎士団に不思議な現象が起きている。一人の行動が全員に影響するというのだ。' },
-    { npc:'⚔️ 騎士長', text:'騎士団のギルドランクが変わると、全員のランクが同時に変わる。しかし HP はそれぞれ別だ。' },
-    { npc:'⚔️ 騎士長', text:'これが <strong>static</strong> の力だ。static なフィールドはクラス自体に属し、すべてのインスタンスで共有される。' },
-    { npc:'⚔️ 騎士長', text:'実際に操作して、static とインスタンスフィールドの違いを体感してくれ。' },
+  3:[
+    {npc:'📊 アナリスト', text:'最後の課題だ。今朝、日銀が政策金利を変更した。すると、なぜか全口座の金利が一斉に変わった。'},
+    {npc:'📊 アナリスト', text:'しかし残高はそれぞれ別々のままだ。なぜ金利だけが全口座で共有されているのか？'},
+    {npc:'📊 アナリスト', text:'答えは <strong>static</strong> だ。static なフィールドはインスタンスではなく<strong>クラス自体に属する</strong>。全インスタンスで1つの値を共有する。'},
+    {npc:'📊 アナリスト', text:'金利は「この銀行の全口座に適用される利率」だから static が自然だ。一方、残高は口座ごとに違うからインスタンスフィールドだ。実際に操作して確かめてくれ。'},
   ],
-  '3e': [
-    { npc:'⚔️ 騎士長', text:'理解できたな。guild は static だから全員共有。HP はインスタンスごとに独立している。' },
-    { npc:'👴 村長', text:'これですべての試練が終わった。オブジェクト指向の四つの柱を体で学んだことだろう。' },
+  '3e':[
+    {npc:'📊 アナリスト', text:'理解できたね。interestRate を変えると全口座に反映される。balance は口座ごとに独立している。'},
+    {npc:'👔 頭取', text:'「この値はクラス全体で1つあれば十分か？」と問いかけると static を使うべき場面がわかる。お疲れさまでした。'},
   ],
 };
 
-// ═══════════════════════════════════════════
-// RENDER HELPERS
-// ═══════════════════════════════════════════
-function updateNav() {
-  const nav = document.getElementById('ch-nav');
-  nav.innerHTML = CHAPTERS.map((c,i) => {
-    const cls = i < G.chapter ? 'done' : i === G.chapter ? 'active' : '';
-    return `<div class="ch-dot ${cls}">${c.name}</div>`;
+// ─── NAV & RENDER ────────────────────────────
+function updateNav(){
+  document.getElementById('ch-nav').innerHTML=CHAPTERS.map((c,i)=>{
+    const cl=i<G.chapter?'done':i===G.chapter?'active':'';
+    return `<div class="ch-dot ${cl}">${c.name}</div>`;
   }).join('');
-  const total = CHAPTERS.length * 2;
-  const done = G.chapter * 2 + (G.phase === 'epilogue' ? 1.5 : G.phase === 'game' ? 1 : 0);
-  document.getElementById('prog').style.width = Math.min(100, done/total*100) + '%';
+  const total=CHAPTERS.length*2;
+  const done=G.chapter*2+(G.phase==='epilogue'?1.5:G.phase==='game'?1:0);
+  document.getElementById('prog').style.width=Math.min(100,done/total*100)+'%';
 }
 
-function storyHTML(lines, lineIdx, onNext, isEpilogue=false) {
-  const l = lines[lineIdx];
-  const isLast = lineIdx >= lines.length - 1;
+function storyHTML(lines,idx,onNext,isEpilogue=false){
+  const l=lines[idx];
+  const last=idx>=lines.length-1;
   return `
     <div class="ch-title">${CHAPTERS[G.chapter].name}${isEpilogue?' — まとめ':''}</div>
     <div class="ch-heading">${CHAPTERS[G.chapter].sub}</div>
     <div class="story-panel">
       <div class="npc">
         <div class="npc-avatar">${l.npc.split(' ')[0]}</div>
-        <div class="npc-info">
+        <div style="flex:1">
           <div class="npc-name">${l.npc.split(' ').slice(1).join(' ')}</div>
           <div class="bubble">${l.text}</div>
         </div>
       </div>
       <div class="story-actions">
-        ${lineIdx < lines.length - 1
-          ? `<button class="btn btn-p" onclick="${onNext}">次へ →</button>`
-          : `<button class="btn btn-p" onclick="${onNext}">${isEpilogue ? (G.chapter < CHAPTERS.length-1 ? '次の章へ →' : '完了 →') : 'ゲームスタート →'}</button>`
-        }
+        <button class="btn btn-p" onclick="${onNext}">${last?(isEpilogue?(G.chapter<CHAPTERS.length-1?'次の章へ →':'完了 →'):'ゲームスタート →'):'次へ →'}</button>
       </div>
     </div>`;
 }
 
-// ═══════════════════════════════════════════
-// MAIN RENDER
-// ═══════════════════════════════════════════
-function render() {
+function render(){
   updateNav();
-  const scr = document.getElementById('screen');
-  if (G.phase === 'story') {
-    const lines = stories[G.chapter];
-    scr.innerHTML = storyHTML(lines, G.line, 'advStory()');
-  } else if (G.phase === 'game') {
-    scr.innerHTML = renderGame(G.chapter);
-  } else if (G.phase === 'epilogue') {
-    const lines = stories[G.chapter + 'e'];
-    scr.innerHTML = storyHTML(lines, G.line, 'advEpilogue()', true);
-  } else {
-    scr.innerHTML = renderComplete();
-  }
+  const scr=document.getElementById('screen');
+  if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
+  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4][G.chapter]();
+  else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
+  else scr.innerHTML=renderComplete();
 }
 
-function advStory() {
-  const lines = stories[G.chapter];
-  if (G.line < lines.length - 1) { G.line++; render(); }
-  else { G.phase = 'game'; G.line = 0; render(); }
+function advStory(){
+  const lines=stories[G.chapter];
+  if(G.line<lines.length-1){G.line++;render();}
+  else{G.phase='game';G.line=0;render();}
 }
-function advEpilogue() {
-  const lines = stories[G.chapter + 'e'];
-  if (G.line < lines.length - 1) { G.line++; render(); }
-  else {
-    G.chapter++;
-    G.line = 0;
-    if (G.chapter >= CHAPTERS.length) { G.phase = 'complete'; }
-    else { G.phase = 'story'; }
+function advEpilogue(){
+  const lines=stories[G.chapter+'e'];
+  if(G.line<lines.length-1){G.line++;render();}
+  else{
+    G.chapter++;G.line=0;
+    G.phase=G.chapter>=CHAPTERS.length?'complete':'story';
     render();
   }
 }
-function finishGame(pts) {
-  G.score += pts;
-  G.chScores[G.chapter] = pts;
-  G.phase = 'epilogue';
-  G.line = 0;
-  render();
+function finishGame(pts){
+  G.score+=pts;G.phase='epilogue';G.line=0;render();
 }
 
-// ═══════════════════════════════════════════
-// GAME 1 — アクセス修飾子
-// ═══════════════════════════════════════════
-const g1members = [
-  { name:'name: String',    hint:'城の名前。外部から読めてOK',        correct:'pub' },
-  { name:'secretKey: int',  hint:'秘密の鍵。絶対に外に漏れてはダメ',  correct:'pri' },
-  { name:'pin: int',        hint:'暗証番号。絶対に外部NG',            correct:'pri' },
-  { name:'treasury: int',   hint:'宝物庫。子クラスは使えてOK',        correct:'pro' },
-  { name:'getStatus(): void', hint:'状態取得。誰でも呼べてOK',        correct:'pub' },
+// ─── GAME 1: アクセス修飾子 ─────────────────────
+const g1m=[
+  {name:'balance: double',    hint:'残高。外部から直接変更されてはダメ',correct:'pri'},
+  {name:'pin: int',           hint:'暗証番号。絶対に外部に漏れてはダメ',correct:'pri'},
+  {name:'accountId: String',  hint:'口座番号。子クラスも使えてよい',    correct:'pro'},
+  {name:'ownerName: String',  hint:'名義人。外部から読めてOK',          correct:'pub'},
+  {name:'getBalance(): double',hint:'残高照会。窓口として公開する',      correct:'pub'},
+  {name:'validatePin(): bool', hint:'PIN検証。クラス内部だけで使う',    correct:'pri'},
 ];
-let g1sel = ['pub','pub','pub','pub','pub'];
-let g1attacked = false;
+let g1sel=g1m.map(()=>'pub');
 
-function renderGame(ch) {
-  if (ch===0) return renderG1();
-  if (ch===1) return renderG2();
-  if (ch===2) return renderG2_3();
-  if (ch===3) return renderG4();
-}
-
-function renderG1() {
-  const rows = g1members.map((m,i)=>`
-    <div class="m-row" id="mr${i}">
-      <span class="m-name" style="font-family:var(--m);font-size:13px">${m.name}</span>
+function renderG1(){
+  const rows=g1m.map((m,i)=>`
+    <div class="m-row">
+      <span class="m-name">${m.name}</span>
       <div class="m-mod-btn">
-        <span class="mod-opt mod-pub ${g1sel[i]==='pub'?'sel':''}" onclick="g1set(${i},'pub')">+ pub</span>
-        <span class="mod-opt mod-pri ${g1sel[i]==='pri'?'sel':''}" onclick="g1set(${i},'pri')">− pri</span>
-        <span class="mod-opt mod-pro ${g1sel[i]==='pro'?'sel':''}" onclick="g1set(${i},'pro')"># pro</span>
+        <span class="mod-opt mod-pub ${g1sel[i]==='pub'?'sel':''}" onclick="g1set(${i},'pub')">+pub</span>
+        <span class="mod-opt mod-pri ${g1sel[i]==='pri'?'sel':''}" onclick="g1set(${i},'pri')">−pri</span>
+        <span class="mod-opt mod-pro ${g1sel[i]==='pro'?'sel':''}" onclick="g1set(${i},'pro')">#pro</span>
       </div>
     </div>`).join('');
   return `
     <div class="ch-title">${CHAPTERS[0].name}</div>
     <div class="ch-heading">${CHAPTERS[0].sub}</div>
-    <p style="font-size:14px;color:var(--ts);margin-bottom:1rem">各メンバーに適切なアクセス修飾子を設定してください。ヒントを参考に。</p>
-    <div class="castle-class">
-      <div class="cls-head">Castle</div>
-      <div class="cls-sec">${rows}</div>
-    </div>
-    <div style="background:var(--ac);border:1px solid var(--bac);border-radius:var(--r);padding:.75rem 1rem;font-size:13px;color:var(--tac);margin-bottom:1rem;line-height:1.7">
-      ${g1members.map((m,i)=>`<div>・${m.name} — ${m.hint}</div>`).join('')}
+    <p class="game-intro">各メンバーに適切なアクセス修飾子を設定してください。</p>
+    <div class="info-box">${g1m.map(m=>`・${m.name} — ${m.hint}`).join('<br>')}</div>
+    <div class="uml-class" style="margin-bottom:1rem">
+      <div class="uml-head">BankAccount</div>
+      <div class="uml-sec">${rows}</div>
     </div>
     <div class="fb" id="g1fb"></div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-p" onclick="g1check()">侵入者テスト実行 🏹</button>
-    </div>`;
+    <button class="btn btn-p" onclick="g1check()">不正アクセステスト実行 🔍</button>`;
 }
-
-function g1set(i, mod) {
-  g1sel[i] = mod;
-  document.getElementById('screen').innerHTML = renderG1();
-}
-
-function g1check() {
-  let correct = g1sel.filter((s,i)=>s===g1members[i].correct).length;
-  const allRight = correct === g1members.length;
-  const pts = allRight ? 25 : Math.max(5, correct * 5);
-
-  let html = `<div class="attack-result" style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:1rem">
-    <p style="font-size:13px;font-weight:500;margin-bottom:.5rem;color:var(--ts)">🏹 外部からの侵入テスト結果</p>`;
-  g1members.forEach((m,i)=>{
-    const canAccess = g1sel[i]==='pub';
-    const isSecret = m.correct==='pri';
-    const icon = canAccess ? (isSecret ? '❌ 侵入成功！' : '✅ アクセス可') : '🔒 ブロック';
-    html += `<div class="attack-item"><span style="font-family:var(--m);font-size:12px;flex:1">${m.name}</span><span class="${canAccess&&isSecret?'atk-ng':'atk-ok'}">${icon}</span></div>`;
-  });
-  html += '</div>';
-
-  const resultInfo = g1members.map((m,i)=>{
-    const wrong = g1sel[i]!==m.correct;
-    return wrong ? `<span style="color:var(--tng)">✗ ${m.name} → 正解: ${m.correct}</span>` : `<span style="color:var(--tok)">✓ ${m.name}</span>`;
-  }).join('<br>');
-
-  const fb = document.createElement('div');
-  fb.innerHTML = html + `<div class="fb ${allRight?'ok':'ng'} show">${allRight?'✓ 完璧！':'✗ 不正解あり。'} ${correct}/${g1members.length} 正解<br>${resultInfo}</div><button class="btn btn-p" style="margin-top:.75rem" onclick="finishGame(${pts})">次へ →</button>`;
-  document.querySelector('.wrap').appendChild(fb);
-  document.getElementById('g1fb').parentNode.replaceChild(fb, document.getElementById('g1fb').parentNode.lastChild);
-  document.querySelector('[onclick="g1check()"]').disabled = true;
-  document.getElementById('screen').appendChild(fb);
-}
-
-// ═══════════════════════════════════════════
-// GAME 2 — 継承ツリー
-// ═══════════════════════════════════════════
-// Tree: Animal -> [Mammal, Bird] -> Mammal:[Dog,Cat] Bird:[Eagle,Hawk]
-const g2tree = [
-  { id:'animal', label:'Animal', parent:null, level:0, pos:0 },
-  { id:'mammal', label:'Mammal', parent:'animal', level:1, pos:0 },
-  { id:'bird',   label:'Bird',   parent:'animal', level:1, pos:1 },
-  { id:'dog',    label:'Dog',    parent:'mammal', level:2, pos:0 },
-  { id:'cat',    label:'Cat',    parent:'mammal', level:2, pos:1 },
-  { id:'eagle',  label:'Eagle',  parent:'bird',   level:2, pos:2 },
-  { id:'hawk',   label:'Hawk',   parent:'bird',   level:2, pos:3 },
-];
-const g2cards = ['Mammal','Bird','Dog','Cat','Eagle','Hawk'];
-let g2placed = {}; // slotId -> label
-let g2selected = null;
-let g2done = false;
-
-function renderG2() {
-  const slots = g2tree.filter(n=>n.id!=='animal');
-  const slotHTML = (id) => {
-    const placed = g2placed[id];
-    const cls = placed ? '' : 'empty';
-    const hl = g2selected && !placed ? 'highlight' : '';
-    return `<div class="tree-node ${cls} ${hl}" id="slot-${id}" onclick="g2place('${id}')">${placed || '?'}</div>`;
-  };
-
-  const cardsHTML = g2cards.map(c=>{
-    const pl = Object.values(g2placed).includes(c);
-    return `<div class="class-card ${pl?'placed':''} ${g2selected===c?'selected':''}" onclick="g2select('${c}')">${c}</div>`;
+function g1set(i,mod){g1sel[i]=mod;document.getElementById('screen').innerHTML=renderG1();}
+function g1check(){
+  const correct=g1sel.filter((s,i)=>s===g1m[i].correct).length;
+  const ok=correct===g1m.length;
+  const pts=ok?25:Math.max(5,correct*4);
+  let rows=g1m.map((m,i)=>{
+    const accessible=g1sel[i]==='pub';
+    const secret=m.correct==='pri';
+    const icon=accessible?(secret?'🚨 漏洩！':'✅ OK'):'🔒 ブロック';
+    const col=accessible&&secret?'color:var(--tng)':'color:var(--tok)';
+    return `<div style="display:flex;font-family:var(--m);font-size:12px;padding:4px 0;gap:8px"><span style="flex:1">${m.name}</span><span style="${col}">${icon}</span></div>`;
   }).join('');
+  const result=g1m.map((m,i)=>g1sel[i]!==m.correct?`<span style="color:var(--tng)">✗ ${m.name}（正解:${m.correct}）</span>`:`<span style="color:var(--tok)">✓ ${m.name}</span>`).join('<br>');
+  const fb=document.getElementById('g1fb');
+  fb.className='fb '+(ok?'ok':'ng')+' show';
+  fb.innerHTML=`<div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.75rem;font-size:13px">🔍 外部アクセステスト<br>${rows}</div>${ok?'✓ 完璧！balance と pin がブロックされました。':'✗ 不正解あり。'} ${correct}/${g1m.length} 正解<br>${result}<br><br><button class="btn btn-p" onclick="finishGame(${pts})">次へ →</button>`;
+  document.querySelector('[onclick="g1check()"]').disabled=true;
+}
 
-  const fbHTML = g2done ? `<div class="fb show" id="g2fb" style="background:var(--ok);color:var(--tok);border:1px solid var(--bok)">✓ 正解！継承ツリー完成。</div>
-    <button class="btn btn-p" onclick="finishGame(25)">次へ →</button>` : `<div class="fb" id="g2fb"></div>
-    <button class="btn btn-p" onclick="g2check()" id="g2btn">確認する</button>`;
+// ─── GAME 2: 継承ツリー ──────────────────────────
+// Account → [DepositAccount, LoanAccount]
+// DepositAccount → [SavingsAccount, TimeDeposit]
+// LoanAccount    → [MortgageLoan, CarLoan]
+const g2correct={dep:'DepositAccount',loan:'LoanAccount',sav:'SavingsAccount',td:'TimeDeposit',ml:'MortgageLoan',cl:'CarLoan'};
+const g2cards=Object.values(g2correct);
+let g2placed={},g2sel=null,g2done=false;
 
+function renderG2(){
+  const slot=id=>{
+    const p=g2placed[id];
+    const hl=g2sel&&!p?'highlight':'';
+    return `<div class="tree-node ${p?'':'empty'} ${hl}" onclick="g2place('${id}')">${p||'?'}</div>`;
+  };
+  const cards=g2cards.map(c=>{
+    const pl=Object.values(g2placed).includes(c);
+    return `<div class="class-card ${pl?'placed':''} ${g2sel===c?'selected':''}" onclick="g2sel_fn('${c}')">${c}</div>`;
+  }).join('');
+  const fb=g2done?`<div class="fb ok show">✓ 完成！Account を頂点とした継承ツリーができました。</div><button class="btn btn-p" onclick="finishGame(25)">次へ →</button>`
+    :`<div class="fb" id="g2fb"></div><button class="btn btn-p" onclick="g2check()">確認する</button>`;
   return `
     <div class="ch-title">${CHAPTERS[1].name}</div>
     <div class="ch-heading">${CHAPTERS[1].sub}</div>
-    <p style="font-size:14px;color:var(--ts);margin-bottom:.75rem">カードを選んでスロット（?）に配置してください。is-a 関係を考えて。</p>
-    <div class="cards-area">${cardsHTML}</div>
+    <p class="game-intro">カードを選んでスロット（?）に配置し、is-a 関係の継承ツリーを完成させてください。</p>
+    <div class="cards-area">${cards}</div>
     <div class="tree-area">
-      <div class="tree-root">
-        <div class="tree-node" style="cursor:default">Animal</div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="tree-node fixed">Account</div>
         <div class="tree-connector"></div>
-        <div class="tree-level" style="gap:32px">
-          ${slotHTML('mammal')}
-          ${slotHTML('bird')}
-        </div>
-        <div style="display:flex;gap:32px;margin-top:0">
+        <div style="display:flex;gap:40px">
           <div style="display:flex;flex-direction:column;align-items:center">
+            ${slot('dep')}
             <div class="tree-connector"></div>
-            <div style="display:flex;gap:12px">
-              ${slotHTML('dog')}
-              ${slotHTML('cat')}
-            </div>
+            <div style="display:flex;gap:10px">${slot('sav')}${slot('td')}</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center">
+            ${slot('loan')}
             <div class="tree-connector"></div>
-            <div style="display:flex;gap:12px">
-              ${slotHTML('eagle')}
-              ${slotHTML('hawk')}
-            </div>
+            <div style="display:flex;gap:10px">${slot('ml')}${slot('cl')}</div>
           </div>
         </div>
       </div>
     </div>
-    ${fbHTML}`;
+    ${fb}`;
 }
-
-function g2select(label) {
-  if (g2done) return;
-  g2selected = g2selected === label ? null : label;
-  document.getElementById('screen').innerHTML = renderG2();
+function g2sel_fn(c){g2sel=g2sel===c?null:c;document.getElementById('screen').innerHTML=renderG2();}
+function g2place(id){
+  if(!g2sel||g2done)return;
+  g2placed[id]=g2sel;g2sel=null;
+  document.getElementById('screen').innerHTML=renderG2();
 }
-function g2place(slotId) {
-  if (!g2selected || g2done) return;
-  g2placed[slotId] = g2selected;
-  g2selected = null;
-  document.getElementById('screen').innerHTML = renderG2();
-}
-
-const g2correct = {mammal:'Mammal',bird:'Bird',dog:'Dog',cat:'Cat',eagle:'Eagle',hawk:'Hawk'};
-function g2check() {
-  let ok = true;
-  Object.keys(g2correct).forEach(k=>{ if(g2placed[k]!==g2correct[k]) ok=false; });
-  if (ok) { g2done=true; document.getElementById('screen').innerHTML=renderG2(); return; }
-  const fb = document.getElementById('g2fb');
+function g2check(){
+  const ok=Object.keys(g2correct).every(k=>g2placed[k]===g2correct[k]);
+  if(ok){g2done=true;document.getElementById('screen').innerHTML=renderG2();return;}
+  const fb=document.getElementById('g2fb');
   fb.className='fb ng show';
-  const wrongs = Object.keys(g2correct).filter(k=>g2placed[k]&&g2placed[k]!==g2correct[k]).map(k=>`${g2placed[k]}→${k}は違う`);
-  fb.textContent = '✗ ' + (wrongs.length ? wrongs.join('、') : '全スロットを埋めてください');
+  const wrongs=Object.keys(g2correct).filter(k=>g2placed[k]&&g2placed[k]!==g2correct[k]).map(k=>`${g2placed[k]}の位置が違います`);
+  fb.textContent='✗ '+(wrongs.length?wrongs[0]:'まだ空のスロットがあります');
 }
 
-// ═══════════════════════════════════════════
-// GAME 3 — 合成 vs 集約
-// ═══════════════════════════════════════════
-let g3humanDead=false, g3uniDead=false, g3quiz=[null,null,null], g3phase='explore';
-const g3questions=[
-  {q:'Car（車）とEngine（エンジン）の関係は？\n車が廃棄されるとエンジンも廃棄される。',a:'comp'},
-  {q:'Team（チーム）とPlayer（選手）の関係は？\nチームが解散しても選手は別のチームに移れる。',a:'agg'},
-  {q:'Order（注文）とOrderItem（注文明細）の関係は？\n注文が削除されると明細も削除される。',a:'comp'},
+// ─── GAME 3: 合成 vs 集約 ───────────────────────
+let g3bankDead=false,g3bankDead2=false,g3quiz=[null,null,null];
+const g3q=[
+  {q:'ATM（現金自動預払機）と銀行の関係は？\n銀行が廃業すれば ATM も撤去される。',a:'comp'},
+  {q:'銀行口座と顧客の関係は？\n銀行が倒産しても顧客は別の銀行に口座を開ける。',a:'agg'},
+  {q:'注文（Order）と注文明細（OrderItem）の関係は？\n注文が削除されると明細も削除される。',a:'comp'},
 ];
 
-function renderG2_3() {
-  const heartCls = g3humanDead ? 'dead' : '';
-  const studentCls = g3uniDead ? '' : '';
-  const uniCls = g3uniDead ? 'dead' : '';
-
-  const worldA = `
-    <div class="world-box">
-      <div class="world-title">合成（Composition）◆</div>
-      <div class="obj-container">
-        <div class="obj-block" id="human-block">🧑 Human</div>
-        <div style="display:flex;flex-direction:column;align-items:center">
-          <div class="diamond filled" style="margin:4px auto"></div>
-          <div class="compose-line solid" style="height:16px"></div>
-        </div>
-        <div class="obj-block ${heartCls}" id="heart-block">❤️ Heart</div>
-      </div>
-      <div class="rel-label">Human が消えると Heart も消える</div>
-      ${!g3humanDead
-        ? `<button class="btn" style="font-size:13px;width:100%" onclick="g3killHuman()">Human を削除 🗑️</button>`
-        : `<div style="font-size:13px;color:var(--tng);font-weight:500">Heart も消えた！</div>`}
-    </div>`;
-
-  const worldB = `
-    <div class="world-box">
-      <div class="world-title">集約（Aggregation）◇</div>
-      <div class="obj-container">
-        <div class="obj-block ${uniCls}" id="uni-block">🏫 University</div>
-        <div style="display:flex;flex-direction:column;align-items:center">
-          <div class="diamond empty-d" style="margin:4px auto"></div>
-          <div class="compose-line dashed" style="height:16px"></div>
-        </div>
-        <div class="obj-block" id="student-block">🎓 Student</div>
-      </div>
-      <div class="rel-label">University が消えても Student は残る</div>
-      ${!g3uniDead
-        ? `<button class="btn" style="font-size:13px;width:100%" onclick="g3killUni()">University を閉校 🗑️</button>`
-        : `<div style="font-size:13px;color:var(--tok);font-weight:500">Student は生き続けた！</div>`}
-    </div>`;
-
-  const quizReady = g3humanDead && g3uniDead;
-  const allAnswered = g3quiz.every(q=>q!==null);
-
-  const quizHTML = quizReady ? g3questions.map((q,i)=>{
-    const ans = g3quiz[i];
-    const compCls = ans ? (ans==='comp'? (q.a==='comp'?'ok':'ng') : '') : '';
-    const aggCls  = ans ? (ans==='agg'?  (q.a==='agg'?'ok':'ng')  : '') : '';
-    return `<div class="world-quiz">
-      <div class="wq-q">${q.q.replace(/\n/g,'<br>')}</div>
-      <div class="wq-opts">
-        <div class="wq-opt ${compCls}" onclick="g3ans(${i},'comp')">◆ 合成</div>
-        <div class="wq-opt ${aggCls}"  onclick="g3ans(${i},'agg')">◇ 集約</div>
-      </div>
-    </div>`;
-  }).join('') : '';
-
-  const correctCount = g3quiz.filter((a,i)=>a===g3questions[i].a).length;
-  const pts = correctCount * 8 + (g3humanDead&&g3uniDead?1:0);
-
+function renderG3(){
+  const branchDead=g3bankDead;
+  const custSafe=g3bankDead2;
   return `
     <div class="ch-title">${CHAPTERS[2].name}</div>
     <div class="ch-heading">${CHAPTERS[2].sub}</div>
-    <p style="font-size:14px;color:var(--ts);margin-bottom:.75rem">まず「削除ボタン」を押して違いを体験し、その後クイズに答えてください。</p>
-    <div class="worlds">${worldA}${worldB}</div>
-    ${quizHTML}
-    ${allAnswered ? `<div class="fb ok show">✓ ${correctCount}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${pts})">次へ →</button>` : ''}`;
+    <p class="game-intro">「倒産ボタン」を押して、合成と集約の違いを確かめてください。</p>
+    <div class="worlds">
+      <div class="world-box">
+        <div class="world-title">合成 ◆ — 生死を共にする</div>
+        <div style="margin-bottom:.5rem">
+          <div class="obj-block">🏦 Bank A</div>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="diamond filled"></div>
+            <div class="compose-line solid"></div>
+          </div>
+          <div class="obj-block ${branchDead?'dead':''}">🏢 支店</div>
+        </div>
+        <div class="rel-label">Bank が消えると支店も消える</div>
+        ${!branchDead
+          ?`<button class="btn" style="width:100%;font-size:12px" onclick="g3kill1()">Bank A が倒産 🏚️</button>`
+          :`<div style="font-size:12px;color:var(--tng);font-weight:500">支店も消えた！</div>`}
+      </div>
+      <div class="world-box">
+        <div class="world-title">集約 ◇ — 独立して存在できる</div>
+        <div style="margin-bottom:.5rem">
+          <div class="obj-block ${custSafe?'dead':''}">🏦 Bank B</div>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="diamond empty-d"></div>
+            <div class="compose-line dashed"></div>
+          </div>
+          <div class="obj-block">👤 顧客</div>
+        </div>
+        <div class="rel-label">Bank が消えても顧客は残る</div>
+        ${!custSafe
+          ?`<button class="btn" style="width:100%;font-size:12px" onclick="g3kill2()">Bank B が倒産 🏚️</button>`
+          :`<div style="font-size:12px;color:var(--tok);font-weight:500">顧客は生き続けた！</div>`}
+      </div>
+    </div>
+    ${g3bankDead&&g3bankDead2?g3q.map((q,i)=>{
+      const ac=g3quiz[i];
+      const cc=ac?(ac==='comp'?(q.a==='comp'?'ok':'ng'):''):'';
+      const ac2=ac?(ac==='agg'?(q.a==='agg'?'ok':'ng'):''):'';
+      return `<div class="world-quiz">
+        <div class="wq-q">${q.q.replace(/\n/g,'<br>')}</div>
+        <div class="wq-opts">
+          <div class="wq-opt ${cc}" onclick="g3ans(${i},'comp')">◆ 合成</div>
+          <div class="wq-opt ${ac2}" onclick="g3ans(${i},'agg')">◇ 集約</div>
+        </div>
+      </div>`;
+    }).join(''):''}
+    ${g3quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${g3quiz.filter((a,i)=>a===g3q[i].a).length}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${g3quiz.filter((a,i)=>a===g3q[i].a).length*8+1})">次へ →</button>`:''}`;
 }
+function g3kill1(){
+  document.querySelector('.obj-block:nth-of-type(2)').classList.add('dead');
+  setTimeout(()=>{g3bankDead=true;document.getElementById('screen').innerHTML=renderG3();},400);
+}
+function g3kill2(){
+  g3bankDead2=true;document.getElementById('screen').innerHTML=renderG3();
+}
+function g3ans(i,v){if(g3quiz[i]!==null)return;g3quiz[i]=v;document.getElementById('screen').innerHTML=renderG3();}
 
-function g3killHuman() {
-  g3humanDead=true;
-  document.getElementById('heart-block').classList.add('dead');
-  setTimeout(()=>{ document.getElementById('screen').innerHTML=renderG2_3(); },400);
-}
-function g3killUni() {
-  g3uniDead=true;
-  document.getElementById('uni-block').classList.add('dead');
-  setTimeout(()=>{ document.getElementById('screen').innerHTML=renderG2_3(); },400);
-}
-function g3ans(i, val) {
-  if(g3quiz[i]!==null) return;
-  g3quiz[i]=val;
-  document.getElementById('screen').innerHTML=renderG2_3();
-}
-
-// ═══════════════════════════════════════════
-// GAME 4 — static
-// ═══════════════════════════════════════════
-let g4guild=1, g4hp=[100,100,100], g4quiz=[null,null];
-const knights=[{name:'アルス',icon:'⚔️'},{name:'レイナ',icon:'🗡️'},{name:'ゴルド',icon:'🪓'}];
-const g4q=[
-  {q:'guild（ギルドランク）は static か？',a:'yes'},
-  {q:'hp（ヒットポイント）は static か？',a:'no'},
+// ─── GAME 4: static / 金利 ──────────────────────
+let g4rate=1.5,g4bal=[300000,150000,520000],g4quiz=[null,null];
+const g4accs=[
+  {name:'田中 一郎',icon:'💼'},
+  {name:'鈴木 花子',icon:'👜'},
+  {name:'佐藤 健',  icon:'🧳'},
 ];
-
-function renderG4() {
-  const kCards = knights.map((k,i)=>`
-    <div class="knight-card">
-      <div class="k-avatar">${k.icon}</div>
-      <div class="k-name">${k.name}</div>
-      <div class="k-field static-f"><span>guild</span><span class="k-val" id="g4g${i}">${g4guild}</span></div>
-      <div class="k-field inst-f"><span>hp</span><span class="k-val" id="g4h${i}">${g4hp[i]}</span></div>
+const g4q=[
+  {q:'interestRate（金利）は static か？',a:'yes'},
+  {q:'balance（残高）は static か？',a:'no'},
+];
+function renderG4(){
+  const cards=g4accs.map((a,i)=>`
+    <div class="acc-card">
+      <div class="acc-icon">${a.icon}</div>
+      <div class="acc-name">${a.name}</div>
+      <div class="acc-field static-f"><span>interestRate</span><span class="acc-val" id="r${i}">${g4rate}%</span></div>
+      <div class="acc-field inst-f"><span>balance</span><span class="acc-val" id="b${i}">${g4bal[i].toLocaleString()}円</span></div>
     </div>`).join('');
-
-  const allAns = g4quiz.every(q=>q!==null);
-  const correctCnt = g4quiz.filter((a,i)=>a===g4q[i].a).length;
-
-  const quizHTML = g4q.map((q,i)=>{
-    const ya=g4quiz[i]==='yes', na=g4quiz[i]==='no';
-    const yc=ya?(g4q[i].a==='yes'?'ok':'ng'):'';
-    const nc=na?(g4q[i].a==='no'?'ok':'ng'):'';
+  const allAns=g4quiz.every(a=>a!==null);
+  const quiz=g4q.map((q,i)=>{
+    const ya=g4quiz[i]==='yes',na=g4quiz[i]==='no';
     return `<div class="world-quiz">
       <div class="wq-q">${q.q}</div>
       <div class="wq-opts">
-        <div class="wq-opt ${yc}" onclick="g4ans(${i},'yes')">static だ</div>
-        <div class="wq-opt ${nc}" onclick="g4ans(${i},'no')">static ではない</div>
+        <div class="wq-opt ${ya?(g4q[i].a==='yes'?'ok':'ng'):''}" onclick="g4ans(${i},'yes')">static だ</div>
+        <div class="wq-opt ${na?(g4q[i].a==='no'?'ok':'ng'):''}"  onclick="g4ans(${i},'no')">static ではない</div>
       </div>
     </div>`;
   }).join('');
-
+  const correct=g4quiz.filter((a,i)=>a===g4q[i].a).length;
   return `
     <div class="ch-title">${CHAPTERS[3].name}</div>
     <div class="ch-heading">${CHAPTERS[3].sub}</div>
-    <p style="font-size:14px;color:var(--ts);margin-bottom:.75rem">ボタンを操作して、static とインスタンスフィールドの違いを確かめてください。</p>
-    <div class="knights">${kCards}</div>
-    <div class="static-ctrl">
-      <div><span>static guild</span> を全員で共有</div>
-      <button class="btn btn-p" style="font-size:13px;padding:.4rem .9rem" onclick="g4upGuild()">ランクアップ ▲</button>
+    <p class="game-intro">ボタンを操作して、static フィールドとインスタンスフィールドの違いを確かめてください。</p>
+    <div class="accounts">${cards}</div>
+    <div class="ctrl-box static-ctrl">
+      <div><span class="label">BankAccount.interestRate（static）</span><br><span style="font-size:12px;color:var(--twn)">全口座で共有される金利。日銀が変更すると全員に影響。</span></div>
+      <button class="btn btn-p" style="font-size:12px;white-space:nowrap" onclick="g4upRate()">金利を上げる ▲</button>
     </div>
-    <div class="inst-ctrl">
-      <p>各騎士の <strong>hp</strong> を個別に変更</p>
+    <div class="ctrl-box inst-ctrl">
+      <span class="label">balance（インスタンス）— 各口座の残高を個別に変更</span>
       <div class="inst-btns">
-        ${knights.map((k,i)=>`<button class="inst-btn" onclick="g4dmg(${i})">⚔️ ${k.name} に攻撃</button>`).join('')}
+        ${g4accs.map((a,i)=>`<button class="inst-btn" onclick="g4deposit(${i})">💴 ${a.name}に入金</button>`).join('')}
       </div>
     </div>
-    ${quizHTML}
-    ${allAnswered ? `<div class="fb ok show">✓ ${correctCnt}/2 正解！</div><button class="btn btn-p" onclick="finishGame(${correctCnt*10+5})">結果を見る →</button>` : ''}`;
-
-  function allAnswered(){ return g4quiz.every(q=>q!==null); }
+    ${quiz}
+    ${allAns?`<div class="fb ok show">✓ ${correct}/2 正解！</div><button class="btn btn-p" onclick="finishGame(${correct*10+5})">結果を見る →</button>`:''}`;
 }
-
-function g4upGuild() {
-  g4guild++;
+function g4upRate(){
+  g4rate=parseFloat((g4rate+0.25).toFixed(2));
   document.getElementById('screen').innerHTML=renderG4();
 }
-function g4dmg(i) {
-  g4hp[i]=Math.max(0,g4hp[i]-25);
+function g4deposit(i){
+  g4bal[i]+=50000;
   document.getElementById('screen').innerHTML=renderG4();
 }
-function g4ans(i,val) {
-  if(g4quiz[i]!==null)return;
-  g4quiz[i]=val;
-  document.getElementById('screen').innerHTML=renderG4();
-}
+function g4ans(i,v){if(g4quiz[i]!==null)return;g4quiz[i]=v;document.getElementById('screen').innerHTML=renderG4();}
 
-// ═══════════════════════════════════════════
-// COMPLETE
-// ═══════════════════════════════════════════
-function renderComplete() {
-  updateNav();
-  document.getElementById('prog').style.width='100%';
-  const max=25+25+25+25;
-  const pct=Math.round(G.score/max*100);
-  const summaries=[
-    {title:'アクセス修飾子',body:'public / private / protected でアクセス範囲を制御する。データを隠すことで安全な設計になる。'},
-    {title:'継承',body:'is-a 関係を使ってクラスを整理する。子クラスは親の性質をすべて引き継ぐ。'},
-    {title:'合成 vs 集約',body:'合成は生死を共にする強いhas-a。集約は独立して存在できる弱いhas-a。'},
-    {title:'static',body:'static フィールドはクラス自体に属し全インスタンスで共有。インスタンスフィールドは各自が持つ。'},
+// ─── COMPLETE ────────────────────────────────────
+function renderComplete(){
+  updateNav();document.getElementById('prog').style.width='100%';
+  const max=100,pct=Math.round(G.score/max*100);
+  const msg=pct>=80?'銀行システムの設計を完璧に理解した！':pct>=50?'もう少し。もう一度挑戦してみよう。':'基礎を復習してからもう一度！';
+  const sums=[
+    {t:'アクセス修飾子',b:'public / private / protected で情報を隠す。残高や暗証番号は private にして「窓口（メソッド）」だけを公開する。'},
+    {t:'継承',b:'is-a 関係でクラスを整理する。SavingsAccount は Account の一種だから、共通の処理を親クラスに書いて再利用できる。'},
+    {t:'合成 vs 集約',b:'合成は所有者が消えると子も消える（強い has-a）。集約は独立して存在できる（弱い has-a）。'},
+    {t:'static',b:'static フィールドはクラス自体に属し全インスタンスで共有。金利はクラス全体で一つ、残高は口座ごとに別々。'},
   ];
   return `<div class="complete">
-    <h2>🎉 村の試練完了！</h2>
+    <h2>🏦 銀行システム完成！</h2>
     <div class="big-score">${G.score}<span style="font-size:22px;color:var(--tm)"> / ${max}</span></div>
-    <p style="color:var(--ts);margin-bottom:1.5rem">正解率 ${pct}% — ${pct>=80?'オブジェクト指向の基礎はバッチリだ！':pct>=50?'もう少し練習すれば完璧だ。':'もう一度チャレンジしてみよう。'}</p>
-    <div class="summary-grid">
-      ${summaries.map((s,i)=>`<div class="sum-card"><strong>${CHAPTERS[i].name}: ${s.title}</strong><p>${s.body}</p></div>`).join('')}
-    </div>
-    <button class="btn btn-p" onclick="restartAll()">最初からやり直す</button>
+    <p style="color:var(--ts);margin-bottom:1.5rem">正解率 ${pct}% — ${msg}</p>
+    <div class="summary-grid">${sums.map((s,i)=>`<div class="sum-card"><strong>${CHAPTERS[i].name}: ${s.t}</strong><p>${s.b}</p></div>`).join('')}</div>
+    <button class="btn btn-p" onclick="restart()">最初からやり直す</button>
   </div>`;
 }
-
-function restartAll() {
-  G.chapter=0;G.phase='story';G.line=0;G.score=0;G.chScores=[0,0,0,0];
-  g1sel=['pub','pub','pub','pub','pub'];g1attacked=false;
-  g2placed={};g2selected=null;g2done=false;
-  g3humanDead=false;g3uniDead=false;g3quiz=[null,null,null];
-  g4guild=1;g4hp=[100,100,100];g4quiz=[null,null];
+function restart(){
+  Object.assign(G,{chapter:0,phase:'story',line:0,score:0});
+  g1sel=g1m.map(()=>'pub');
+  g2placed={};g2sel=null;g2done=false;
+  g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];
+  g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];
   render();
 }
-
 render();
 </script>
 </body>
