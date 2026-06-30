@@ -3,499 +3,670 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OOP体験ゲーム — アクセス制御</title>
+<title>新人プログラマーの村</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --surface-0: #f1efe8;
-  --surface-1: #f8f7f4;
-  --surface-2: #ffffff;
-  --text-primary: #1a1a18;
-  --text-secondary: #5f5e5a;
-  --text-muted: #888780;
-  --border: rgba(0,0,0,0.13);
-  --border-strong: rgba(0,0,0,0.22);
-  --bg-success: #eaf3de;
-  --text-success: #3b6d11;
-  --border-success: #97c459;
-  --bg-danger: #fcebeb;
-  --text-danger: #a32d2d;
-  --border-danger: #f09595;
-  --bg-warning: #faeeda;
-  --text-warning: #854f0b;
-  --border-warning: #ef9f27;
-  --bg-accent: #e6f1fb;
-  --text-accent: #185fa5;
-  --border-accent: #85b7eb;
-  --fill-accent: #378add;
-  --bg-pro: #eeedfe;
-  --text-pro: #534ab7;
-  --radius: 8px;
-  --font: system-ui, -apple-system, sans-serif;
-  --mono: ui-monospace, 'Cascadia Code', monospace;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --s0:#f1efe8;--s1:#f8f7f4;--s2:#fff;
+  --tp:#1a1a18;--ts:#5f5e5a;--tm:#888780;
+  --bd:rgba(0,0,0,.13);--bds:rgba(0,0,0,.22);
+  --ok:#eaf3de;--tok:#3b6d11;--bok:#97c459;
+  --ng:#fcebeb;--tng:#a32d2d;--bng:#f09595;
+  --ac:#e6f1fb;--tac:#185fa5;--bac:#85b7eb;--fac:#378add;
+  --pr:#eeedfe;--tpr:#534ab7;
+  --wn:#faeeda;--twn:#854f0b;--bwn:#ef9f27;
+  --r:8px;--f:system-ui,-apple-system,sans-serif;--m:ui-monospace,'Cascadia Code',monospace;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface-0: #1c1c1a; --surface-1: #252523; --surface-2: #2e2e2b;
-    --text-primary: #f0ede6; --text-secondary: #a8a69f; --text-muted: #6e6c67;
-    --border: rgba(255,255,255,0.11); --border-strong: rgba(255,255,255,0.2);
-    --bg-success: #173404; --text-success: #c0dd97; --border-success: #3b6d11;
-    --bg-danger: #501313; --text-danger: #f09595; --border-danger: #a32d2d;
-    --bg-warning: #412402; --text-warning: #fac775; --border-warning: #ba7517;
-    --bg-accent: #042c53; --text-accent: #85b7eb; --border-accent: #185fa5;
-    --bg-pro: #26215c; --text-pro: #afa9ec;
-  }
-}
-body { font-family: var(--font); background: var(--surface-0); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
-.wrap { width: 100%; max-width: 700px; }
+@media(prefers-color-scheme:dark){:root{
+  --s0:#1c1c1a;--s1:#252523;--s2:#2e2e2b;
+  --tp:#f0ede6;--ts:#a8a69f;--tm:#6e6c67;
+  --bd:rgba(255,255,255,.11);--bds:rgba(255,255,255,.2);
+  --ok:#173404;--tok:#c0dd97;--bok:#3b6d11;
+  --ng:#501313;--tng:#f09595;--bng:#a32d2d;
+  --ac:#042c53;--tac:#85b7eb;--bac:#185fa5;
+  --pr:#26215c;--tpr:#afa9ec;
+  --wn:#412402;--twn:#fac775;--bwn:#ba7517;
+}}
+body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;display:flex;justify-content:center;padding:2rem 1rem}
+.wrap{width:100%;max-width:700px}
 
-/* header */
-.hdr { margin-bottom: 1.5rem; }
-.hdr h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
-.hdr p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+/* chapter nav */
+.chapter-nav{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.ch-dot{padding:4px 12px;border-radius:99px;font-size:12px;border:1px solid var(--bd);background:var(--s1);color:var(--tm);transition:all .2s}
+.ch-dot.done{background:var(--ok);color:var(--tok);border-color:var(--bok)}
+.ch-dot.active{background:var(--fac);color:#fff;border-color:var(--fac)}
+.progress{height:4px;background:var(--bd);border-radius:2px;margin-bottom:1.5rem}
+.progress-fill{height:100%;background:var(--fac);border-radius:2px;transition:width .4s}
 
-/* concept card */
-.concept { background: var(--bg-accent); border: 1px solid var(--border-accent); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 14px; line-height: 1.7; color: var(--text-accent); }
-.concept strong { font-weight: 500; }
+/* story panel */
+.story-panel{background:var(--s2);border:1px solid var(--bd);border-radius:16px;padding:1.5rem;margin-bottom:1rem}
+.npc{display:flex;align-items:flex-start;gap:12px;margin-bottom:1rem}
+.npc-avatar{font-size:36px;flex-shrink:0;line-height:1}
+.npc-info{flex:1}
+.npc-name{font-size:12px;font-weight:500;color:var(--tm);margin-bottom:4px}
+.bubble{background:var(--s1);border:1px solid var(--bd);border-radius:0 12px 12px 12px;padding:.75rem 1rem;font-size:14px;line-height:1.7;color:var(--tp)}
+.story-actions{display:flex;justify-content:flex-end;gap:8px}
+.btn{border:1px solid var(--bds);background:transparent;border-radius:var(--r);padding:.6rem 1.25rem;font-size:14px;cursor:pointer;color:var(--tp);font-family:var(--f);transition:background .15s}
+.btn:hover{background:var(--s1)}
+.btn-p{background:var(--fac);color:#fff;border-color:var(--fac)}
+.btn-p:hover{opacity:.9;background:var(--fac)}
+.btn:disabled{opacity:.4;cursor:default}
 
-/* visitor selector */
-.visitor-section { margin-bottom: 1.25rem; }
-.vs-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 0.5rem; }
-.visitors { display: flex; gap: 8px; flex-wrap: wrap; }
-.visitor-btn {
-  display: flex; align-items: center; gap: 8px;
-  padding: 0.6rem 1rem; border-radius: var(--radius);
-  border: 2px solid var(--border-strong); background: var(--surface-2);
-  cursor: pointer; font-size: 14px; font-family: var(--font);
-  color: var(--text-primary); transition: all 0.15s;
-}
-.visitor-btn:hover { background: var(--surface-1); }
-.visitor-btn.active { border-color: var(--fill-accent); background: var(--bg-accent); color: var(--text-accent); }
-.visitor-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
-.vi-ext { background: #faeeda; }
-.vi-child { background: #eeedfe; }
-.vi-self { background: #eaf3de; }
+/* chapter title */
+.ch-title{font-size:11px;font-weight:500;color:var(--tm);letter-spacing:.08em;margin-bottom:4px}
+.ch-heading{font-size:22px;font-weight:500;margin-bottom:1rem;color:var(--tp)}
 
-/* arena */
-.arena { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: start; margin-bottom: 1.25rem; }
-.class-box { border: 2px solid var(--text-secondary); border-radius: 0; background: var(--surface-2); }
-.cls-head { background: var(--surface-0); border-bottom: 1.5px solid var(--text-secondary); padding: 8px 14px; font-weight: 500; text-align: center; font-size: 15px; }
-.cls-section { border-bottom: 1.5px solid var(--text-secondary); padding: 4px 0; }
-.cls-section:last-child { border-bottom: none; }
-.member {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 14px; font-family: var(--mono); font-size: 13px;
-  cursor: pointer; border-left: 3px solid transparent;
-  transition: all 0.15s; user-select: none;
-}
-.member:hover { background: var(--surface-1); }
-.member.selected { background: var(--surface-1); border-left-color: var(--fill-accent); }
-.member.correct { background: var(--bg-success); border-left-color: var(--text-success); }
-.member.wrong { background: var(--bg-danger); border-left-color: var(--text-danger); }
-.member.locked { cursor: default; }
-.mod { font-size: 12px; font-weight: 500; padding: 2px 5px; border-radius: 3px; min-width: 20px; text-align: center; }
-.mod-pub { background: var(--bg-success); color: var(--text-success); }
-.mod-pri { background: var(--bg-danger); color: var(--text-danger); }
-.mod-pro { background: var(--bg-pro); color: var(--text-pro); }
-.member-name { flex: 1; }
-.member-check { font-size: 16px; opacity: 0; transition: opacity 0.2s; }
-.member.correct .member-check::after { content: "✓"; color: var(--text-success); opacity: 1; }
-.member.wrong .member-check::after { content: "✗"; color: var(--text-danger); opacity: 1; }
+/* ── GAME 1: アクセス修飾子 ── */
+.castle-class{border:2px solid var(--ts);background:var(--s2);margin-bottom:1rem}
+.castle-class .cls-head{background:var(--s0);border-bottom:1.5px solid var(--ts);padding:8px 14px;font-weight:500;text-align:center;font-size:15px}
+.castle-class .cls-sec{border-bottom:1.5px solid var(--ts);padding:4px 0}
+.castle-class .cls-sec:last-child{border-bottom:none}
+.m-row{display:flex;align-items:center;gap:10px;padding:8px 14px;font-family:var(--m);font-size:13px;border-left:3px solid transparent;transition:all .2s}
+.m-row.locked{opacity:.5}
+.m-name{flex:1}
+.m-mod-btn{display:flex;gap:4px}
+.mod-opt{padding:3px 8px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid transparent;opacity:.4;transition:all .15s}
+.mod-opt:hover{opacity:.7}
+.mod-opt.sel{opacity:1;border-color:currentColor}
+.mod-pub{color:var(--tok);background:var(--ok)}
+.mod-pri{color:var(--tng);background:var(--ng)}
+.mod-pro{color:var(--tpr);background:var(--pr)}
+.attack-result{border-radius:12px;padding:1rem 1.25rem;font-size:14px;line-height:1.8;margin-bottom:1rem}
+.attack-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-family:var(--m);font-size:13px}
+.atk-ok{color:var(--tok)}
+.atk-ng{color:var(--tng)}
 
-/* arrow area */
-.arrow-col { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 60px; gap: 4px; }
-.arrow-svg { opacity: 0.5; }
+/* ── GAME 2: 継承ツリー ── */
+.tree-area{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.tree-root{display:flex;flex-direction:column;align-items:center;gap:0}
+.tree-level{display:flex;justify-content:center;gap:12px;margin-top:0;position:relative}
+.tree-node{border:2px solid var(--ts);background:var(--s2);padding:6px 14px;font-size:13px;font-weight:500;border-radius:4px;min-width:80px;text-align:center;position:relative;cursor:pointer;transition:all .15s}
+.tree-node.empty{border-style:dashed;color:var(--tm);background:var(--s1);cursor:pointer}
+.tree-node.empty:hover{border-color:var(--fac);color:var(--tac)}
+.tree-node.highlight{border-color:var(--fac);background:var(--ac);color:var(--tac)}
+.tree-connector{width:2px;height:24px;background:var(--ts);margin:0 auto}
+.tree-h-line{height:2px;background:var(--ts);position:absolute;top:0}
+.cards-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.class-card{padding:6px 14px;border:2px solid var(--bds);border-radius:var(--r);background:var(--s2);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;user-select:none}
+.class-card:hover{border-color:var(--fac);color:var(--tac)}
+.class-card.selected{border-color:var(--fac);background:var(--ac);color:var(--tac)}
+.class-card.placed{opacity:.35;cursor:default;pointer-events:none}
 
-/* child class box */
-.child-box { border: 2px dashed var(--text-muted); border-radius: 0; background: var(--surface-1); }
-.child-box .cls-head { background: var(--surface-1); font-style: italic; font-size: 14px; color: var(--text-secondary); }
-.child-code { padding: 10px 14px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
+/* ── GAME 3: 合成 vs 集約 ── */
+.worlds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.world-box{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:1rem;text-align:center}
+.world-title{font-size:13px;font-weight:500;margin-bottom:.75rem;color:var(--ts)}
+.obj-container{display:flex;flex-direction:column;align-items:center;gap:0;margin-bottom:.75rem}
+.obj-block{padding:8px 20px;border:2px solid var(--ts);background:var(--s2);font-size:14px;font-weight:500;border-radius:4px;transition:all .4s;position:relative}
+.obj-block.dead{opacity:0;transform:scale(.7)}
+.compose-line{width:3px;height:20px;margin:0 auto;transition:all .4s}
+.compose-line.solid{background:var(--tp)}
+.compose-line.dashed{background:repeating-linear-gradient(to bottom,var(--ts) 0,var(--ts) 4px,transparent 4px,transparent 8px)}
+.diamond{width:14px;height:14px;transform:rotate(45deg);margin:0 auto}
+.diamond.filled{background:var(--tp)}
+.diamond.empty-d{border:2px solid var(--tp)}
+.rel-label{font-size:11px;color:var(--tm);margin-bottom:.5rem}
+.world-quiz{background:var(--s1);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.wq-q{font-size:14px;margin-bottom:.75rem;color:var(--tp)}
+.wq-opts{display:flex;gap:8px;flex-wrap:wrap}
+.wq-opt{padding:5px 14px;border:1px solid var(--bds);border-radius:var(--r);font-size:13px;cursor:pointer;background:var(--s2);transition:all .15s}
+.wq-opt:hover{background:var(--s1)}
+.wq-opt.ok{background:var(--ok);border-color:var(--bok);color:var(--tok)}
+.wq-opt.ng{background:var(--ng);border-color:var(--bng);color:var(--tng)}
 
-/* result panel */
-.result-panel { border-radius: 12px; padding: 1rem 1.25rem; font-size: 14px; line-height: 1.6; margin-bottom: 1rem; display: none; }
-.result-panel.show { display: block; }
-.result-panel.ok { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
-.result-panel.ng { background: var(--bg-danger); color: var(--text-danger); border: 1px solid var(--border-danger); }
+/* ── GAME 4: static ── */
+.knights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+.knight-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.75rem;text-align:center}
+.k-avatar{font-size:28px;margin-bottom:.5rem}
+.k-name{font-size:14px;font-weight:500;margin-bottom:.5rem}
+.k-field{font-size:12px;font-family:var(--m);padding:4px 8px;border-radius:4px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.k-field.static-f{background:var(--wn);color:var(--twn)}
+.k-field.inst-f{background:var(--s1);color:var(--ts)}
+.k-val{font-weight:500;font-size:13px;min-width:24px;text-align:right;transition:all .3s}
+.k-val.flash{color:var(--fac)}
+.static-ctrl{background:var(--wn);border:1px solid var(--bwn);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.static-ctrl span{color:var(--twn);font-weight:500}
+.inst-ctrl{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;font-size:14px}
+.inst-ctrl p{color:var(--ts);margin-bottom:.5rem}
+.inst-btns{display:flex;gap:6px;flex-wrap:wrap}
+.inst-btn{padding:4px 12px;border:1px solid var(--bds);border-radius:var(--r);font-size:13px;cursor:pointer;background:var(--s2);font-family:var(--f)}
+.inst-btn:hover{background:var(--s1)}
 
-/* action buttons */
-.actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn { border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius); padding: 0.6rem 1.25rem; font-size: 14px; cursor: pointer; color: var(--text-primary); font-family: var(--font); }
-.btn:hover { background: var(--surface-1); }
-.btn-primary { background: var(--fill-accent); color: #fff; border-color: var(--fill-accent); }
-.btn-primary:hover { opacity: 0.9; background: var(--fill-accent); }
-
-/* progress */
-.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.5rem; }
-.progress-fill { height: 100%; background: var(--fill-accent); border-radius: 2px; transition: width 0.4s; }
-
-/* legend */
-.legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
-
-/* score */
-.score-row { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-.score-chip { background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 12px; font-size: 13px; color: var(--text-secondary); }
-.score-chip b { color: var(--text-primary); }
+/* feedback */
+.fb{border-radius:var(--r);padding:.875rem 1rem;font-size:14px;line-height:1.6;margin-bottom:1rem;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok);color:var(--tok);border:1px solid var(--bok)}
+.fb.ng{background:var(--ng);color:var(--tng);border:1px solid var(--bng)}
 
 /* complete */
-.complete { text-align: center; padding: 2rem 0; }
-.complete h2 { font-size: 24px; font-weight: 500; margin-bottom: 0.5rem; }
-.big-score { font-size: 48px; font-weight: 500; color: var(--fill-accent); margin: 0.5rem 0; }
-.complete p { color: var(--text-secondary); font-size: 14px; margin-bottom: 1.5rem; }
-
-/* instruction hint */
-.hint { font-size: 13px; color: var(--text-muted); margin-bottom: 0.75rem; }
+.complete{text-align:center;padding:2rem 0}
+.complete h2{font-size:24px;font-weight:500;margin-bottom:.5rem}
+.big-score{font-size:52px;font-weight:500;color:var(--fac);margin:.5rem 0}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:1.25rem 0;text-align:left}
+.sum-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.75rem 1rem;font-size:13px}
+.sum-card strong{display:block;font-size:15px;margin-bottom:4px;color:var(--tp)}
+.sum-card p{color:var(--ts);line-height:1.6;font-size:12px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="hdr">
-    <h1>アクセス制御を体験する</h1>
-    <p>誰がどのメンバーにアクセスできるか、実際に試して確かめよう。</p>
-  </div>
-
-  <div class="concept">
-    <strong>アクセス修飾子とは？</strong><br>
-    クラスのメンバー（フィールド・メソッド）に「誰がアクセスできるか」を制限する仕組みです。
-    <br><br>
-    <strong style="color:var(--text-success)">+ public</strong> → 誰でもアクセス可
-    <strong style="color:var(--text-danger)">− private</strong> → クラス自身のみ
-    <strong style="color:var(--text-pro)"># protected</strong> → 自クラス＋子クラスのみ
-  </div>
-
-  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <div class="score-row">
-    <div class="score-chip">問題 <b id="q-num">1</b> / <b id="q-total">5</b></div>
-    <div class="score-chip">スコア <b id="score">0</b></div>
-  </div>
-
-  <div id="game"></div>
+  <div class="chapter-nav" id="ch-nav"></div>
+  <div class="progress"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div id="screen"></div>
 </div>
 
 <script>
-const rounds = [
-  {
-    title: "BankAccount クラス",
-    cls: "BankAccount",
-    child: "SavingsAccount",
-    childCode: "// BankAccountを継承",
-    members: [
-      { mod: "pri", name: "balance: double",      pub: false, pro: false },
-      { mod: "pri", name: "pin: int",             pub: false, pro: false },
-      { mod: "pro", name: "accountId: String",    pub: false, pro: true  },
-      { mod: "pub", name: "owner: String",        pub: true,  pro: true  },
-      { mod: "pub", name: "getBalance(): double", pub: true,  pro: true  },
-      { mod: "pri", name: "validatePin(): bool",  pub: false, pro: false },
-    ],
-    visitors: [
-      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
-      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
-      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
-    ],
-    explain: {
-      ext:   "外部コードからは public (+) のみアクセスできます。balance や pin は外から覗けません。",
-      child: "子クラスからは public (+) と protected (#) にアクセスできます。private (−) は継承先でも触れません。",
-      self:  "クラス自身のコード内からはすべてのメンバーにアクセスできます。これが private の意味です。"
-    }
-  },
-  {
-    title: "Person クラス",
-    cls: "Person",
-    child: "Student",
-    childCode: "// Personを継承",
-    members: [
-      { mod: "pri", name: "birthYear: int",    pub: false, pro: false },
-      { mod: "pro", name: "name: String",      pub: false, pro: true  },
-      { mod: "pub", name: "email: String",     pub: true,  pro: true  },
-      { mod: "pri", name: "password: String",  pub: false, pro: false },
-      { mod: "pub", name: "greet(): void",     pub: true,  pro: true  },
-      { mod: "pro", name: "getAge(): int",     pub: false, pro: true  },
-    ],
-    visitors: [
-      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
-      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
-      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
-    ],
-    explain: {
-      ext:   "外部から email と greet() だけ見えます。birthYear や password を隠すことでデータを保護できます。",
-      child: "子クラス Student は name・email・greet()・getAge() にアクセスできます。password は継承先でも隠されます。",
-      self:  "Person クラス内のコードはすべてのメンバーにアクセスできます。private はクラス外だけに閉じています。"
-    }
-  },
-  {
-    title: "GameCharacter クラス",
-    cls: "GameCharacter",
-    child: "Warrior",
-    childCode: "// GameCharacterを継承",
-    members: [
-      { mod: "pub", name: "name: String",       pub: true,  pro: true  },
-      { mod: "pri", name: "hp: int",            pub: false, pro: false },
-      { mod: "pro", name: "attackPower: int",   pub: false, pro: true  },
-      { mod: "pub", name: "getHp(): int",       pub: true,  pro: true  },
-      { mod: "pri", name: "secretSkill(): void",pub: false, pro: false },
-      { mod: "pro", name: "levelUp(): void",    pub: false, pro: true  },
-    ],
-    visitors: [
-      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
-      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
-      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
-    ],
-    explain: {
-      ext:   "ゲームの外部コードは name と getHp() で名前とHPを読めますが、hp の直接変更はできません。ゲームの不正防止に役立ちます。",
-      child: "Warrior クラスは attackPower と levelUp() を使って独自のキャラクター能力を実装できます。secretSkill は基底クラス専用です。",
-      self:  "GameCharacter クラス自身はすべてにアクセスできます。hp を直接変えるのはクラス内のメソッドだけに任せることで整合性を保てます。"
-    }
-  },
-  {
-    title: "DatabaseConnection クラス",
-    cls: "DatabaseConnection",
-    child: "MySQLConnection",
-    childCode: "// DatabaseConnectionを継承",
-    members: [
-      { mod: "pri", name: "password: String",   pub: false, pro: false },
-      { mod: "pri", name: "host: String",       pub: false, pro: false },
-      { mod: "pro", name: "port: int",          pub: false, pro: true  },
-      { mod: "pub", name: "connect(): bool",    pub: true,  pro: true  },
-      { mod: "pub", name: "disconnect(): void", pub: true,  pro: true  },
-      { mod: "pro", name: "query(): Result",    pub: false, pro: true  },
-    ],
-    visitors: [
-      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
-      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
-      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
-    ],
-    explain: {
-      ext:   "外部からは connect() と disconnect() だけ使えます。パスワードやホスト名は絶対に外に漏れません。",
-      child: "MySQLConnection は port と query() を使ってMySQL独自の接続処理を実装できます。password は子クラスでも見えません。",
-      self:  "クラス内では password も host も自由に使えます。private にすることでパスワードの扱いをクラスが完全に管理します。"
-    }
-  },
-  {
-    title: "Animal クラス",
-    cls: "Animal",
-    child: "Dog",
-    childCode: "// Animalを継承",
-    members: [
-      { mod: "pub", name: "species: String",    pub: true,  pro: true  },
-      { mod: "pro", name: "sound: String",      pub: false, pro: true  },
-      { mod: "pri", name: "dna: String",        pub: false, pro: false },
-      { mod: "pub", name: "eat(): void",        pub: true,  pro: true  },
-      { mod: "pro", name: "makeSound(): void",  pub: false, pro: true  },
-      { mod: "pri", name: "mutate(): void",     pub: false, pro: false },
-    ],
-    visitors: [
-      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
-      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
-      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
-    ],
-    explain: {
-      ext:   "外部コードは species と eat() だけ使えます。動物のDNAや突然変異メソッドは外部に公開する必要がありません。",
-      child: "Dog クラスは sound を上書きして「ワン」にしたり、makeSound() を呼んで鳴き声を出せます。dna と mutate() は Dog でも触れません。",
-      self:  "Animal クラス内ではすべてのメンバーにアクセスできます。dna を private にすることで生物学的な整合性を保てます。"
-    }
-  }
+const G = {
+  chapter: 0,
+  phase: 'story',    // story | game | epilogue
+  line: 0,
+  score: 0,
+  chScores: [0,0,0,0],
+};
+
+const CHAPTERS = [
+  { name:'第1章', sub:'城の警備システム' },
+  { name:'第2章', sub:'生き物の分類図鑑' },
+  { name:'第3章', sub:'絆と契約の違い' },
+  { name:'第4章', sub:'共有の秘密' },
 ];
 
-let rIdx = 0, score = 0;
-let selectedVisitor = null;
-let answered = false;
-let selections = {};
+// ═══════════════════════════════════════════
+// STORY DATA
+// ═══════════════════════════════════════════
+const stories = {
+  0: [
+    { npc:'👴 村長', text:'よく来てくれた、新米プログラマーよ。この村はオブジェクト指向の力で動いている。まずは最初の試練だ。' },
+    { npc:'👴 村長', text:'城のデータが外部から書き換えられるという事件が起きた。原因は<strong>アクセス修飾子</strong>の設定ミスだ。' },
+    { npc:'👴 村長', text:'クラスのメンバーには「誰がアクセスできるか」を設定できる。<br><br><span style="color:var(--tok)"><strong>＋ public</strong></span>：誰でもアクセス可<br><span style="color:var(--tng)"><strong>− private</strong></span>：クラス自身のみ<br><span style="color:var(--tpr)"><strong># protected</strong></span>：自クラスと子クラスのみ' },
+    { npc:'🛡️ 衛兵', text:'Castle クラスのメンバーに適切なアクセス修飾子を設定してください。secretKey と pin は絶対に外部に漏れてはいけません！' },
+  ],
+  '0e': [
+    { npc:'🛡️ 衛兵', text:'見事だ！secretKey と pin が private で守られ、侵入者をブロックできた。' },
+    { npc:'👴 村長', text:'これが private の力だ。クラスの外からは見えない「鍵のかかった金庫」のようなものだ。' },
+  ],
+  1: [
+    { npc:'👴 村長', text:'次の試練だ。村の博士が生き物の分類図鑑を作っているが、整理ができていない。' },
+    { npc:'🔬 博士', text:'<strong>継承</strong>とは「is-a（〜は〜の一種）」の関係だ。犬は動物の一種、という関係を使ってクラスを整理する。' },
+    { npc:'🔬 博士', text:'下の生き物カードを正しい親クラスの下に配置してくれ。Animal → Mammal → Dog のような木を作るんだ。' },
+  ],
+  '1e': [
+    { npc:'🔬 博士', text:'完璧だ！継承ツリーが完成した。Dog は Animal のすべての性質を引き継ぐ。これが「再利用」の本質だ。' },
+    { npc:'👴 村長', text:'is-a 関係を意識することが設計の第一歩だ。Dog is an Animal — この文が成り立つなら継承が使える。' },
+  ],
+  2: [
+    { npc:'👴 村長', text:'三つ目の試練。村では人と組織のつながり方に二種類ある。「強い絆」と「緩い契約」だ。' },
+    { npc:'💫 賢者', text:'<strong>合成（Composition）</strong>は心臓と人間のような関係。人間が消えると心臓も消える。<strong>強いhas-a</strong>だ。' },
+    { npc:'💫 賢者', text:'<strong>集約（Aggregation）</strong>は大学と学生のような関係。大学が閉校しても学生は生き続ける。<strong>弱いhas-a</strong>だ。' },
+    { npc:'💫 賢者', text:'まずは「消したら何が起きるか」を自分の目で確かめてくれ。その後、いくつかの関係を分類してほしい。' },
+  ],
+  '2e': [
+    { npc:'💫 賢者', text:'そうだ。合成では所有者が消えると子も消える。集約では子は独立して生き続ける。' },
+    { npc:'👴 村長', text:'設計の際は「この関係は生死を共にするか？」と問いかけてみなさい。' },
+  ],
+  3: [
+    { npc:'👴 村長', text:'最後の試練だ。村の騎士団に不思議な現象が起きている。一人の行動が全員に影響するというのだ。' },
+    { npc:'⚔️ 騎士長', text:'騎士団のギルドランクが変わると、全員のランクが同時に変わる。しかし HP はそれぞれ別だ。' },
+    { npc:'⚔️ 騎士長', text:'これが <strong>static</strong> の力だ。static なフィールドはクラス自体に属し、すべてのインスタンスで共有される。' },
+    { npc:'⚔️ 騎士長', text:'実際に操作して、static とインスタンスフィールドの違いを体感してくれ。' },
+  ],
+  '3e': [
+    { npc:'⚔️ 騎士長', text:'理解できたな。guild は static だから全員共有。HP はインスタンスごとに独立している。' },
+    { npc:'👴 村長', text:'これですべての試練が終わった。オブジェクト指向の四つの柱を体で学んだことだろう。' },
+  ],
+};
 
-function renderRound() {
-  answered = false;
-  selectedVisitor = null;
-  selections = {};
-  document.getElementById('prog').style.width = ((rIdx / rounds.length) * 100) + '%';
-  document.getElementById('q-num').textContent = rIdx + 1;
-  document.getElementById('q-total').textContent = rounds.length;
-
-  const r = rounds[rIdx];
-  document.getElementById('game').innerHTML = buildRoundHTML(r);
+// ═══════════════════════════════════════════
+// RENDER HELPERS
+// ═══════════════════════════════════════════
+function updateNav() {
+  const nav = document.getElementById('ch-nav');
+  nav.innerHTML = CHAPTERS.map((c,i) => {
+    const cls = i < G.chapter ? 'done' : i === G.chapter ? 'active' : '';
+    return `<div class="ch-dot ${cls}">${c.name}</div>`;
+  }).join('');
+  const total = CHAPTERS.length * 2;
+  const done = G.chapter * 2 + (G.phase === 'epilogue' ? 1.5 : G.phase === 'game' ? 1 : 0);
+  document.getElementById('prog').style.width = Math.min(100, done/total*100) + '%';
 }
 
-function buildRoundHTML(r) {
-  const memberRows = r.members.map((m, i) => `
-    <div class="member" id="m${i}" onclick="toggleMember(${i})">
-      <span class="mod mod-${m.mod}">${m.mod === 'pub' ? '+' : m.mod === 'pri' ? '−' : '#'}</span>
-      <span class="member-name">${m.name}</span>
-      <span class="member-check" id="mc${i}"></span>
+function storyHTML(lines, lineIdx, onNext, isEpilogue=false) {
+  const l = lines[lineIdx];
+  const isLast = lineIdx >= lines.length - 1;
+  return `
+    <div class="ch-title">${CHAPTERS[G.chapter].name}${isEpilogue?' — まとめ':''}</div>
+    <div class="ch-heading">${CHAPTERS[G.chapter].sub}</div>
+    <div class="story-panel">
+      <div class="npc">
+        <div class="npc-avatar">${l.npc.split(' ')[0]}</div>
+        <div class="npc-info">
+          <div class="npc-name">${l.npc.split(' ').slice(1).join(' ')}</div>
+          <div class="bubble">${l.text}</div>
+        </div>
+      </div>
+      <div class="story-actions">
+        ${lineIdx < lines.length - 1
+          ? `<button class="btn btn-p" onclick="${onNext}">次へ →</button>`
+          : `<button class="btn btn-p" onclick="${onNext}">${isEpilogue ? (G.chapter < CHAPTERS.length-1 ? '次の章へ →' : '完了 →') : 'ゲームスタート →'}</button>`
+        }
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════
+function render() {
+  updateNav();
+  const scr = document.getElementById('screen');
+  if (G.phase === 'story') {
+    const lines = stories[G.chapter];
+    scr.innerHTML = storyHTML(lines, G.line, 'advStory()');
+  } else if (G.phase === 'game') {
+    scr.innerHTML = renderGame(G.chapter);
+  } else if (G.phase === 'epilogue') {
+    const lines = stories[G.chapter + 'e'];
+    scr.innerHTML = storyHTML(lines, G.line, 'advEpilogue()', true);
+  } else {
+    scr.innerHTML = renderComplete();
+  }
+}
+
+function advStory() {
+  const lines = stories[G.chapter];
+  if (G.line < lines.length - 1) { G.line++; render(); }
+  else { G.phase = 'game'; G.line = 0; render(); }
+}
+function advEpilogue() {
+  const lines = stories[G.chapter + 'e'];
+  if (G.line < lines.length - 1) { G.line++; render(); }
+  else {
+    G.chapter++;
+    G.line = 0;
+    if (G.chapter >= CHAPTERS.length) { G.phase = 'complete'; }
+    else { G.phase = 'story'; }
+    render();
+  }
+}
+function finishGame(pts) {
+  G.score += pts;
+  G.chScores[G.chapter] = pts;
+  G.phase = 'epilogue';
+  G.line = 0;
+  render();
+}
+
+// ═══════════════════════════════════════════
+// GAME 1 — アクセス修飾子
+// ═══════════════════════════════════════════
+const g1members = [
+  { name:'name: String',    hint:'城の名前。外部から読めてOK',        correct:'pub' },
+  { name:'secretKey: int',  hint:'秘密の鍵。絶対に外に漏れてはダメ',  correct:'pri' },
+  { name:'pin: int',        hint:'暗証番号。絶対に外部NG',            correct:'pri' },
+  { name:'treasury: int',   hint:'宝物庫。子クラスは使えてOK',        correct:'pro' },
+  { name:'getStatus(): void', hint:'状態取得。誰でも呼べてOK',        correct:'pub' },
+];
+let g1sel = ['pub','pub','pub','pub','pub'];
+let g1attacked = false;
+
+function renderGame(ch) {
+  if (ch===0) return renderG1();
+  if (ch===1) return renderG2();
+  if (ch===2) return renderG2_3();
+  if (ch===3) return renderG4();
+}
+
+function renderG1() {
+  const rows = g1members.map((m,i)=>`
+    <div class="m-row" id="mr${i}">
+      <span class="m-name" style="font-family:var(--m);font-size:13px">${m.name}</span>
+      <div class="m-mod-btn">
+        <span class="mod-opt mod-pub ${g1sel[i]==='pub'?'sel':''}" onclick="g1set(${i},'pub')">+ pub</span>
+        <span class="mod-opt mod-pri ${g1sel[i]==='pri'?'sel':''}" onclick="g1set(${i},'pri')">− pri</span>
+        <span class="mod-opt mod-pro ${g1sel[i]==='pro'?'sel':''}" onclick="g1set(${i},'pro')"># pro</span>
+      </div>
+    </div>`).join('');
+  return `
+    <div class="ch-title">${CHAPTERS[0].name}</div>
+    <div class="ch-heading">${CHAPTERS[0].sub}</div>
+    <p style="font-size:14px;color:var(--ts);margin-bottom:1rem">各メンバーに適切なアクセス修飾子を設定してください。ヒントを参考に。</p>
+    <div class="castle-class">
+      <div class="cls-head">Castle</div>
+      <div class="cls-sec">${rows}</div>
     </div>
-  `).join('');
-
-  const fields = r.members.filter(m => !m.name.includes('('));
-  const methods = r.members.filter(m => m.name.includes('('));
-
-  const fieldRows = fields.map((m, i) => {
-    const gi = r.members.indexOf(m);
-    return `<div class="member" id="m${gi}" onclick="toggleMember(${gi})">
-      <span class="mod mod-${m.mod}">${m.mod === 'pub' ? '+' : m.mod === 'pri' ? '−' : '#'}</span>
-      <span class="member-name">${m.name}</span>
-      <span class="member-check" id="mc${gi}"></span>
+    <div style="background:var(--ac);border:1px solid var(--bac);border-radius:var(--r);padding:.75rem 1rem;font-size:13px;color:var(--tac);margin-bottom:1rem;line-height:1.7">
+      ${g1members.map((m,i)=>`<div>・${m.name} — ${m.hint}</div>`).join('')}
+    </div>
+    <div class="fb" id="g1fb"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p" onclick="g1check()">侵入者テスト実行 🏹</button>
     </div>`;
+}
+
+function g1set(i, mod) {
+  g1sel[i] = mod;
+  document.getElementById('screen').innerHTML = renderG1();
+}
+
+function g1check() {
+  let correct = g1sel.filter((s,i)=>s===g1members[i].correct).length;
+  const allRight = correct === g1members.length;
+  const pts = allRight ? 25 : Math.max(5, correct * 5);
+
+  let html = `<div class="attack-result" style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:1rem">
+    <p style="font-size:13px;font-weight:500;margin-bottom:.5rem;color:var(--ts)">🏹 外部からの侵入テスト結果</p>`;
+  g1members.forEach((m,i)=>{
+    const canAccess = g1sel[i]==='pub';
+    const isSecret = m.correct==='pri';
+    const icon = canAccess ? (isSecret ? '❌ 侵入成功！' : '✅ アクセス可') : '🔒 ブロック';
+    html += `<div class="attack-item"><span style="font-family:var(--m);font-size:12px;flex:1">${m.name}</span><span class="${canAccess&&isSecret?'atk-ng':'atk-ok'}">${icon}</span></div>`;
+  });
+  html += '</div>';
+
+  const resultInfo = g1members.map((m,i)=>{
+    const wrong = g1sel[i]!==m.correct;
+    return wrong ? `<span style="color:var(--tng)">✗ ${m.name} → 正解: ${m.correct}</span>` : `<span style="color:var(--tok)">✓ ${m.name}</span>`;
+  }).join('<br>');
+
+  const fb = document.createElement('div');
+  fb.innerHTML = html + `<div class="fb ${allRight?'ok':'ng'} show">${allRight?'✓ 完璧！':'✗ 不正解あり。'} ${correct}/${g1members.length} 正解<br>${resultInfo}</div><button class="btn btn-p" style="margin-top:.75rem" onclick="finishGame(${pts})">次へ →</button>`;
+  document.querySelector('.wrap').appendChild(fb);
+  document.getElementById('g1fb').parentNode.replaceChild(fb, document.getElementById('g1fb').parentNode.lastChild);
+  document.querySelector('[onclick="g1check()"]').disabled = true;
+  document.getElementById('screen').appendChild(fb);
+}
+
+// ═══════════════════════════════════════════
+// GAME 2 — 継承ツリー
+// ═══════════════════════════════════════════
+// Tree: Animal -> [Mammal, Bird] -> Mammal:[Dog,Cat] Bird:[Eagle,Hawk]
+const g2tree = [
+  { id:'animal', label:'Animal', parent:null, level:0, pos:0 },
+  { id:'mammal', label:'Mammal', parent:'animal', level:1, pos:0 },
+  { id:'bird',   label:'Bird',   parent:'animal', level:1, pos:1 },
+  { id:'dog',    label:'Dog',    parent:'mammal', level:2, pos:0 },
+  { id:'cat',    label:'Cat',    parent:'mammal', level:2, pos:1 },
+  { id:'eagle',  label:'Eagle',  parent:'bird',   level:2, pos:2 },
+  { id:'hawk',   label:'Hawk',   parent:'bird',   level:2, pos:3 },
+];
+const g2cards = ['Mammal','Bird','Dog','Cat','Eagle','Hawk'];
+let g2placed = {}; // slotId -> label
+let g2selected = null;
+let g2done = false;
+
+function renderG2() {
+  const slots = g2tree.filter(n=>n.id!=='animal');
+  const slotHTML = (id) => {
+    const placed = g2placed[id];
+    const cls = placed ? '' : 'empty';
+    const hl = g2selected && !placed ? 'highlight' : '';
+    return `<div class="tree-node ${cls} ${hl}" id="slot-${id}" onclick="g2place('${id}')">${placed || '?'}</div>`;
+  };
+
+  const cardsHTML = g2cards.map(c=>{
+    const pl = Object.values(g2placed).includes(c);
+    return `<div class="class-card ${pl?'placed':''} ${g2selected===c?'selected':''}" onclick="g2select('${c}')">${c}</div>`;
   }).join('');
 
-  const methodRows = methods.map((m) => {
-    const gi = r.members.indexOf(m);
-    return `<div class="member" id="m${gi}" onclick="toggleMember(${gi})">
-      <span class="mod mod-${m.mod}">${m.mod === 'pub' ? '+' : m.mod === 'pri' ? '−' : '#'}</span>
-      <span class="member-name">${m.name}</span>
-      <span class="member-check" id="mc${gi}"></span>
-    </div>`;
-  }).join('');
-
-  const visitorBtns = r.visitors.map(v => `
-    <button class="visitor-btn" id="vb-${v.key}" onclick="selectVisitor('${v.key}')">
-      <div class="visitor-icon ${v.cls}">${v.icon}</div>
-      ${v.label}
-    </button>
-  `).join('');
+  const fbHTML = g2done ? `<div class="fb show" id="g2fb" style="background:var(--ok);color:var(--tok);border:1px solid var(--bok)">✓ 正解！継承ツリー完成。</div>
+    <button class="btn btn-p" onclick="finishGame(25)">次へ →</button>` : `<div class="fb" id="g2fb"></div>
+    <button class="btn btn-p" onclick="g2check()" id="g2btn">確認する</button>`;
 
   return `
-    <div class="visitor-section">
-      <div class="vs-label">① 訪問者を選んでください</div>
-      <div class="visitors">${visitorBtns}</div>
-    </div>
-
-    <div class="hint" id="hint">← 訪問者を選ぶとメンバーを選択できます</div>
-
-    <div class="arena">
-      <div class="class-box">
-        <div class="cls-head">${r.cls}</div>
-        <div class="cls-section">${fieldRows}</div>
-        <div class="cls-section">${methodRows}</div>
-      </div>
-      <div class="arrow-col">
-        <svg class="arrow-svg" width="40" height="50" viewBox="0 0 40 50">
-          <line x1="20" y1="2" x2="20" y2="38" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3"/>
-          <polygon points="12,32 20,48 28,32" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        <span style="font-size:10px;color:var(--text-muted);text-align:center">継承</span>
-      </div>
-      <div class="class-box child-box">
-        <div class="cls-head">${r.child}</div>
-        <div class="cls-section">
-          <div class="child-code">${r.childCode}</div>
+    <div class="ch-title">${CHAPTERS[1].name}</div>
+    <div class="ch-heading">${CHAPTERS[1].sub}</div>
+    <p style="font-size:14px;color:var(--ts);margin-bottom:.75rem">カードを選んでスロット（?）に配置してください。is-a 関係を考えて。</p>
+    <div class="cards-area">${cardsHTML}</div>
+    <div class="tree-area">
+      <div class="tree-root">
+        <div class="tree-node" style="cursor:default">Animal</div>
+        <div class="tree-connector"></div>
+        <div class="tree-level" style="gap:32px">
+          ${slotHTML('mammal')}
+          ${slotHTML('bird')}
+        </div>
+        <div style="display:flex;gap:32px;margin-top:0">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="tree-connector"></div>
+            <div style="display:flex;gap:12px">
+              ${slotHTML('dog')}
+              ${slotHTML('cat')}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="tree-connector"></div>
+            <div style="display:flex;gap:12px">
+              ${slotHTML('eagle')}
+              ${slotHTML('hawk')}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="result-panel" id="result"></div>
-
-    <div class="actions">
-      <button class="btn btn-primary" onclick="checkAnswer()" id="check-btn" disabled>② アクセスできるメンバーをすべて選んで確認</button>
-    </div>
-  `;
+    ${fbHTML}`;
 }
 
-function selectVisitor(key) {
-  if (answered) return;
-  selectedVisitor = key;
-  selections = {};
-  document.querySelectorAll('.visitor-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('vb-' + key).classList.add('active');
-  document.querySelectorAll('.member').forEach(m => { m.classList.remove('selected', 'correct', 'wrong'); });
-  document.querySelectorAll('.member-check').forEach(c => { c.innerHTML = ''; });
-  document.getElementById('hint').textContent = 'アクセスできると思うメンバーをすべてクリックしてください（複数選択可）';
-  document.getElementById('check-btn').disabled = false;
-  document.getElementById('check-btn').textContent = '② アクセスできるメンバーをすべて選んで確認';
-  const result = document.getElementById('result');
-  result.className = 'result-panel';
+function g2select(label) {
+  if (g2done) return;
+  g2selected = g2selected === label ? null : label;
+  document.getElementById('screen').innerHTML = renderG2();
+}
+function g2place(slotId) {
+  if (!g2selected || g2done) return;
+  g2placed[slotId] = g2selected;
+  g2selected = null;
+  document.getElementById('screen').innerHTML = renderG2();
 }
 
-function toggleMember(i) {
-  if (!selectedVisitor || answered) return;
-  const el = document.getElementById('m' + i);
-  if (selections[i]) {
-    delete selections[i];
-    el.classList.remove('selected');
-  } else {
-    selections[i] = true;
-    el.classList.add('selected');
-  }
+const g2correct = {mammal:'Mammal',bird:'Bird',dog:'Dog',cat:'Cat',eagle:'Eagle',hawk:'Hawk'};
+function g2check() {
+  let ok = true;
+  Object.keys(g2correct).forEach(k=>{ if(g2placed[k]!==g2correct[k]) ok=false; });
+  if (ok) { g2done=true; document.getElementById('screen').innerHTML=renderG2(); return; }
+  const fb = document.getElementById('g2fb');
+  fb.className='fb ng show';
+  const wrongs = Object.keys(g2correct).filter(k=>g2placed[k]&&g2placed[k]!==g2correct[k]).map(k=>`${g2placed[k]}→${k}は違う`);
+  fb.textContent = '✗ ' + (wrongs.length ? wrongs.join('、') : '全スロットを埋めてください');
 }
 
-function checkAnswer() {
-  if (!selectedVisitor) return;
-  const r = rounds[rIdx];
-  const visitor = r.visitors.find(v => v.key === selectedVisitor);
-  answered = true;
+// ═══════════════════════════════════════════
+// GAME 3 — 合成 vs 集約
+// ═══════════════════════════════════════════
+let g3humanDead=false, g3uniDead=false, g3quiz=[null,null,null], g3phase='explore';
+const g3questions=[
+  {q:'Car（車）とEngine（エンジン）の関係は？\n車が廃棄されるとエンジンも廃棄される。',a:'comp'},
+  {q:'Team（チーム）とPlayer（選手）の関係は？\nチームが解散しても選手は別のチームに移れる。',a:'agg'},
+  {q:'Order（注文）とOrderItem（注文明細）の関係は？\n注文が削除されると明細も削除される。',a:'comp'},
+];
 
-  let correct = true;
-  r.members.forEach((m, i) => {
-    const shouldAccess = visitor.canAccess(m);
-    const didSelect = !!selections[i];
-    const el = document.getElementById('m' + i);
-    const mc = document.getElementById('mc' + i);
-    el.classList.remove('selected');
-    if (shouldAccess === didSelect) {
-      el.classList.add('correct');
-      mc.innerHTML = shouldAccess ? '<span style="color:var(--text-success)">✓</span>' : '<span style="color:var(--text-muted)">−</span>';
-    } else {
-      el.classList.add('wrong');
-      mc.innerHTML = '<span style="color:var(--text-danger)">✗</span>';
-      correct = false;
-    }
-  });
+function renderG2_3() {
+  const heartCls = g3humanDead ? 'dead' : '';
+  const studentCls = g3uniDead ? '' : '';
+  const uniCls = g3uniDead ? 'dead' : '';
 
-  const gained = correct ? 20 : 5;
-  score += gained;
-  document.getElementById('score').textContent = score;
-
-  const result = document.getElementById('result');
-  result.className = 'result-panel show ' + (correct ? 'ok' : 'ng');
-
-  const correctMembers = r.members.filter(m => visitor.canAccess(m)).map(m => m.name);
-  const explain = r.explain[selectedVisitor];
-  result.innerHTML = (correct ? '✓ 正解！ ' : '✗ 不正解。') + explain
-    + `<br><br><strong>アクセスできるメンバー:</strong> ${correctMembers.join('、')}`;
-
-  const btn = document.getElementById('check-btn');
-  btn.textContent = rIdx < rounds.length - 1 ? '次のクラスへ →' : '結果を見る →';
-  btn.onclick = nextRound;
-  btn.disabled = false;
-}
-
-function nextRound() {
-  rIdx++;
-  if (rIdx >= rounds.length) {
-    showComplete();
-    return;
-  }
-  renderRound();
-}
-
-function showComplete() {
-  document.getElementById('prog').style.width = '100%';
-  const pct = Math.round(score / (rounds.length * 20) * 100);
-  const msg = pct >= 80
-    ? 'アクセス制御の概念をしっかり理解できています！'
-    : pct >= 50
-    ? 'もう少し！ public/private/protected の違いを確認してみましょう。'
-    : '緑の解説をもう一度読み返してみましょう。概念がつかめてきます。';
-  document.getElementById('game').innerHTML = `
-    <div class="complete">
-      <h2>完了！</h2>
-      <div class="big-score">${score}<span style="font-size:20px;color:var(--text-muted)"> / ${rounds.length * 20}</span></div>
-      <p>${msg}</p>
-      <div style="background:var(--bg-accent);border:1px solid var(--border-accent);border-radius:12px;padding:1rem 1.25rem;text-align:left;font-size:14px;color:var(--text-accent);margin-bottom:1.5rem;line-height:1.8">
-        <strong>まとめ</strong><br>
-        <strong>+ public</strong> — 誰でもアクセス可。外部に公開するAPIはこれ<br>
-        <strong>− private</strong> — クラス自身のみ。データの保護・隠蔽に使う<br>
-        <strong># protected</strong> — 自分と子クラスのみ。継承を意識した設計に使う<br><br>
-        このルールがあることで「クラスの外から直接 hp を書き換えられない」ような安全な設計ができます。
+  const worldA = `
+    <div class="world-box">
+      <div class="world-title">合成（Composition）◆</div>
+      <div class="obj-container">
+        <div class="obj-block" id="human-block">🧑 Human</div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="diamond filled" style="margin:4px auto"></div>
+          <div class="compose-line solid" style="height:16px"></div>
+        </div>
+        <div class="obj-block ${heartCls}" id="heart-block">❤️ Heart</div>
       </div>
-      <button class="btn btn-primary" onclick="restartGame()">もう一度やる</button>
+      <div class="rel-label">Human が消えると Heart も消える</div>
+      ${!g3humanDead
+        ? `<button class="btn" style="font-size:13px;width:100%" onclick="g3killHuman()">Human を削除 🗑️</button>`
+        : `<div style="font-size:13px;color:var(--tng);font-weight:500">Heart も消えた！</div>`}
+    </div>`;
+
+  const worldB = `
+    <div class="world-box">
+      <div class="world-title">集約（Aggregation）◇</div>
+      <div class="obj-container">
+        <div class="obj-block ${uniCls}" id="uni-block">🏫 University</div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="diamond empty-d" style="margin:4px auto"></div>
+          <div class="compose-line dashed" style="height:16px"></div>
+        </div>
+        <div class="obj-block" id="student-block">🎓 Student</div>
+      </div>
+      <div class="rel-label">University が消えても Student は残る</div>
+      ${!g3uniDead
+        ? `<button class="btn" style="font-size:13px;width:100%" onclick="g3killUni()">University を閉校 🗑️</button>`
+        : `<div style="font-size:13px;color:var(--tok);font-weight:500">Student は生き続けた！</div>`}
+    </div>`;
+
+  const quizReady = g3humanDead && g3uniDead;
+  const allAnswered = g3quiz.every(q=>q!==null);
+
+  const quizHTML = quizReady ? g3questions.map((q,i)=>{
+    const ans = g3quiz[i];
+    const compCls = ans ? (ans==='comp'? (q.a==='comp'?'ok':'ng') : '') : '';
+    const aggCls  = ans ? (ans==='agg'?  (q.a==='agg'?'ok':'ng')  : '') : '';
+    return `<div class="world-quiz">
+      <div class="wq-q">${q.q.replace(/\n/g,'<br>')}</div>
+      <div class="wq-opts">
+        <div class="wq-opt ${compCls}" onclick="g3ans(${i},'comp')">◆ 合成</div>
+        <div class="wq-opt ${aggCls}"  onclick="g3ans(${i},'agg')">◇ 集約</div>
+      </div>
+    </div>`;
+  }).join('') : '';
+
+  const correctCount = g3quiz.filter((a,i)=>a===g3questions[i].a).length;
+  const pts = correctCount * 8 + (g3humanDead&&g3uniDead?1:0);
+
+  return `
+    <div class="ch-title">${CHAPTERS[2].name}</div>
+    <div class="ch-heading">${CHAPTERS[2].sub}</div>
+    <p style="font-size:14px;color:var(--ts);margin-bottom:.75rem">まず「削除ボタン」を押して違いを体験し、その後クイズに答えてください。</p>
+    <div class="worlds">${worldA}${worldB}</div>
+    ${quizHTML}
+    ${allAnswered ? `<div class="fb ok show">✓ ${correctCount}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${pts})">次へ →</button>` : ''}`;
+}
+
+function g3killHuman() {
+  g3humanDead=true;
+  document.getElementById('heart-block').classList.add('dead');
+  setTimeout(()=>{ document.getElementById('screen').innerHTML=renderG2_3(); },400);
+}
+function g3killUni() {
+  g3uniDead=true;
+  document.getElementById('uni-block').classList.add('dead');
+  setTimeout(()=>{ document.getElementById('screen').innerHTML=renderG2_3(); },400);
+}
+function g3ans(i, val) {
+  if(g3quiz[i]!==null) return;
+  g3quiz[i]=val;
+  document.getElementById('screen').innerHTML=renderG2_3();
+}
+
+// ═══════════════════════════════════════════
+// GAME 4 — static
+// ═══════════════════════════════════════════
+let g4guild=1, g4hp=[100,100,100], g4quiz=[null,null];
+const knights=[{name:'アルス',icon:'⚔️'},{name:'レイナ',icon:'🗡️'},{name:'ゴルド',icon:'🪓'}];
+const g4q=[
+  {q:'guild（ギルドランク）は static か？',a:'yes'},
+  {q:'hp（ヒットポイント）は static か？',a:'no'},
+];
+
+function renderG4() {
+  const kCards = knights.map((k,i)=>`
+    <div class="knight-card">
+      <div class="k-avatar">${k.icon}</div>
+      <div class="k-name">${k.name}</div>
+      <div class="k-field static-f"><span>guild</span><span class="k-val" id="g4g${i}">${g4guild}</span></div>
+      <div class="k-field inst-f"><span>hp</span><span class="k-val" id="g4h${i}">${g4hp[i]}</span></div>
+    </div>`).join('');
+
+  const allAns = g4quiz.every(q=>q!==null);
+  const correctCnt = g4quiz.filter((a,i)=>a===g4q[i].a).length;
+
+  const quizHTML = g4q.map((q,i)=>{
+    const ya=g4quiz[i]==='yes', na=g4quiz[i]==='no';
+    const yc=ya?(g4q[i].a==='yes'?'ok':'ng'):'';
+    const nc=na?(g4q[i].a==='no'?'ok':'ng'):'';
+    return `<div class="world-quiz">
+      <div class="wq-q">${q.q}</div>
+      <div class="wq-opts">
+        <div class="wq-opt ${yc}" onclick="g4ans(${i},'yes')">static だ</div>
+        <div class="wq-opt ${nc}" onclick="g4ans(${i},'no')">static ではない</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="ch-title">${CHAPTERS[3].name}</div>
+    <div class="ch-heading">${CHAPTERS[3].sub}</div>
+    <p style="font-size:14px;color:var(--ts);margin-bottom:.75rem">ボタンを操作して、static とインスタンスフィールドの違いを確かめてください。</p>
+    <div class="knights">${kCards}</div>
+    <div class="static-ctrl">
+      <div><span>static guild</span> を全員で共有</div>
+      <button class="btn btn-p" style="font-size:13px;padding:.4rem .9rem" onclick="g4upGuild()">ランクアップ ▲</button>
     </div>
-  `;
+    <div class="inst-ctrl">
+      <p>各騎士の <strong>hp</strong> を個別に変更</p>
+      <div class="inst-btns">
+        ${knights.map((k,i)=>`<button class="inst-btn" onclick="g4dmg(${i})">⚔️ ${k.name} に攻撃</button>`).join('')}
+      </div>
+    </div>
+    ${quizHTML}
+    ${allAnswered ? `<div class="fb ok show">✓ ${correctCnt}/2 正解！</div><button class="btn btn-p" onclick="finishGame(${correctCnt*10+5})">結果を見る →</button>` : ''}`;
+
+  function allAnswered(){ return g4quiz.every(q=>q!==null); }
 }
 
-function restartGame() {
-  rIdx = 0; score = 0;
-  document.getElementById('score').textContent = 0;
-  renderRound();
+function g4upGuild() {
+  g4guild++;
+  document.getElementById('screen').innerHTML=renderG4();
+}
+function g4dmg(i) {
+  g4hp[i]=Math.max(0,g4hp[i]-25);
+  document.getElementById('screen').innerHTML=renderG4();
+}
+function g4ans(i,val) {
+  if(g4quiz[i]!==null)return;
+  g4quiz[i]=val;
+  document.getElementById('screen').innerHTML=renderG4();
 }
 
-renderRound();
+// ═══════════════════════════════════════════
+// COMPLETE
+// ═══════════════════════════════════════════
+function renderComplete() {
+  updateNav();
+  document.getElementById('prog').style.width='100%';
+  const max=25+25+25+25;
+  const pct=Math.round(G.score/max*100);
+  const summaries=[
+    {title:'アクセス修飾子',body:'public / private / protected でアクセス範囲を制御する。データを隠すことで安全な設計になる。'},
+    {title:'継承',body:'is-a 関係を使ってクラスを整理する。子クラスは親の性質をすべて引き継ぐ。'},
+    {title:'合成 vs 集約',body:'合成は生死を共にする強いhas-a。集約は独立して存在できる弱いhas-a。'},
+    {title:'static',body:'static フィールドはクラス自体に属し全インスタンスで共有。インスタンスフィールドは各自が持つ。'},
+  ];
+  return `<div class="complete">
+    <h2>🎉 村の試練完了！</h2>
+    <div class="big-score">${G.score}<span style="font-size:22px;color:var(--tm)"> / ${max}</span></div>
+    <p style="color:var(--ts);margin-bottom:1.5rem">正解率 ${pct}% — ${pct>=80?'オブジェクト指向の基礎はバッチリだ！':pct>=50?'もう少し練習すれば完璧だ。':'もう一度チャレンジしてみよう。'}</p>
+    <div class="summary-grid">
+      ${summaries.map((s,i)=>`<div class="sum-card"><strong>${CHAPTERS[i].name}: ${s.title}</strong><p>${s.body}</p></div>`).join('')}
+    </div>
+    <button class="btn btn-p" onclick="restartAll()">最初からやり直す</button>
+  </div>`;
+}
+
+function restartAll() {
+  G.chapter=0;G.phase='story';G.line=0;G.score=0;G.chScores=[0,0,0,0];
+  g1sel=['pub','pub','pub','pub','pub'];g1attacked=false;
+  g2placed={};g2selected=null;g2done=false;
+  g3humanDead=false;g3uniDead=false;g3quiz=[null,null,null];
+  g4guild=1;g4hp=[100,100,100];g4quiz=[null,null];
+  render();
+}
+
+render();
 </script>
 </body>
 </html>
