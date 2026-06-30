@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OOP概念学習ゲーム</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -14,8 +13,8 @@
   --text-primary: #1a1a18;
   --text-secondary: #5f5e5a;
   --text-muted: #888780;
-  --border: rgba(0,0,0,0.12);
-  --border-strong: rgba(0,0,0,0.2);
+  --border: rgba(0,0,0,0.15);
+  --border-strong: rgba(0,0,0,0.22);
   --bg-accent: #e6f1fb;
   --text-accent: #185fa5;
   --border-accent: #85b7eb;
@@ -32,7 +31,7 @@
   --fill-accent: #378add;
   --radius: 8px;
   --font-sans: system-ui, -apple-system, sans-serif;
-  --font-mono: ui-monospace, monospace;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -42,8 +41,8 @@
     --text-primary: #f0ede6;
     --text-secondary: #a8a69f;
     --text-muted: #6e6c67;
-    --border: rgba(255,255,255,0.1);
-    --border-strong: rgba(255,255,255,0.18);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.2);
     --bg-accent: #042c53;
     --text-accent: #85b7eb;
     --border-accent: #185fa5;
@@ -71,32 +70,120 @@ body {
 }
 .container { width: 100%; max-width: 680px; }
 .score-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.score-card { background: var(--surface-1); border-radius: var(--radius); padding: 0.5rem 1rem; font-size: 13px; color: var(--text-secondary); border: 0.5px solid var(--border); }
+.score-card { background: var(--surface-1); border-radius: var(--radius); padding: 0.5rem 1rem; font-size: 13px; color: var(--text-secondary); border: 1px solid var(--border); }
 .score-card span { font-size: 18px; font-weight: 500; color: var(--text-primary); display: block; }
-.stage-badge { background: var(--bg-accent); color: var(--text-accent); font-size: 12px; padding: 4px 10px; border-radius: var(--radius); border: 0.5px solid var(--border-accent); }
-.stage-title { font-size: 20px; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-primary); }
-.progress { height: 4px; background: var(--surface-0); border-radius: 2px; margin-bottom: 1.25rem; border: 0.5px solid var(--border); }
+.stage-badge { background: var(--bg-accent); color: var(--text-accent); font-size: 12px; padding: 4px 10px; border-radius: var(--radius); border: 1px solid var(--border-accent); }
+.stage-title { font-size: 18px; font-weight: 500; margin-bottom: 1rem; color: var(--text-primary); line-height: 1.5; }
+.progress { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.25rem; }
 .progress-fill { height: 100%; background: var(--fill-accent); border-radius: 2px; transition: width 0.3s; }
-.diagram { font-family: var(--font-mono); font-size: 13px; background: var(--surface-0); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; border: 0.5px solid var(--border); line-height: 1.7; color: var(--text-primary); white-space: pre; overflow-x: auto; }
+
+/* UML diagram area */
+.diagram-area {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+/* UML class box */
+.uml-class {
+  border: 2px solid var(--text-secondary);
+  border-radius: 0;
+  min-width: 140px;
+  font-size: 13px;
+  background: var(--surface-2);
+  display: inline-block;
+}
+.uml-class .cls-name {
+  background: var(--surface-0);
+  border-bottom: 1.5px solid var(--text-secondary);
+  padding: 6px 12px;
+  font-weight: 500;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.uml-class .cls-name.abstract { font-style: italic; }
+.uml-class .cls-section {
+  border-bottom: 1.5px solid var(--text-secondary);
+  padding: 6px 12px;
+  min-height: 28px;
+}
+.uml-class .cls-section:last-child { border-bottom: none; }
+.uml-class .cls-row {
+  padding: 2px 0;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.uml-class .cls-row.static { text-decoration: underline; }
+.badge { font-size: 11px; font-weight: 500; padding: 1px 5px; border-radius: 3px; margin-right: 4px; }
+.badge-pub { color: var(--text-success); }
+.badge-pri { color: var(--text-danger); }
+.badge-pro { color: var(--text-pro); }
+
+/* SVG arrows */
+.uml-arrow { display: flex; align-items: center; }
+.uml-arrow svg { overflow: visible; }
+
+/* Scenario box */
+.scenario {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  width: 100%;
+}
+.scenario .sc-label { font-size: 11px; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 500; letter-spacing: 0.05em; }
+.scenario .sc-rel { margin-top: 0.75rem; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+
+/* Code box */
+.code-box {
+  background: var(--surface-0);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  width: 100%;
+}
+.kw { color: var(--text-accent); font-weight: 500; }
+.cm { color: var(--text-muted); }
+
+/* Options */
 .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.opt { background: var(--surface-2); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 0.75rem 1rem; cursor: pointer; font-size: 14px; color: var(--text-primary); text-align: left; transition: background 0.15s; font-family: var(--font-sans); }
+.opt { background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0.75rem 1rem; cursor: pointer; font-size: 14px; color: var(--text-primary); text-align: left; transition: background 0.15s; font-family: var(--font-sans); }
 .opt:hover { background: var(--surface-1); }
 .opt.correct { background: var(--bg-success); border-color: var(--border-success); color: var(--text-success); }
 .opt.wrong { background: var(--bg-danger); border-color: var(--border-danger); color: var(--text-danger); }
 .opt.disabled { pointer-events: none; }
 .feedback { border-radius: var(--radius); padding: 1rem; font-size: 14px; line-height: 1.6; margin: 1rem 0; display: none; }
 .feedback.show { display: block; }
-.feedback.ok { background: var(--bg-success); color: var(--text-success); border: 0.5px solid var(--border-success); }
-.feedback.ng { background: var(--bg-danger); color: var(--text-danger); border: 0.5px solid var(--border-danger); }
-.next-btn { border: 0.5px solid var(--border-strong); background: transparent; border-radius: var(--radius); padding: 0.6rem 1.25rem; font-size: 14px; cursor: pointer; color: var(--text-primary); font-family: var(--font-sans); }
+.feedback.ok { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
+.feedback.ng { background: var(--bg-danger); color: var(--text-danger); border: 1px solid var(--border-danger); }
+.next-btn { border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius); padding: 0.6rem 1.25rem; font-size: 14px; cursor: pointer; color: var(--text-primary); font-family: var(--font-sans); }
 .next-btn:hover { background: var(--surface-1); }
 .complete { text-align: center; padding: 2rem 1rem; }
 .complete h2 { font-size: 22px; font-weight: 500; margin-bottom: 0.75rem; }
 .complete p { color: var(--text-secondary); font-size: 14px; margin-bottom: 1.5rem; }
-.ref-box { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.5rem; }
+
+/* Reference sheet */
+.ref-box { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.5rem; }
 .ref-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.75rem; }
 .ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
-.ref-item { font-size: 12px; color: var(--text-secondary); padding: 0.5rem; background: var(--surface-2); border-radius: var(--radius); border: 0.5px solid var(--border); }
+.ref-item { font-size: 12px; color: var(--text-secondary); padding: 0.5rem; background: var(--surface-2); border-radius: var(--radius); border: 1px solid var(--border); }
 .ref-item strong { color: var(--text-primary); display: block; font-size: 13px; margin-bottom: 2px; }
 .tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
 .tag-pub { background: var(--bg-success); color: var(--text-success); }
@@ -113,89 +200,234 @@ body {
     <div id="stage-badge" class="stage-badge">ステージ 1</div>
   </div>
   <div class="progress"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-
   <div id="game-area"></div>
 
   <div class="ref-box">
     <div class="ref-title">チートシート</div>
     <div class="ref-grid">
-      <div class="ref-item"><strong>継承 (Inheritance)</strong>「is-a」関係。子が親の特性を引き継ぐ。矢印: ───▷</div>
-      <div class="ref-item"><strong>合成 (Composition)</strong>「has-a (強)」関係。親が消えると子も消える。ひし形: ◆───</div>
-      <div class="ref-item"><strong>集約 (Aggregation)</strong>「has-a (弱)」関係。独立して存在できる。ひし形: ◇───</div>
-      <div class="ref-item"><strong>依存 (Dependency)</strong>「uses-a」関係。一時的な使用。矢印: ─ ─▷</div>
+      <div class="ref-item"><strong>継承 (Inheritance)</strong>「is-a」関係。子が親の特性を引き継ぐ。空白三角矢印</div>
+      <div class="ref-item"><strong>合成 (Composition)</strong>「has-a (強)」関係。親が消えると子も消える。塗りつぶしひし形</div>
+      <div class="ref-item"><strong>集約 (Aggregation)</strong>「has-a (弱)」関係。独立して存在できる。空白ひし形</div>
+      <div class="ref-item"><strong>依存 (Dependency)</strong>「uses-a」関係。一時的な使用。破線矢印</div>
       <div class="ref-item"><strong><span class="tag tag-pub">+</span> public</strong>どこからでもアクセス可</div>
-      <div class="ref-item"><strong><span class="tag tag-pri">-</span> private</strong>クラス内のみアクセス可</div>
+      <div class="ref-item"><strong><span class="tag tag-pri">−</span> private</strong>クラス内のみアクセス可</div>
       <div class="ref-item"><strong><span class="tag tag-pro">#</span> protected</strong>自クラスと子クラスのみ</div>
-      <div class="ref-item"><strong><span class="tag tag-sta">_</span> static</strong>インスタンスではなくクラスに属する</div>
+      <div class="ref-item"><strong><span class="tag tag-sta">__</span> static</strong>下線 = インスタンスではなくクラスに属する</div>
     </div>
   </div>
 </div>
 
 <script>
+const diagrams = {
+  q1: `
+    <div class="uml-class">
+      <div class="cls-name">Person</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pri">−</span>name: String</div>
+        <div class="cls-row"><span class="badge badge-pub">+</span>age: int</div>
+        <div class="cls-row"><span class="badge badge-pro">#</span>id: String</div>
+      </div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>getName(): String</div>
+      </div>
+    </div>`,
+
+  q2: `
+    <div class="uml-class">
+      <div class="cls-name">Person</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pri">−</span>name: String</div>
+        <div class="cls-row"><span class="badge badge-pro">#</span>age: int</div>
+        <div class="cls-row"><span class="badge badge-pub">+</span>email: String</div>
+      </div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>greet(): void</div>
+      </div>
+    </div>
+    <div class="uml-arrow">
+      <svg width="80" height="60" viewBox="0 0 80 60">
+        <line x1="10" y1="30" x2="68" y2="30" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="68,24 80,30 68,36" fill="var(--surface-1)" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="uml-class">
+      <div class="cls-name">Student</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pri">−</span>studentId: String</div>
+      </div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>getGrade(): String</div>
+      </div>
+    </div>`,
+
+  q3: `
+    <div class="uml-class">
+      <div class="cls-name">Animal</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>sound(): void</div>
+      </div>
+    </div>
+    <div class="uml-arrow">
+      <svg width="80" height="60" viewBox="0 0 80 60">
+        <line x1="10" y1="30" x2="68" y2="30" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="68,24 80,30 68,36" fill="var(--surface-1)" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="uml-class">
+      <div class="cls-name">Dog</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>bark(): void</div>
+      </div>
+    </div>`,
+
+  q4: `
+    <div class="scenario">
+      <div class="sc-label">シナリオ</div>
+      人間は心臓を持つ。<br>
+      心臓は人間の体内に属し、<br>
+      人間が死ぬと心臓も機能しなくなる。
+      <div class="sc-rel">
+        <span>Human</span>
+        <svg width="60" height="20" viewBox="0 0 60 20">
+          <line x1="16" y1="10" x2="58" y2="10" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="0,10 12,4 8,10 12,16" fill="currentColor"/>
+        </svg>
+        <span>Heart</span>
+      </div>
+    </div>`,
+
+  q5: `
+    <div class="scenario">
+      <div class="sc-label">シナリオ</div>
+      大学は学生を持つ。<br>
+      ただし、大学が閉校になっても<br>
+      学生は他の大学に転入できる。
+      <div class="sc-rel">
+        <span>University</span>
+        <svg width="60" height="20" viewBox="0 0 60 20">
+          <line x1="16" y1="10" x2="58" y2="10" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="0,10 8,4 16,10 8,16" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>Student</span>
+      </div>
+    </div>`,
+
+  q6: `
+    <div class="uml-class">
+      <div class="cls-name">Car</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pri">−</span>model: String</div>
+        <div class="cls-row"><span class="badge badge-pri">−</span>speed: int</div>
+        <div class="cls-row static"><span class="badge badge-pub">+</span>count: int</div>
+      </div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>accelerate(): void</div>
+        <div class="cls-row static"><span class="badge badge-pub">+</span>getCount(): int</div>
+      </div>
+    </div>`,
+
+  q7: `
+    <div class="uml-class">
+      <div class="cls-name">Car</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pri">−</span>model: String</div>
+      </div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>drive(): void</div>
+      </div>
+    </div>
+    <div class="uml-arrow">
+      <svg width="80" height="60" viewBox="0 0 80 60">
+        <line x1="22" y1="30" x2="70" y2="30" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="0,30 10,24 20,30 10,36" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="uml-class">
+      <div class="cls-name">Engine</div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pri">−</span>power: int</div>
+      </div>
+      <div class="cls-section">
+        <div class="cls-row"><span class="badge badge-pub">+</span>start(): void</div>
+      </div>
+    </div>`,
+
+  q8: `
+    <div class="code-box">
+<span class="kw">public class</span> Config {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public static final int</span> MAX = 100;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> String name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected void</span> reset() {}<br>
+}<br>
+<br>
+<span class="cm">// UMLでの表現はどれ？</span>
+    </div>`
+};
+
 const questions = [
   {
     stage: "アクセス修飾子",
-    q: "UMLクラス図で「- name: String」の「-」は何を意味しますか？",
-    diagram: `┌─────────────────┐\n│     Person      │\n├─────────────────┤\n│ - name: String  │\n│ + age: int      │\n│ # id: String    │\n├─────────────────┤\n│ + getName(): String │\n└─────────────────┘`,
+    q: "UMLクラス図で「−」記号は何を意味しますか？",
+    diagram: diagrams.q1,
     opts: ["private — クラス内のみアクセス可", "public — どこからでもアクセス可", "protected — 子クラスからもアクセス可", "static — クラスに属する"],
     ans: 0,
-    explain: "「-」は private を意味します。このフィールドは Person クラス内からしかアクセスできません。「+」は public、「#」は protected です。"
+    explain: "「−」は private を意味します。name フィールドは Person クラス内からしかアクセスできません。「+」は public、「#」は protected です。"
   },
   {
     stage: "アクセス修飾子",
-    q: "次のクラス図で、Studentクラスから直接アクセスできないメンバーはどれ？",
-    diagram: `┌─────────────────┐        ┌─────────────────┐\n│     Person      │        │     Student     │\n├─────────────────┤        ├─────────────────┤\n│ - name: String  │◁───────│ - studentId: String│\n│ # age: int      │        │ + getGrade(): String│\n│ + email: String │        └─────────────────┘\n├─────────────────┤\n│ + greet(): void │\n└─────────────────┘`,
+    q: "Student クラスから直接アクセスできないメンバーはどれ？",
+    diagram: diagrams.q2,
     opts: ["email: String", "name: String", "age: int", "greet(): void"],
     ans: 1,
-    explain: "private (「-」) な name は Student クラスからも直接アクセスできません。protected (「#」) な age は子クラスからアクセス可能。public (「+」) な email と greet() はどこからでもアクセスできます。"
+    explain: "private (−) な name は子クラス Student からも直接アクセスできません。protected (#) な age は子クラスからアクセス可能。public (+) な email と greet() はどこからでもアクセスできます。"
   },
   {
     stage: "継承",
-    q: "この矢印の関係（───▷）は何を表していますか？",
-    diagram: `┌──────────┐          ┌──────────┐\n│  Animal  │◁─────────│   Dog    │\n├──────────┤          ├──────────┤\n│+ sound() │          │+ bark()  │\n└──────────┘          └──────────┘\n\n  ───▷ = 継承（空の三角矢印）`,
-    opts: ["継承 — DogはAnimalの一種 (is-a)", "合成 — DogはAnimalを持つ (has-a)", "集約 — AnimalはDogを持つ", "依存 — DogはAnimalを使用"],
+    q: "この空白三角矢印の関係は何を表していますか？",
+    diagram: diagrams.q3,
+    opts: ["継承 — Dog は Animal の一種 (is-a)", "合成 — Dog は Animal を持つ (has-a)", "集約 — Animal は Dog を持つ", "依存 — Dog は Animal を一時的に使う"],
     ans: 0,
-    explain: "空の三角矢印 ───▷ は継承を表します。「Dog is-a Animal（犬は動物の一種）」という関係です。Dog は Animal のすべてのメンバーを引き継ぎます。"
+    explain: "空白三角矢印は継承を表します。「Dog is-a Animal（犬は動物の一種）」という関係です。Dog は Animal のすべてのメンバーを引き継ぎます。"
   },
   {
     stage: "合成と集約",
-    q: "心臓（Heart）と人間（Human）の関係に最も適切なUMLの関係はどれ？",
-    diagram: `シナリオ:\n人間は心臓を持つ。\n心臓は人間の体内に属し、\n人間が死ぬと心臓も機能しなくなる。\n\nHuman _____ Heart`,
-    opts: ["合成 ◆─── (Composition)", "集約 ◇─── (Aggregation)", "継承 ───▷ (Inheritance)", "依存 ─ ─▷ (Dependency)"],
+    q: "Human と Heart の関係に最も適切なUML記法はどれ？",
+    diagram: diagrams.q4,
+    opts: ["合成 (Composition) — 塗りつぶしひし形", "集約 (Aggregation) — 空白ひし形", "継承 (Inheritance) — 空白三角矢印", "依存 (Dependency) — 破線矢印"],
     ans: 0,
-    explain: "合成（Composition）が正解です。心臓は人間なしには存在できません。合成では親オブジェクトが消えると子オブジェクトも消える「強いhas-a」関係です。塗りつぶしひし形◆を使います。"
+    explain: "合成（Composition）が正解です。心臓は人間なしには存在できません。合成では親が消えると子も消える「強い has-a」関係で、塗りつぶしひし形◆を使います。"
   },
   {
     stage: "合成と集約",
-    q: "大学（University）と学生（Student）の関係はどちらですか？",
-    diagram: `シナリオ:\n大学は学生を持つ。\nただし、大学が閉校になっても\n学生は他の大学に転入できる。\n\nUniversity _____ Student`,
-    opts: ["集約 ◇─── (Aggregation)", "合成 ◆─── (Composition)", "継承 ───▷ (Inheritance)", "実現 ───▷ (Realization)"],
+    q: "University と Student の関係はどちらですか？",
+    diagram: diagrams.q5,
+    opts: ["集約 (Aggregation) — 空白ひし形", "合成 (Composition) — 塗りつぶしひし形", "継承 (Inheritance) — 空白三角矢印", "実現 (Realization) — 破線三角矢印"],
     ans: 0,
-    explain: "集約（Aggregation）が正解です。学生は大学なしでも存在できます（転入可能）。独立して存在できる「弱いhas-a」関係が集約です。空のひし形◇を使います。"
+    explain: "集約（Aggregation）が正解です。学生は大学なしでも存在できます（転入可能）。独立して存在できる「弱い has-a」関係が集約で、空白ひし形◇を使います。"
   },
   {
     stage: "static",
-    q: "UMLで下線が引かれたメンバー（例: count: int）は何を意味しますか？",
-    diagram: `┌────────────────────────┐\n│         Car            │\n├────────────────────────┤\n│ - model: String        │\n│ - speed: int           │\n│ + count: int  ← 下線   │\n├────────────────────────┤\n│ + accelerate(): void   │\n│ + getCount(): int ← 下線│\n└────────────────────────┘`,
-    opts: ["static — クラス自体に属し、全インスタンスで共有", "abstract — 実装を持たない抽象メンバー", "final — 変更不可のメンバー", "interface — インターフェースのメンバー"],
+    q: "下線が引かれたメンバー（count, getCount）は何を意味しますか？",
+    diagram: diagrams.q6,
+    opts: ["static — クラス自体に属し、全インスタンスで共有", "abstract — 実装を持たない抽象メンバー", "final — 変更不可のメンバー", "override — 親クラスのメソッドを上書き"],
     ans: 0,
-    explain: "UMLでは下線がついたメンバーは static（静的）を意味します。Car.count はすべての Car インスタンスで共有される値で、Car クラス自体に属します。インスタンスを作らなくてもアクセスできます。"
+    explain: "UMLでは下線がついたメンバーは static（静的）を意味します。Car.count はすべての Car インスタンスで共有される値で、インスタンスを生成しなくてもアクセスできます。"
   },
   {
     stage: "総合",
-    q: "このUML図で、Engine と Car の関係として正しいものはどれ？",
-    diagram: `┌──────────┐ ◆──── ┌──────────┐\n│   Car    │       │ Engine   │\n├──────────┤       ├──────────┤\n│- model   │       │- power   │\n│+ drive() │       │+ start() │\n└──────────┘       └──────────┘\n\n◆ = 塗りつぶしひし形（Carの側）`,
-    opts: ["合成 — CarはEngineを所有し、Carが消えればEngineも消える", "集約 — EngineはCarなしでも存在できる", "継承 — EngineはCarの一種", "依存 — CarはEngineを一時的に使う"],
+    q: "Car 側の塗りつぶしひし形 ◆ が示す関係はどれ？",
+    diagram: diagrams.q7,
+    opts: ["合成 — Car が Engine を所有し、Car が消えれば Engine も消える", "集約 — Engine は Car なしでも存在できる", "継承 — Engine は Car の一種", "依存 — Car は Engine を一時的に使う"],
     ans: 0,
-    explain: "塗りつぶしひし形 ◆ が Car 側にあるので、Car が Engine を合成（Composition）しています。Car が廃棄されると Engine も一緒に廃棄されます。これが合成の「所有権」の概念です。"
+    explain: "塗りつぶしひし形◆が Car 側にあるので、Car が Engine を合成（Composition）しています。Car が廃棄されると Engine も廃棄されます。これが合成の「所有権」の概念です。"
   },
   {
     stage: "総合",
-    q: "次のコードをUMLで表すとき、正しい記法はどれ？\npublic static final int MAX = 100;",
-    diagram: `Java コード:\npublic class Config {\n    public static final int MAX = 100;\n    private String name;\n    protected void reset() {}\n}\n\nUMLでの表現はどれ？`,
-    opts: ["+ MAX: int（下線あり＋プラス）", "+ MAX: int（下線なし）", "- MAX: int（マイナス）", "# MAX: int（ハッシュ）"],
+    q: "このコードの MAX フィールドをUMLで正しく表すとどれ？",
+    diagram: diagrams.q8,
+    opts: ["下線付き + MAX: int（public かつ static）", "+ MAX: int（下線なし）", "− MAX: int（private）", "# MAX: int（protected）"],
     ans: 0,
-    explain: "public は「+」、static は下線で表します。final はUMLでは特別な記号はなく、{readOnly} という制約で表すこともあります。よって 下線付きの + MAX: int が正解です。"
+    explain: "public は「+」、static は下線で表します。final はUMLでは {readOnly} という制約で表すこともあります。よって 下線付きの + MAX: int が正解です。"
   }
 ];
 
@@ -207,7 +439,7 @@ function updateMeta() {
   document.getElementById('total').textContent = current;
   document.getElementById('prog').style.width = (current / questions.length * 100) + '%';
   document.getElementById('stage-badge').textContent = current < questions.length
-    ? 'ステージ ' + (current + 1) + '/' + questions.length
+    ? 'ステージ ' + (current + 1) + ' / ' + questions.length
     : '完了！';
 }
 
@@ -218,8 +450,8 @@ function renderQuestion() {
   updateMeta();
   document.getElementById('game-area').innerHTML = `
     <div class="stage-badge" style="margin-bottom:0.75rem">${q.stage}</div>
-    <div class="stage-title">${q.q.replace(/\n/g,'<br>')}</div>
-    ${q.diagram ? `<div class="diagram">${q.diagram}</div>` : ''}
+    <div class="stage-title">${q.q}</div>
+    <div class="diagram-area">${q.diagram}</div>
     <div class="options" id="opts">
       ${q.opts.map((o,i) => `<button class="opt" onclick="choose(${i})">${o}</button>`).join('')}
     </div>
