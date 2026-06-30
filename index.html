@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OOP概念学習ゲーム</title>
+<title>OOP体験ゲーム — アクセス制御</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -13,11 +13,8 @@
   --text-primary: #1a1a18;
   --text-secondary: #5f5e5a;
   --text-muted: #888780;
-  --border: rgba(0,0,0,0.15);
+  --border: rgba(0,0,0,0.13);
   --border-strong: rgba(0,0,0,0.22);
-  --bg-accent: #e6f1fb;
-  --text-accent: #185fa5;
-  --border-accent: #85b7eb;
   --bg-success: #eaf3de;
   --text-success: #3b6d11;
   --border-success: #97c459;
@@ -26,480 +23,479 @@
   --border-danger: #f09595;
   --bg-warning: #faeeda;
   --text-warning: #854f0b;
+  --border-warning: #ef9f27;
+  --bg-accent: #e6f1fb;
+  --text-accent: #185fa5;
+  --border-accent: #85b7eb;
+  --fill-accent: #378add;
   --bg-pro: #eeedfe;
   --text-pro: #534ab7;
-  --fill-accent: #378add;
   --radius: 8px;
-  --font-sans: system-ui, -apple-system, sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  --font: system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --surface-0: #1c1c1a;
-    --surface-1: #252523;
-    --surface-2: #2e2e2b;
-    --text-primary: #f0ede6;
-    --text-secondary: #a8a69f;
-    --text-muted: #6e6c67;
-    --border: rgba(255,255,255,0.12);
-    --border-strong: rgba(255,255,255,0.2);
-    --bg-accent: #042c53;
-    --text-accent: #85b7eb;
-    --border-accent: #185fa5;
-    --bg-success: #173404;
-    --text-success: #c0dd97;
-    --border-success: #3b6d11;
-    --bg-danger: #501313;
-    --text-danger: #f09595;
-    --border-danger: #a32d2d;
-    --bg-warning: #412402;
-    --text-warning: #fac775;
-    --bg-pro: #26215c;
-    --text-pro: #afa9ec;
-    --fill-accent: #378add;
+    --surface-0: #1c1c1a; --surface-1: #252523; --surface-2: #2e2e2b;
+    --text-primary: #f0ede6; --text-secondary: #a8a69f; --text-muted: #6e6c67;
+    --border: rgba(255,255,255,0.11); --border-strong: rgba(255,255,255,0.2);
+    --bg-success: #173404; --text-success: #c0dd97; --border-success: #3b6d11;
+    --bg-danger: #501313; --text-danger: #f09595; --border-danger: #a32d2d;
+    --bg-warning: #412402; --text-warning: #fac775; --border-warning: #ba7517;
+    --bg-accent: #042c53; --text-accent: #85b7eb; --border-accent: #185fa5;
+    --bg-pro: #26215c; --text-pro: #afa9ec;
   }
 }
-body {
-  font-family: var(--font-sans);
-  background: var(--surface-0);
-  color: var(--text-primary);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 2rem 1rem;
-}
-.container { width: 100%; max-width: 680px; }
-.score-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.score-card { background: var(--surface-1); border-radius: var(--radius); padding: 0.5rem 1rem; font-size: 13px; color: var(--text-secondary); border: 1px solid var(--border); }
-.score-card span { font-size: 18px; font-weight: 500; color: var(--text-primary); display: block; }
-.stage-badge { background: var(--bg-accent); color: var(--text-accent); font-size: 12px; padding: 4px 10px; border-radius: var(--radius); border: 1px solid var(--border-accent); }
-.stage-title { font-size: 18px; font-weight: 500; margin-bottom: 1rem; color: var(--text-primary); line-height: 1.5; }
-.progress { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.25rem; }
-.progress-fill { height: 100%; background: var(--fill-accent); border-radius: 2px; transition: width 0.3s; }
+body { font-family: var(--font); background: var(--surface-0); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
+.wrap { width: 100%; max-width: 700px; }
 
-/* UML diagram area */
-.diagram-area {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem 1rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  flex-wrap: wrap;
-}
+/* header */
+.hdr { margin-bottom: 1.5rem; }
+.hdr h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+.hdr p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
-/* UML class box */
-.uml-class {
-  border: 2px solid var(--text-secondary);
-  border-radius: 0;
-  min-width: 140px;
-  font-size: 13px;
-  background: var(--surface-2);
-  display: inline-block;
-}
-.uml-class .cls-name {
-  background: var(--surface-0);
-  border-bottom: 1.5px solid var(--text-secondary);
-  padding: 6px 12px;
-  font-weight: 500;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-primary);
-}
-.uml-class .cls-name.abstract { font-style: italic; }
-.uml-class .cls-section {
-  border-bottom: 1.5px solid var(--text-secondary);
-  padding: 6px 12px;
-  min-height: 28px;
-}
-.uml-class .cls-section:last-child { border-bottom: none; }
-.uml-class .cls-row {
-  padding: 2px 0;
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  white-space: nowrap;
-}
-.uml-class .cls-row.static { text-decoration: underline; }
-.badge { font-size: 11px; font-weight: 500; padding: 1px 5px; border-radius: 3px; margin-right: 4px; }
-.badge-pub { color: var(--text-success); }
-.badge-pri { color: var(--text-danger); }
-.badge-pro { color: var(--text-pro); }
+/* concept card */
+.concept { background: var(--bg-accent); border: 1px solid var(--border-accent); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 14px; line-height: 1.7; color: var(--text-accent); }
+.concept strong { font-weight: 500; }
 
-/* SVG arrows */
-.uml-arrow { display: flex; align-items: center; }
-.uml-arrow svg { overflow: visible; }
-
-/* Scenario box */
-.scenario {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--text-primary);
-  width: 100%;
+/* visitor selector */
+.visitor-section { margin-bottom: 1.25rem; }
+.vs-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.visitors { display: flex; gap: 8px; flex-wrap: wrap; }
+.visitor-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.6rem 1rem; border-radius: var(--radius);
+  border: 2px solid var(--border-strong); background: var(--surface-2);
+  cursor: pointer; font-size: 14px; font-family: var(--font);
+  color: var(--text-primary); transition: all 0.15s;
 }
-.scenario .sc-label { font-size: 11px; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 500; letter-spacing: 0.05em; }
-.scenario .sc-rel { margin-top: 0.75rem; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.visitor-btn:hover { background: var(--surface-1); }
+.visitor-btn.active { border-color: var(--fill-accent); background: var(--bg-accent); color: var(--text-accent); }
+.visitor-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.vi-ext { background: #faeeda; }
+.vi-child { background: #eeedfe; }
+.vi-self { background: #eaf3de; }
 
-/* Code box */
-.code-box {
-  background: var(--surface-0);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--text-primary);
-  width: 100%;
+/* arena */
+.arena { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: start; margin-bottom: 1.25rem; }
+.class-box { border: 2px solid var(--text-secondary); border-radius: 0; background: var(--surface-2); }
+.cls-head { background: var(--surface-0); border-bottom: 1.5px solid var(--text-secondary); padding: 8px 14px; font-weight: 500; text-align: center; font-size: 15px; }
+.cls-section { border-bottom: 1.5px solid var(--text-secondary); padding: 4px 0; }
+.cls-section:last-child { border-bottom: none; }
+.member {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px; font-family: var(--mono); font-size: 13px;
+  cursor: pointer; border-left: 3px solid transparent;
+  transition: all 0.15s; user-select: none;
 }
-.kw { color: var(--text-accent); font-weight: 500; }
-.cm { color: var(--text-muted); }
+.member:hover { background: var(--surface-1); }
+.member.selected { background: var(--surface-1); border-left-color: var(--fill-accent); }
+.member.correct { background: var(--bg-success); border-left-color: var(--text-success); }
+.member.wrong { background: var(--bg-danger); border-left-color: var(--text-danger); }
+.member.locked { cursor: default; }
+.mod { font-size: 12px; font-weight: 500; padding: 2px 5px; border-radius: 3px; min-width: 20px; text-align: center; }
+.mod-pub { background: var(--bg-success); color: var(--text-success); }
+.mod-pri { background: var(--bg-danger); color: var(--text-danger); }
+.mod-pro { background: var(--bg-pro); color: var(--text-pro); }
+.member-name { flex: 1; }
+.member-check { font-size: 16px; opacity: 0; transition: opacity 0.2s; }
+.member.correct .member-check::after { content: "✓"; color: var(--text-success); opacity: 1; }
+.member.wrong .member-check::after { content: "✗"; color: var(--text-danger); opacity: 1; }
 
-/* Options */
-.options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.opt { background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0.75rem 1rem; cursor: pointer; font-size: 14px; color: var(--text-primary); text-align: left; transition: background 0.15s; font-family: var(--font-sans); }
-.opt:hover { background: var(--surface-1); }
-.opt.correct { background: var(--bg-success); border-color: var(--border-success); color: var(--text-success); }
-.opt.wrong { background: var(--bg-danger); border-color: var(--border-danger); color: var(--text-danger); }
-.opt.disabled { pointer-events: none; }
-.feedback { border-radius: var(--radius); padding: 1rem; font-size: 14px; line-height: 1.6; margin: 1rem 0; display: none; }
-.feedback.show { display: block; }
-.feedback.ok { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
-.feedback.ng { background: var(--bg-danger); color: var(--text-danger); border: 1px solid var(--border-danger); }
-.next-btn { border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius); padding: 0.6rem 1.25rem; font-size: 14px; cursor: pointer; color: var(--text-primary); font-family: var(--font-sans); }
-.next-btn:hover { background: var(--surface-1); }
-.complete { text-align: center; padding: 2rem 1rem; }
-.complete h2 { font-size: 22px; font-weight: 500; margin-bottom: 0.75rem; }
+/* arrow area */
+.arrow-col { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 60px; gap: 4px; }
+.arrow-svg { opacity: 0.5; }
+
+/* child class box */
+.child-box { border: 2px dashed var(--text-muted); border-radius: 0; background: var(--surface-1); }
+.child-box .cls-head { background: var(--surface-1); font-style: italic; font-size: 14px; color: var(--text-secondary); }
+.child-code { padding: 10px 14px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
+
+/* result panel */
+.result-panel { border-radius: 12px; padding: 1rem 1.25rem; font-size: 14px; line-height: 1.6; margin-bottom: 1rem; display: none; }
+.result-panel.show { display: block; }
+.result-panel.ok { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
+.result-panel.ng { background: var(--bg-danger); color: var(--text-danger); border: 1px solid var(--border-danger); }
+
+/* action buttons */
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--border-strong); background: transparent; border-radius: var(--radius); padding: 0.6rem 1.25rem; font-size: 14px; cursor: pointer; color: var(--text-primary); font-family: var(--font); }
+.btn:hover { background: var(--surface-1); }
+.btn-primary { background: var(--fill-accent); color: #fff; border-color: var(--fill-accent); }
+.btn-primary:hover { opacity: 0.9; background: var(--fill-accent); }
+
+/* progress */
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.5rem; }
+.progress-fill { height: 100%; background: var(--fill-accent); border-radius: 2px; transition: width 0.4s; }
+
+/* legend */
+.legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+
+/* score */
+.score-row { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.score-chip { background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 12px; font-size: 13px; color: var(--text-secondary); }
+.score-chip b { color: var(--text-primary); }
+
+/* complete */
+.complete { text-align: center; padding: 2rem 0; }
+.complete h2 { font-size: 24px; font-weight: 500; margin-bottom: 0.5rem; }
+.big-score { font-size: 48px; font-weight: 500; color: var(--fill-accent); margin: 0.5rem 0; }
 .complete p { color: var(--text-secondary); font-size: 14px; margin-bottom: 1.5rem; }
 
-/* Reference sheet */
-.ref-box { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.5rem; }
-.ref-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.75rem; }
-.ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
-.ref-item { font-size: 12px; color: var(--text-secondary); padding: 0.5rem; background: var(--surface-2); border-radius: var(--radius); border: 1px solid var(--border); }
-.ref-item strong { color: var(--text-primary); display: block; font-size: 13px; margin-bottom: 2px; }
-.tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
-.tag-pub { background: var(--bg-success); color: var(--text-success); }
-.tag-pri { background: var(--bg-danger); color: var(--text-danger); }
-.tag-pro { background: var(--bg-pro); color: var(--text-pro); }
-.tag-sta { background: var(--bg-warning); color: var(--text-warning); }
+/* instruction hint */
+.hint { font-size: 13px; color: var(--text-muted); margin-bottom: 0.75rem; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="score-bar">
-    <div class="score-card">スコア <span id="score">0</span></div>
-    <div class="score-card">正解 <span id="correct">0</span>/<span id="total">0</span></div>
-    <div id="stage-badge" class="stage-badge">ステージ 1</div>
+<div class="wrap">
+  <div class="hdr">
+    <h1>アクセス制御を体験する</h1>
+    <p>誰がどのメンバーにアクセスできるか、実際に試して確かめよう。</p>
   </div>
-  <div class="progress"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <div id="game-area"></div>
 
-  <div class="ref-box">
-    <div class="ref-title">チートシート</div>
-    <div class="ref-grid">
-      <div class="ref-item"><strong>継承 (Inheritance)</strong>「is-a」関係。子が親の特性を引き継ぐ。空白三角矢印</div>
-      <div class="ref-item"><strong>合成 (Composition)</strong>「has-a (強)」関係。親が消えると子も消える。塗りつぶしひし形</div>
-      <div class="ref-item"><strong>集約 (Aggregation)</strong>「has-a (弱)」関係。独立して存在できる。空白ひし形</div>
-      <div class="ref-item"><strong>依存 (Dependency)</strong>「uses-a」関係。一時的な使用。破線矢印</div>
-      <div class="ref-item"><strong><span class="tag tag-pub">+</span> public</strong>どこからでもアクセス可</div>
-      <div class="ref-item"><strong><span class="tag tag-pri">−</span> private</strong>クラス内のみアクセス可</div>
-      <div class="ref-item"><strong><span class="tag tag-pro">#</span> protected</strong>自クラスと子クラスのみ</div>
-      <div class="ref-item"><strong><span class="tag tag-sta">__</span> static</strong>下線 = インスタンスではなくクラスに属する</div>
-    </div>
+  <div class="concept">
+    <strong>アクセス修飾子とは？</strong><br>
+    クラスのメンバー（フィールド・メソッド）に「誰がアクセスできるか」を制限する仕組みです。
+    <br><br>
+    <strong style="color:var(--text-success)">+ public</strong> → 誰でもアクセス可
+    <strong style="color:var(--text-danger)">− private</strong> → クラス自身のみ
+    <strong style="color:var(--text-pro)"># protected</strong> → 自クラス＋子クラスのみ
   </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="score-row">
+    <div class="score-chip">問題 <b id="q-num">1</b> / <b id="q-total">5</b></div>
+    <div class="score-chip">スコア <b id="score">0</b></div>
+  </div>
+
+  <div id="game"></div>
 </div>
 
 <script>
-const diagrams = {
-  q1: `
-    <div class="uml-class">
-      <div class="cls-name">Person</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pri">−</span>name: String</div>
-        <div class="cls-row"><span class="badge badge-pub">+</span>age: int</div>
-        <div class="cls-row"><span class="badge badge-pro">#</span>id: String</div>
-      </div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>getName(): String</div>
-      </div>
-    </div>`,
-
-  q2: `
-    <div class="uml-class">
-      <div class="cls-name">Person</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pri">−</span>name: String</div>
-        <div class="cls-row"><span class="badge badge-pro">#</span>age: int</div>
-        <div class="cls-row"><span class="badge badge-pub">+</span>email: String</div>
-      </div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>greet(): void</div>
-      </div>
-    </div>
-    <div class="uml-arrow">
-      <svg width="80" height="60" viewBox="0 0 80 60">
-        <line x1="10" y1="30" x2="68" y2="30" stroke="currentColor" stroke-width="1.5"/>
-        <polygon points="68,24 80,30 68,36" fill="var(--surface-1)" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-    </div>
-    <div class="uml-class">
-      <div class="cls-name">Student</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pri">−</span>studentId: String</div>
-      </div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>getGrade(): String</div>
-      </div>
-    </div>`,
-
-  q3: `
-    <div class="uml-class">
-      <div class="cls-name">Animal</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>sound(): void</div>
-      </div>
-    </div>
-    <div class="uml-arrow">
-      <svg width="80" height="60" viewBox="0 0 80 60">
-        <line x1="10" y1="30" x2="68" y2="30" stroke="currentColor" stroke-width="1.5"/>
-        <polygon points="68,24 80,30 68,36" fill="var(--surface-1)" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-    </div>
-    <div class="uml-class">
-      <div class="cls-name">Dog</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>bark(): void</div>
-      </div>
-    </div>`,
-
-  q4: `
-    <div class="scenario">
-      <div class="sc-label">シナリオ</div>
-      人間は心臓を持つ。<br>
-      心臓は人間の体内に属し、<br>
-      人間が死ぬと心臓も機能しなくなる。
-      <div class="sc-rel">
-        <span>Human</span>
-        <svg width="60" height="20" viewBox="0 0 60 20">
-          <line x1="16" y1="10" x2="58" y2="10" stroke="currentColor" stroke-width="1.5"/>
-          <polygon points="0,10 12,4 8,10 12,16" fill="currentColor"/>
-        </svg>
-        <span>Heart</span>
-      </div>
-    </div>`,
-
-  q5: `
-    <div class="scenario">
-      <div class="sc-label">シナリオ</div>
-      大学は学生を持つ。<br>
-      ただし、大学が閉校になっても<br>
-      学生は他の大学に転入できる。
-      <div class="sc-rel">
-        <span>University</span>
-        <svg width="60" height="20" viewBox="0 0 60 20">
-          <line x1="16" y1="10" x2="58" y2="10" stroke="currentColor" stroke-width="1.5"/>
-          <polygon points="0,10 8,4 16,10 8,16" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        <span>Student</span>
-      </div>
-    </div>`,
-
-  q6: `
-    <div class="uml-class">
-      <div class="cls-name">Car</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pri">−</span>model: String</div>
-        <div class="cls-row"><span class="badge badge-pri">−</span>speed: int</div>
-        <div class="cls-row static"><span class="badge badge-pub">+</span>count: int</div>
-      </div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>accelerate(): void</div>
-        <div class="cls-row static"><span class="badge badge-pub">+</span>getCount(): int</div>
-      </div>
-    </div>`,
-
-  q7: `
-    <div class="uml-class">
-      <div class="cls-name">Car</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pri">−</span>model: String</div>
-      </div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>drive(): void</div>
-      </div>
-    </div>
-    <div class="uml-arrow">
-      <svg width="80" height="60" viewBox="0 0 80 60">
-        <line x1="22" y1="30" x2="70" y2="30" stroke="currentColor" stroke-width="1.5"/>
-        <polygon points="0,30 10,24 20,30 10,36" fill="currentColor"/>
-      </svg>
-    </div>
-    <div class="uml-class">
-      <div class="cls-name">Engine</div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pri">−</span>power: int</div>
-      </div>
-      <div class="cls-section">
-        <div class="cls-row"><span class="badge badge-pub">+</span>start(): void</div>
-      </div>
-    </div>`,
-
-  q8: `
-    <div class="code-box">
-<span class="kw">public class</span> Config {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public static final int</span> MAX = 100;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> String name;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected void</span> reset() {}<br>
-}<br>
-<br>
-<span class="cm">// UMLでの表現はどれ？</span>
-    </div>`
-};
-
-const questions = [
+const rounds = [
   {
-    stage: "アクセス修飾子",
-    q: "UMLクラス図で「−」記号は何を意味しますか？",
-    diagram: diagrams.q1,
-    opts: ["private — クラス内のみアクセス可", "public — どこからでもアクセス可", "protected — 子クラスからもアクセス可", "static — クラスに属する"],
-    ans: 0,
-    explain: "「−」は private を意味します。name フィールドは Person クラス内からしかアクセスできません。「+」は public、「#」は protected です。"
+    title: "BankAccount クラス",
+    cls: "BankAccount",
+    child: "SavingsAccount",
+    childCode: "// BankAccountを継承",
+    members: [
+      { mod: "pri", name: "balance: double",      pub: false, pro: false },
+      { mod: "pri", name: "pin: int",             pub: false, pro: false },
+      { mod: "pro", name: "accountId: String",    pub: false, pro: true  },
+      { mod: "pub", name: "owner: String",        pub: true,  pro: true  },
+      { mod: "pub", name: "getBalance(): double", pub: true,  pro: true  },
+      { mod: "pri", name: "validatePin(): bool",  pub: false, pro: false },
+    ],
+    visitors: [
+      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
+      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
+      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
+    ],
+    explain: {
+      ext:   "外部コードからは public (+) のみアクセスできます。balance や pin は外から覗けません。",
+      child: "子クラスからは public (+) と protected (#) にアクセスできます。private (−) は継承先でも触れません。",
+      self:  "クラス自身のコード内からはすべてのメンバーにアクセスできます。これが private の意味です。"
+    }
   },
   {
-    stage: "アクセス修飾子",
-    q: "Student クラスから直接アクセスできないメンバーはどれ？",
-    diagram: diagrams.q2,
-    opts: ["email: String", "name: String", "age: int", "greet(): void"],
-    ans: 1,
-    explain: "private (−) な name は子クラス Student からも直接アクセスできません。protected (#) な age は子クラスからアクセス可能。public (+) な email と greet() はどこからでもアクセスできます。"
+    title: "Person クラス",
+    cls: "Person",
+    child: "Student",
+    childCode: "// Personを継承",
+    members: [
+      { mod: "pri", name: "birthYear: int",    pub: false, pro: false },
+      { mod: "pro", name: "name: String",      pub: false, pro: true  },
+      { mod: "pub", name: "email: String",     pub: true,  pro: true  },
+      { mod: "pri", name: "password: String",  pub: false, pro: false },
+      { mod: "pub", name: "greet(): void",     pub: true,  pro: true  },
+      { mod: "pro", name: "getAge(): int",     pub: false, pro: true  },
+    ],
+    visitors: [
+      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
+      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
+      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
+    ],
+    explain: {
+      ext:   "外部から email と greet() だけ見えます。birthYear や password を隠すことでデータを保護できます。",
+      child: "子クラス Student は name・email・greet()・getAge() にアクセスできます。password は継承先でも隠されます。",
+      self:  "Person クラス内のコードはすべてのメンバーにアクセスできます。private はクラス外だけに閉じています。"
+    }
   },
   {
-    stage: "継承",
-    q: "この空白三角矢印の関係は何を表していますか？",
-    diagram: diagrams.q3,
-    opts: ["継承 — Dog は Animal の一種 (is-a)", "合成 — Dog は Animal を持つ (has-a)", "集約 — Animal は Dog を持つ", "依存 — Dog は Animal を一時的に使う"],
-    ans: 0,
-    explain: "空白三角矢印は継承を表します。「Dog is-a Animal（犬は動物の一種）」という関係です。Dog は Animal のすべてのメンバーを引き継ぎます。"
+    title: "GameCharacter クラス",
+    cls: "GameCharacter",
+    child: "Warrior",
+    childCode: "// GameCharacterを継承",
+    members: [
+      { mod: "pub", name: "name: String",       pub: true,  pro: true  },
+      { mod: "pri", name: "hp: int",            pub: false, pro: false },
+      { mod: "pro", name: "attackPower: int",   pub: false, pro: true  },
+      { mod: "pub", name: "getHp(): int",       pub: true,  pro: true  },
+      { mod: "pri", name: "secretSkill(): void",pub: false, pro: false },
+      { mod: "pro", name: "levelUp(): void",    pub: false, pro: true  },
+    ],
+    visitors: [
+      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
+      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
+      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
+    ],
+    explain: {
+      ext:   "ゲームの外部コードは name と getHp() で名前とHPを読めますが、hp の直接変更はできません。ゲームの不正防止に役立ちます。",
+      child: "Warrior クラスは attackPower と levelUp() を使って独自のキャラクター能力を実装できます。secretSkill は基底クラス専用です。",
+      self:  "GameCharacter クラス自身はすべてにアクセスできます。hp を直接変えるのはクラス内のメソッドだけに任せることで整合性を保てます。"
+    }
   },
   {
-    stage: "合成と集約",
-    q: "Human と Heart の関係に最も適切なUML記法はどれ？",
-    diagram: diagrams.q4,
-    opts: ["合成 (Composition) — 塗りつぶしひし形", "集約 (Aggregation) — 空白ひし形", "継承 (Inheritance) — 空白三角矢印", "依存 (Dependency) — 破線矢印"],
-    ans: 0,
-    explain: "合成（Composition）が正解です。心臓は人間なしには存在できません。合成では親が消えると子も消える「強い has-a」関係で、塗りつぶしひし形◆を使います。"
+    title: "DatabaseConnection クラス",
+    cls: "DatabaseConnection",
+    child: "MySQLConnection",
+    childCode: "// DatabaseConnectionを継承",
+    members: [
+      { mod: "pri", name: "password: String",   pub: false, pro: false },
+      { mod: "pri", name: "host: String",       pub: false, pro: false },
+      { mod: "pro", name: "port: int",          pub: false, pro: true  },
+      { mod: "pub", name: "connect(): bool",    pub: true,  pro: true  },
+      { mod: "pub", name: "disconnect(): void", pub: true,  pro: true  },
+      { mod: "pro", name: "query(): Result",    pub: false, pro: true  },
+    ],
+    visitors: [
+      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
+      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
+      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
+    ],
+    explain: {
+      ext:   "外部からは connect() と disconnect() だけ使えます。パスワードやホスト名は絶対に外に漏れません。",
+      child: "MySQLConnection は port と query() を使ってMySQL独自の接続処理を実装できます。password は子クラスでも見えません。",
+      self:  "クラス内では password も host も自由に使えます。private にすることでパスワードの扱いをクラスが完全に管理します。"
+    }
   },
   {
-    stage: "合成と集約",
-    q: "University と Student の関係はどちらですか？",
-    diagram: diagrams.q5,
-    opts: ["集約 (Aggregation) — 空白ひし形", "合成 (Composition) — 塗りつぶしひし形", "継承 (Inheritance) — 空白三角矢印", "実現 (Realization) — 破線三角矢印"],
-    ans: 0,
-    explain: "集約（Aggregation）が正解です。学生は大学なしでも存在できます（転入可能）。独立して存在できる「弱い has-a」関係が集約で、空白ひし形◇を使います。"
-  },
-  {
-    stage: "static",
-    q: "下線が引かれたメンバー（count, getCount）は何を意味しますか？",
-    diagram: diagrams.q6,
-    opts: ["static — クラス自体に属し、全インスタンスで共有", "abstract — 実装を持たない抽象メンバー", "final — 変更不可のメンバー", "override — 親クラスのメソッドを上書き"],
-    ans: 0,
-    explain: "UMLでは下線がついたメンバーは static（静的）を意味します。Car.count はすべての Car インスタンスで共有される値で、インスタンスを生成しなくてもアクセスできます。"
-  },
-  {
-    stage: "総合",
-    q: "Car 側の塗りつぶしひし形 ◆ が示す関係はどれ？",
-    diagram: diagrams.q7,
-    opts: ["合成 — Car が Engine を所有し、Car が消えれば Engine も消える", "集約 — Engine は Car なしでも存在できる", "継承 — Engine は Car の一種", "依存 — Car は Engine を一時的に使う"],
-    ans: 0,
-    explain: "塗りつぶしひし形◆が Car 側にあるので、Car が Engine を合成（Composition）しています。Car が廃棄されると Engine も廃棄されます。これが合成の「所有権」の概念です。"
-  },
-  {
-    stage: "総合",
-    q: "このコードの MAX フィールドをUMLで正しく表すとどれ？",
-    diagram: diagrams.q8,
-    opts: ["下線付き + MAX: int（public かつ static）", "+ MAX: int（下線なし）", "− MAX: int（private）", "# MAX: int（protected）"],
-    ans: 0,
-    explain: "public は「+」、static は下線で表します。final はUMLでは {readOnly} という制約で表すこともあります。よって 下線付きの + MAX: int が正解です。"
+    title: "Animal クラス",
+    cls: "Animal",
+    child: "Dog",
+    childCode: "// Animalを継承",
+    members: [
+      { mod: "pub", name: "species: String",    pub: true,  pro: true  },
+      { mod: "pro", name: "sound: String",      pub: false, pro: true  },
+      { mod: "pri", name: "dna: String",        pub: false, pro: false },
+      { mod: "pub", name: "eat(): void",        pub: true,  pro: true  },
+      { mod: "pro", name: "makeSound(): void",  pub: false, pro: true  },
+      { mod: "pri", name: "mutate(): void",     pub: false, pro: false },
+    ],
+    visitors: [
+      { key: "ext",   label: "外部コード",    icon: "🌐", cls: "vi-ext",   canAccess: m => m.pub },
+      { key: "child", label: "子クラス",      icon: "🧬", cls: "vi-child", canAccess: m => m.pro },
+      { key: "self",  label: "同じクラス内",  icon: "🔑", cls: "vi-self",  canAccess: () => true },
+    ],
+    explain: {
+      ext:   "外部コードは species と eat() だけ使えます。動物のDNAや突然変異メソッドは外部に公開する必要がありません。",
+      child: "Dog クラスは sound を上書きして「ワン」にしたり、makeSound() を呼んで鳴き声を出せます。dna と mutate() は Dog でも触れません。",
+      self:  "Animal クラス内ではすべてのメンバーにアクセスできます。dna を private にすることで生物学的な整合性を保てます。"
+    }
   }
 ];
 
-let current = 0, score = 0, correctCount = 0, answered = false;
+let rIdx = 0, score = 0;
+let selectedVisitor = null;
+let answered = false;
+let selections = {};
 
-function updateMeta() {
-  document.getElementById('score').textContent = score;
-  document.getElementById('correct').textContent = correctCount;
-  document.getElementById('total').textContent = current;
-  document.getElementById('prog').style.width = (current / questions.length * 100) + '%';
-  document.getElementById('stage-badge').textContent = current < questions.length
-    ? 'ステージ ' + (current + 1) + ' / ' + questions.length
-    : '完了！';
-}
-
-function renderQuestion() {
-  if (current >= questions.length) { renderComplete(); return; }
-  const q = questions[current];
+function renderRound() {
   answered = false;
-  updateMeta();
-  document.getElementById('game-area').innerHTML = `
-    <div class="stage-badge" style="margin-bottom:0.75rem">${q.stage}</div>
-    <div class="stage-title">${q.q}</div>
-    <div class="diagram-area">${q.diagram}</div>
-    <div class="options" id="opts">
-      ${q.opts.map((o,i) => `<button class="opt" onclick="choose(${i})">${o}</button>`).join('')}
+  selectedVisitor = null;
+  selections = {};
+  document.getElementById('prog').style.width = ((rIdx / rounds.length) * 100) + '%';
+  document.getElementById('q-num').textContent = rIdx + 1;
+  document.getElementById('q-total').textContent = rounds.length;
+
+  const r = rounds[rIdx];
+  document.getElementById('game').innerHTML = buildRoundHTML(r);
+}
+
+function buildRoundHTML(r) {
+  const memberRows = r.members.map((m, i) => `
+    <div class="member" id="m${i}" onclick="toggleMember(${i})">
+      <span class="mod mod-${m.mod}">${m.mod === 'pub' ? '+' : m.mod === 'pri' ? '−' : '#'}</span>
+      <span class="member-name">${m.name}</span>
+      <span class="member-check" id="mc${i}"></span>
     </div>
-    <div class="feedback" id="fb"></div>
-    <button class="next-btn" id="next-btn" style="display:none" onclick="renderQuestion()">
-      ${current < questions.length - 1 ? '次の問題 →' : '結果を見る →'}
+  `).join('');
+
+  const fields = r.members.filter(m => !m.name.includes('('));
+  const methods = r.members.filter(m => m.name.includes('('));
+
+  const fieldRows = fields.map((m, i) => {
+    const gi = r.members.indexOf(m);
+    return `<div class="member" id="m${gi}" onclick="toggleMember(${gi})">
+      <span class="mod mod-${m.mod}">${m.mod === 'pub' ? '+' : m.mod === 'pri' ? '−' : '#'}</span>
+      <span class="member-name">${m.name}</span>
+      <span class="member-check" id="mc${gi}"></span>
+    </div>`;
+  }).join('');
+
+  const methodRows = methods.map((m) => {
+    const gi = r.members.indexOf(m);
+    return `<div class="member" id="m${gi}" onclick="toggleMember(${gi})">
+      <span class="mod mod-${m.mod}">${m.mod === 'pub' ? '+' : m.mod === 'pri' ? '−' : '#'}</span>
+      <span class="member-name">${m.name}</span>
+      <span class="member-check" id="mc${gi}"></span>
+    </div>`;
+  }).join('');
+
+  const visitorBtns = r.visitors.map(v => `
+    <button class="visitor-btn" id="vb-${v.key}" onclick="selectVisitor('${v.key}')">
+      <div class="visitor-icon ${v.cls}">${v.icon}</div>
+      ${v.label}
     </button>
-  `;
-}
+  `).join('');
 
-function choose(idx) {
-  if (answered) return;
-  answered = true;
-  const q = questions[current];
-  document.querySelectorAll('.opt').forEach(o => o.classList.add('disabled'));
-  const isCorrect = idx === q.ans;
-  document.querySelectorAll('.opt')[idx].classList.add(isCorrect ? 'correct' : 'wrong');
-  if (!isCorrect) document.querySelectorAll('.opt')[q.ans].classList.add('correct');
-  if (isCorrect) { score += 10; correctCount++; }
-  current++;
-  updateMeta();
-  const fb = document.getElementById('fb');
-  fb.className = 'feedback ' + (isCorrect ? 'ok' : 'ng') + ' show';
-  fb.textContent = (isCorrect ? '✓ 正解！ ' : '✗ 不正解。') + q.explain;
-  document.getElementById('next-btn').style.display = 'inline-block';
-}
+  return `
+    <div class="visitor-section">
+      <div class="vs-label">① 訪問者を選んでください</div>
+      <div class="visitors">${visitorBtns}</div>
+    </div>
 
-function renderComplete() {
-  const pct = Math.round(correctCount / questions.length * 100);
-  const msg = pct >= 80 ? 'UML図の読み方をしっかり理解できています！'
-    : pct >= 50 ? 'もう少し！チートシートを見ながら復習しましょう。'
-    : 'チートシートを参考に、もう一度挑戦してみましょう。';
-  document.getElementById('game-area').innerHTML = `
-    <div class="complete">
-      <h2>ゲームクリア！</h2>
-      <p>スコア: <strong>${score}</strong> 点 &nbsp;|&nbsp; 正解率: ${pct}%</p>
-      <p>${msg}</p>
-      <button class="next-btn" onclick="restart()">もう一度挑戦する</button>
+    <div class="hint" id="hint">← 訪問者を選ぶとメンバーを選択できます</div>
+
+    <div class="arena">
+      <div class="class-box">
+        <div class="cls-head">${r.cls}</div>
+        <div class="cls-section">${fieldRows}</div>
+        <div class="cls-section">${methodRows}</div>
+      </div>
+      <div class="arrow-col">
+        <svg class="arrow-svg" width="40" height="50" viewBox="0 0 40 50">
+          <line x1="20" y1="2" x2="20" y2="38" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <polygon points="12,32 20,48 28,32" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span style="font-size:10px;color:var(--text-muted);text-align:center">継承</span>
+      </div>
+      <div class="class-box child-box">
+        <div class="cls-head">${r.child}</div>
+        <div class="cls-section">
+          <div class="child-code">${r.childCode}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-panel" id="result"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="checkAnswer()" id="check-btn" disabled>② アクセスできるメンバーをすべて選んで確認</button>
     </div>
   `;
 }
 
-function restart() {
-  current = 0; score = 0; correctCount = 0;
-  renderQuestion();
+function selectVisitor(key) {
+  if (answered) return;
+  selectedVisitor = key;
+  selections = {};
+  document.querySelectorAll('.visitor-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('vb-' + key).classList.add('active');
+  document.querySelectorAll('.member').forEach(m => { m.classList.remove('selected', 'correct', 'wrong'); });
+  document.querySelectorAll('.member-check').forEach(c => { c.innerHTML = ''; });
+  document.getElementById('hint').textContent = 'アクセスできると思うメンバーをすべてクリックしてください（複数選択可）';
+  document.getElementById('check-btn').disabled = false;
+  document.getElementById('check-btn').textContent = '② アクセスできるメンバーをすべて選んで確認';
+  const result = document.getElementById('result');
+  result.className = 'result-panel';
 }
 
-renderQuestion();
+function toggleMember(i) {
+  if (!selectedVisitor || answered) return;
+  const el = document.getElementById('m' + i);
+  if (selections[i]) {
+    delete selections[i];
+    el.classList.remove('selected');
+  } else {
+    selections[i] = true;
+    el.classList.add('selected');
+  }
+}
+
+function checkAnswer() {
+  if (!selectedVisitor) return;
+  const r = rounds[rIdx];
+  const visitor = r.visitors.find(v => v.key === selectedVisitor);
+  answered = true;
+
+  let correct = true;
+  r.members.forEach((m, i) => {
+    const shouldAccess = visitor.canAccess(m);
+    const didSelect = !!selections[i];
+    const el = document.getElementById('m' + i);
+    const mc = document.getElementById('mc' + i);
+    el.classList.remove('selected');
+    if (shouldAccess === didSelect) {
+      el.classList.add('correct');
+      mc.innerHTML = shouldAccess ? '<span style="color:var(--text-success)">✓</span>' : '<span style="color:var(--text-muted)">−</span>';
+    } else {
+      el.classList.add('wrong');
+      mc.innerHTML = '<span style="color:var(--text-danger)">✗</span>';
+      correct = false;
+    }
+  });
+
+  const gained = correct ? 20 : 5;
+  score += gained;
+  document.getElementById('score').textContent = score;
+
+  const result = document.getElementById('result');
+  result.className = 'result-panel show ' + (correct ? 'ok' : 'ng');
+
+  const correctMembers = r.members.filter(m => visitor.canAccess(m)).map(m => m.name);
+  const explain = r.explain[selectedVisitor];
+  result.innerHTML = (correct ? '✓ 正解！ ' : '✗ 不正解。') + explain
+    + `<br><br><strong>アクセスできるメンバー:</strong> ${correctMembers.join('、')}`;
+
+  const btn = document.getElementById('check-btn');
+  btn.textContent = rIdx < rounds.length - 1 ? '次のクラスへ →' : '結果を見る →';
+  btn.onclick = nextRound;
+  btn.disabled = false;
+}
+
+function nextRound() {
+  rIdx++;
+  if (rIdx >= rounds.length) {
+    showComplete();
+    return;
+  }
+  renderRound();
+}
+
+function showComplete() {
+  document.getElementById('prog').style.width = '100%';
+  const pct = Math.round(score / (rounds.length * 20) * 100);
+  const msg = pct >= 80
+    ? 'アクセス制御の概念をしっかり理解できています！'
+    : pct >= 50
+    ? 'もう少し！ public/private/protected の違いを確認してみましょう。'
+    : '緑の解説をもう一度読み返してみましょう。概念がつかめてきます。';
+  document.getElementById('game').innerHTML = `
+    <div class="complete">
+      <h2>完了！</h2>
+      <div class="big-score">${score}<span style="font-size:20px;color:var(--text-muted)"> / ${rounds.length * 20}</span></div>
+      <p>${msg}</p>
+      <div style="background:var(--bg-accent);border:1px solid var(--border-accent);border-radius:12px;padding:1rem 1.25rem;text-align:left;font-size:14px;color:var(--text-accent);margin-bottom:1.5rem;line-height:1.8">
+        <strong>まとめ</strong><br>
+        <strong>+ public</strong> — 誰でもアクセス可。外部に公開するAPIはこれ<br>
+        <strong>− private</strong> — クラス自身のみ。データの保護・隠蔽に使う<br>
+        <strong># protected</strong> — 自分と子クラスのみ。継承を意識した設計に使う<br><br>
+        このルールがあることで「クラスの外から直接 hp を書き換えられない」ような安全な設計ができます。
+      </div>
+      <button class="btn btn-primary" onclick="restartGame()">もう一度やる</button>
+    </div>
+  `;
+}
+
+function restartGame() {
+  rIdx = 0; score = 0;
+  document.getElementById('score').textContent = 0;
+  renderRound();
+}
+
+renderRound();
 </script>
 </body>
 </html>
