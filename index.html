@@ -197,6 +197,8 @@ const CHAPTERS=[
   {name:'第5章',sub:'同じ命令、違う動き'},
   {name:'第6章',sub:'設計の契約書'},
   {name:'第7章',sub:'口座開設の設計図'},
+  {name:'第8章',sub:'型の正体を見抜け'},
+  {name:'第9章',sub:'障害に備えるシステム'},
 ];
 
 const GLOSSARY=[
@@ -224,6 +226,11 @@ const GLOSSARY=[
   {term:'抽象クラス',def:'インスタンス化できないクラス。abstract メソッドを持ち、サブクラスに実装を強制する。Account を abstract にすれば「必ず calculateInterest() を実装せよ」と契約できる。'},
   {term:'インターフェース',def:'メソッドのシグネチャだけを定義した契約書。抽象クラスと違い多重実装できる。Transferable インターフェースを複数の口座クラスに実装させる例。'},
   {term:'オーバーロード',def:'同じクラス内で同名メソッドを引数の型や数を変えて複数定義すること。transfer(int) と transfer(int, String) のように使う。オーバーライドとは別の概念。'},
+  {term:'型キャスト',def:'変数の型を別の型に変換する操作。親クラス型を子クラス型に変換するのはダウンキャスト。実際のオブジェクトと違う型にキャストすると ClassCastException が発生する。'},
+  {term:'ダウンキャスト',def:'親クラス型の変数を子クラス型に変換すること。SavingsAccount s = (SavingsAccount) a; のように書く。instanceof で型を確認してから行うのが安全。'},
+  {term:'instanceof',def:'オブジェクトが特定のクラスのインスタンスかどうかを確認する演算子。if (a instanceof SavingsAccount) のように使う。ダウンキャスト前の安全確認に役立つ。'},
+  {term:'例外処理',def:'実行時エラーを安全に捕まえて対処する仕組み。throw で例外を投げ、try で主処理を囲み、catch でエラーを受け取り、finally で後処理を実行する。'},
+  {term:'throw',def:'例外を意図的に発生させるキーワード。throw new InsufficientFundsException() のように書く。条件チェックで異常を検知したときに使う。'},
 ];
 
 const stories={
@@ -296,7 +303,27 @@ const stories={
   ],
   '6e':[
     {npc:'📂 システム部長',text:'完璧だ。accountId・ownerName・pin は開設者から受け取らないとセットできない。balance=0・createdAt=現在日時はシステムが自動で決めてよい。interestRate は static なのでコンストラクタ不要だ。'},
-    {npc:'👔 頭取',text:'全7章を修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス・コンストラクタ。これらがオブジェクト指向の根幹だ。お疲れさまでした。'},
+    {npc:'👔 頭取',text:'あと2つだ。続けよう。'},
+  ],
+  7:[
+    {npc:'📂 システム部長',text:'第5章でポリモーフィズムを学んだ。Account[] に混在させて一括処理するのは便利だが、特定の口座だけの機能（定期預金の満期日など）を呼び出したいときはどうする？'},
+    {npc:'📂 システム部長',text:'そこで<strong>型キャスト（ダウンキャスト）</strong>を使う。Account 型の変数を実際のサブクラス型に変換する操作だ。'},
+    {npc:'📂 システム部長',text:'ただし実際のオブジェクトと違う型にキャストすると <code>ClassCastException</code> が発生する。<strong>instanceof</strong> で型を確認してからキャストするのが安全だ。'},
+    {npc:'📂 システム部長',text:'4つのコードが成功するか例外になるか判定してくれ。'},
+  ],
+  '7e':[
+    {npc:'📂 システム部長',text:'instanceof で確認してからキャストすれば ClassCastException を防げる。Java 16 以降は <code>instanceof TimeDeposit td</code> と書くとキャストと変数宣言を同時にできる。'},
+    {npc:'👔 頭取',text:'最後の章へ進もう。'},
+  ],
+  8:[
+    {npc:'👔 頭取',text:'昨夜、残高不足の状態で引き出し操作が実行され、システムがクラッシュした。エラーを適切に処理するコードがなかったのが原因だ。'},
+    {npc:'📂 システム部長',text:'<strong>例外処理</strong>を使えばエラーを安全に捕まえて対処できる。残高不足なら <code>throw</code> で例外を投げ、<code>try/catch</code> で受け取る。'},
+    {npc:'📂 システム部長',text:'try：例外が発生するかもしれない処理。catch：例外を受け取って対処。finally：成功・失敗どちらでも必ず実行される後処理。throw：例外を意図的に発生させる。'},
+    {npc:'📂 システム部長',text:'withdraw() メソッドの骨格が完成している。4つのコード片を正しい場所に配置してくれ。'},
+  ],
+  '8e':[
+    {npc:'📂 システム部長',text:'完璧だ。throw で例外を投げ、try で操作を実行し、catch でエラー処理、finally でログを残す。この流れが例外処理の基本だ。'},
+    {npc:'👔 頭取',text:'全9章を修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス・コンストラクタ・型キャスト・例外処理。お疲れさまでした。'},
   ],
 };
 
@@ -334,7 +361,7 @@ document.addEventListener('click',e=>{
 // テキスト内の用語をクリッカブルスパンに変換
 // プレースホルダー方式: 置換済みテキスト内の部分一致を防ぐ
 function glossify(html){
-  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','コンストラクタ','バリデーション','オブジェクト','インスタンス','フィールド','メンバー','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
+  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','コンストラクタ','バリデーション','ダウンキャスト','型キャスト','instanceof','例外処理','throw','オブジェクト','インスタンス','フィールド','メンバー','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
   const ph=[];
   const parts=html.split(/(<[^>]+>)/);
   const withPh=parts.map((p,i)=>{
@@ -388,7 +415,7 @@ function render(){
   updateNav();
   const scr=document.getElementById('screen');
   if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
-  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6,renderG7][G.chapter]();
+  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6,renderG7,renderG8,renderG9][G.chapter]();
   else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
   else scr.innerHTML=renderComplete();
 }
@@ -858,10 +885,105 @@ function renderG7(){
 function g7set(i,v){if(g7done)return;g7sel[i]=v;document.getElementById('screen').innerHTML=renderG7();}
 function g7check(){g7done=true;document.getElementById('screen').innerHTML=renderG7();}
 
+// ─── GAME 8: 型キャスト ──────────────────────────
+const g8scenarios=[
+  {ok:true,  code:'Account a = new SavingsAccount();\nSavingsAccount s = (SavingsAccount) a;',     label:'実際の型と同じ型にキャスト'},
+  {ok:false, code:'Account a = new LoanAccount();\nSavingsAccount s = (SavingsAccount) a;',        label:'実際の型と違う型にキャスト'},
+  {ok:true,  code:'Account a = new TimeDeposit();\nif (a instanceof TimeDeposit) {\n  TimeDeposit t = (TimeDeposit) a;\n}',label:'instanceof で確認してからキャスト'},
+  {ok:false, code:'Account a = new SavingsAccount();\nLoanAccount l = (LoanAccount) a;',           label:'実際の型と違う型にキャスト'},
+];
+let g8quiz=[null,null,null,null];
+
+function renderG8(){
+  const items=g8scenarios.map((s,i)=>{
+    const ans=g8quiz[i];
+    const correct=s.ok?'ok':'ng';
+    return `<div class="world-quiz">
+      <div style="font-size:11px;color:var(--tm);margin-bottom:.4rem">${s.label}</div>
+      <pre style="background:var(--s1);border-radius:6px;padding:.6rem .75rem;font-size:11px;line-height:1.8;overflow-x:auto;margin-bottom:.75rem">${s.code}</pre>
+      <div class="wq-opts">
+        <div class="wq-opt ${ans?(ans==='ok'?(s.ok?'ok':'ng'):''):''}" onclick="g8ans(${i},'ok')">✓ 成功</div>
+        <div class="wq-opt ${ans?(ans==='ng'?(!s.ok?'ok':'ng'):''):''}" onclick="g8ans(${i},'ng')">💥 ClassCastException</div>
+      </div>
+    </div>`;
+  }).join('');
+  const allAns=g8quiz.every(a=>a!==null);
+  const correct=g8quiz.filter((a,i)=>a===(g8scenarios[i].ok?'ok':'ng')).length;
+  return `
+    <div class="ch-title">${CHAPTERS[7].name}</div>
+    <div class="ch-heading">${CHAPTERS[7].sub}</div>
+    <p class="game-intro">各コードがキャスト成功か <code>ClassCastException</code> か判定してください。</p>
+    <div class="info-box">実際のオブジェクトの型と違うクラスにキャストすると実行時エラー。<strong>instanceof</strong> で確認してからキャストするのが安全。</div>
+    ${items}
+    ${allAns?`<div class="fb ok show">✓ ${correct}/4 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${correct*6+1})">次へ →</button><button class="btn" onclick="retryG8()">もう一度 ↩</button></div>`:''}`;
+}
+function g8ans(i,v){if(g8quiz[i]!==null)return;g8quiz[i]=v;document.getElementById('screen').innerHTML=renderG8();}
+
+// ─── GAME 9: 例外処理 ────────────────────────────
+const g9frags=[
+  {id:'throw',  code:'if (amount > balance)\n  throw new\n  InsufficientFundsException();', correct:'A'},
+  {id:'op',     code:'balance -= amount;',                                                   correct:'B'},
+  {id:'catch',  code:'notifyUser(\n  "残高不足です"\n);',                                    correct:'C'},
+  {id:'finally',code:'logTransaction();',                                                     correct:'D'},
+];
+const g9slotMeta={
+  A:{label:'A',desc:'try の前（バリデーション・throw）'},
+  B:{label:'B',desc:'try { … } の中（主処理）'},
+  C:{label:'C',desc:'catch (e) { … } の中（エラー処理）'},
+  D:{label:'D',desc:'finally { … } の中（後処理）'},
+};
+let g9placed={},g9sel=null,g9done=false;
+
+function renderG9(){
+  const slotKeys=['A','B','C','D'];
+  const slots=slotKeys.map(k=>{
+    const fragId=g9placed[k];
+    const frag=fragId?g9frags.find(f=>f.id===fragId):null;
+    const hl=g9sel&&!frag;
+    const ok=g9done&&frag&&g9frags.find(f=>f.id===fragId)?.correct===k;
+    const ng=g9done&&frag&&!ok;
+    return `<div onclick="g9place('${k}')" style="cursor:${g9sel&&!frag?'pointer':'default'};border:2px ${frag?'solid':'dashed'} ${ng?'var(--bng)':ok?'var(--bok)':hl?'var(--fac)':'var(--tm)'};border-radius:8px;padding:.5rem .75rem;background:${hl?'var(--ac)':'var(--s2)'};margin-bottom:6px">
+      <div style="font-size:10px;color:var(--tm);margin-bottom:2px">[${k}] ${g9slotMeta[k].desc}</div>
+      ${frag?`<pre style="font-size:10px;line-height:1.7;margin:0;color:${ng?'var(--tng)':ok?'var(--tok)':'var(--tp)'}">${frag.code}</pre>`:`<div style="font-size:12px;color:var(--tm);text-align:center;padding:4px 0">タップして配置</div>`}
+    </div>`;
+  }).join('');
+
+  const cards=g9frags.map(f=>{
+    const placed=Object.values(g9placed).includes(f.id);
+    return `<div class="class-card ${placed?'placed':''} ${g9sel===f.id?'selected':''}" onclick="g9selFrag('${f.id}')" style="font-family:var(--m);font-size:10px;white-space:pre;line-height:1.6;text-align:left">${f.code}</div>`;
+  }).join('');
+
+  const allPlaced=Object.keys(g9placed).length===4;
+  const correct=g9done?slotKeys.filter(k=>g9placed[k]&&g9frags.find(f=>f.id===g9placed[k])?.correct===k).length:0;
+
+  return `
+    <div class="ch-title">${CHAPTERS[8].name}</div>
+    <div class="ch-heading">${CHAPTERS[8].sub}</div>
+    <p class="game-intro">カードを選んでスロット [A]〜[D] に配置し、<code>withdraw()</code> メソッドを完成させてください。</p>
+    <pre class="poly-dispatch" style="font-size:11px;line-height:2">void withdraw(double amount) {
+  [A]
+  try {
+    [B]
+  } catch (InsufficientFundsException e) {
+    [C]
+  } finally {
+    [D]
+  }
+}</pre>
+    <div class="cards-area" style="margin-bottom:.75rem">${cards}</div>
+    ${slots}
+    ${g9done
+      ?`<div class="fb ok show" style="margin-top:.75rem">✓ ${correct}/4 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem"><button class="btn btn-p" onclick="finishGame(${correct*6+1})">結果を見る →</button><button class="btn" onclick="retryG9()">もう一度 ↩</button></div>`
+      :allPlaced?`<button class="btn btn-p" style="margin-top:.75rem" onclick="g9check()">確認する</button>`:''}`;
+}
+function g9selFrag(id){g9sel=g9sel===id?null:id;document.getElementById('screen').innerHTML=renderG9();}
+function g9place(slot){if(!g9sel||g9done)return;g9placed[slot]=g9sel;g9sel=null;document.getElementById('screen').innerHTML=renderG9();}
+function g9check(){g9done=true;document.getElementById('screen').innerHTML=renderG9();}
+
 // ─── COMPLETE ─────────────────────────────────
 function renderComplete(){
   updateNav();document.getElementById('prog').style.width='100%';
-  const max=175,pct=Math.round(G.score/max*100);
+  const max=225,pct=Math.round(G.score/max*100);
   const msg=pct>=80?'銀行システムの設計を完璧に理解した！':pct>=50?'もう少し。もう一度挑戦してみよう。':'基礎を復習してからもう一度！';
   const sums=[
     {t:'アクセス修飾子',b:'public/private/protected で情報を隠す。残高や暗証番号は private にして getBalance() などの窓口だけを公開する。'},
@@ -871,6 +993,8 @@ function renderComplete(){
     {t:'ポリモーフィズム',b:'同じ命令を送っても、実際のオブジェクト型に応じた実装が呼ばれる。Account[] に混在させて一括処理できる。'},
     {t:'抽象クラス',b:'インスタンス化できないクラス。abstract メソッドでサブクラスに実装を強制し、設計の契約書となる。'},
     {t:'コンストラクタ',b:'new でインスタンスを作るときに自動で呼ばれるメソッド。引数で受け取る値・デフォルト値・static の3種を正しく使い分けて初期化する。'},
+    {t:'型キャスト',b:'親クラス型の変数を子クラス型に変換するダウンキャスト。instanceof で型を確認してからキャストすると ClassCastException を防げる。'},
+    {t:'例外処理',b:'throw で例外を投げ、try で主処理を囲み、catch でエラーを受け取り、finally で後処理を確実に実行する。'},
   ];
   return `<div class="complete">
     <h2>🏦 銀行システム完成！</h2>
@@ -880,6 +1004,8 @@ function renderComplete(){
     <button class="btn btn-p" onclick="restart()">最初からやり直す</button>
   </div>`;
 }
+function retryG8(){g8quiz=[null,null,null,null];document.getElementById('screen').innerHTML=renderG8();}
+function retryG9(){g9placed={};g9sel=null;g9done=false;document.getElementById('screen').innerHTML=renderG9();}
 function retryG1(){g1sel=g1m.map(()=>'pub');document.getElementById('screen').innerHTML=renderG1();}
 function retryG2(){g2placed={};g2sel=null;g2done=false;document.getElementById('screen').innerHTML=renderG2();}
 function retryG3(){g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];document.getElementById('screen').innerHTML=renderG3();}
@@ -898,6 +1024,8 @@ function restart(){
   g5step=-1;g5quiz=[null,null,null];
   g6sel=g6members.map(()=>'concrete');g6done=false;
   g7sel=g7members.map(()=>'param');g7done=false;
+  g8quiz=[null,null,null,null];
+  g9placed={};g9sel=null;g9done=false;
   closeGloss();
   render();
 }
