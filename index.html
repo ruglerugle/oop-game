@@ -335,10 +335,15 @@ function glossify(html){
 }
 
 // ─── NAV & RENDER ────────────────────────────
+function jumpTo(ch){
+  saveHistory();
+  G.chapter=ch;G.phase='story';G.line=0;
+  render();
+}
 function updateNav(){
   document.getElementById('ch-nav').innerHTML=CHAPTERS.map((c,i)=>{
     const cl=i<G.chapter?'done':i===G.chapter?'active':'';
-    return `<div class="ch-dot ${cl}">${c.name}</div>`;
+    return `<div class="ch-dot ${cl}" onclick="jumpTo(${i})" title="${c.sub}" style="cursor:pointer">${c.name}</div>`;
   }).join('');
   const total=CHAPTERS.length*2;
   const done=G.chapter*2+(G.phase==='epilogue'?1.5:G.phase==='game'?1:0);
