@@ -529,27 +529,28 @@ function g2place(id){
   document.getElementById('screen').innerHTML=renderG2();
 }
 function g2check(){
-  // 兄弟スロット間は順不問で正解判定
-  const groups=[
-    {slots:['dep','loan'], values:['DepositAccount','LoanAccount']},
-    {slots:['sav','td'],   values:['SavingsAccount','TimeDeposit']},
-    {slots:['ml','cl'],    values:['MortgageLoan','CarLoan']},
-  ];
-  const allFilled=groups.every(g=>g.slots.every(s=>g2placed[s]));
+  const allFilled=['dep','loan','sav','td','ml','cl'].every(k=>g2placed[k]);
   if(!allFilled){
     const fb=document.getElementById('g2fb');
-    fb.className='fb ng show';
-    fb.textContent='✗ まだ空のスロットがあります';
-    return;
+    fb.className='fb ng show';fb.textContent='✗ まだ空のスロットがあります';return;
   }
-  const ok=groups.every(g=>{
-    const placed=g.slots.map(s=>g2placed[s]).sort().join(',');
-    return placed===[...g.values].sort().join(',');
-  });
-  if(ok){g2done=true;document.getElementById('screen').innerHTML=renderG2();return;}
+  const sort=arr=>[...arr].sort().join(',');
+  // レベル1: dep+loan に DepositAccount と LoanAccount が揃っているか
+  const lv1ok=sort([g2placed.dep,g2placed.loan])===sort(['DepositAccount','LoanAccount']);
+  if(!lv1ok){
+    const fb=document.getElementById('g2fb');
+    fb.className='fb ng show';fb.textContent='✗ Account の直下には DepositAccount と LoanAccount が入ります';return;
+  }
+  // レベル2: 各親スロットの子スロットを確認（dep側→sav/td、loan側→ml/cl）
+  const depIsLeft=g2placed.dep==='DepositAccount';
+  const depChildren=depIsLeft?['sav','td']:['ml','cl'];
+  const loanChildren=depIsLeft?['ml','cl']:['sav','td'];
+  const lv2ok=
+    sort(depChildren.map(s=>g2placed[s]))===sort(['SavingsAccount','TimeDeposit'])&&
+    sort(loanChildren.map(s=>g2placed[s]))===sort(['MortgageLoan','CarLoan']);
+  if(lv2ok){g2done=true;document.getElementById('screen').innerHTML=renderG2();return;}
   const fb=document.getElementById('g2fb');
-  fb.className='fb ng show';
-  fb.textContent='✗ 親クラスとの関係が違うクラスがあります。is-a 関係を確認してください。';
+  fb.className='fb ng show';fb.textContent='✗ 葉クラスの親が違います。is-a 関係を確認してください。';
 }
 
 // ─── GAME 3: 合成 vs 集約 ──────────────────────
