@@ -111,6 +111,23 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .wq-opt.ok{background:var(--ok);border-color:var(--bok);color:var(--tok)}
 .wq-opt.ng{background:var(--ng);border-color:var(--bng);color:var(--tng)}
 
+/* ── ポリモーフィズム ── */
+.poly-area{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+.poly-card{background:var(--s2);border:2px solid var(--bd);border-radius:12px;padding:.75rem .5rem;text-align:center;transition:border-color .3s,background .3s,transform .3s}
+.poly-card.active{border-color:var(--fac);background:var(--ac);transform:translateY(-4px)}
+.poly-card.done{border-color:var(--bok);background:var(--ok)}
+.poly-icon{font-size:22px;margin-bottom:.25rem}
+.poly-class{font-size:11px;font-weight:500;margin-bottom:.3rem;color:var(--tp)}
+.poly-method{font-size:9px;font-family:var(--m);color:var(--tm);background:var(--s1);border-radius:4px;padding:2px 5px;margin-bottom:.4rem;display:inline-block}
+.poly-impl{font-size:9px;font-family:var(--m);color:var(--tac);background:var(--ac);border-radius:4px;padding:2px 5px;margin-bottom:3px;opacity:0;transition:opacity .4s}
+.poly-impl.show{opacity:1}
+.poly-result{font-size:11px;font-weight:500;color:var(--tok);opacity:0;transition:opacity .4s}
+.poly-result.show{opacity:1}
+.poly-dispatch{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem 1rem;font-family:var(--m);font-size:12px;line-height:2;margin-bottom:1rem}
+
+/* ── 抽象クラス ── */
+.abs-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px;font-style:italic;background:var(--pr);color:var(--tpr)}
+
 /* ── static ── */
 .accounts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
 .acc-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:.75rem .5rem;text-align:center}
@@ -146,6 +163,7 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 
 @media(max-width:500px){
   .worlds{grid-template-columns:1fr}
+  .poly-area{grid-template-columns:1fr}
   .m-name{font-size:11px}
   .ctrl-box.static-ctrl{flex-direction:column;align-items:flex-start}
 }
@@ -176,6 +194,8 @@ const CHAPTERS=[
   {name:'第2章',sub:'金融商品の分類'},
   {name:'第3章',sub:'銀行と支店と顧客'},
   {name:'第4章',sub:'金利改定の謎'},
+  {name:'第5章',sub:'同じ命令、違う動き'},
+  {name:'第6章',sub:'設計の契約書'},
 ];
 
 const GLOSSARY=[
@@ -194,6 +214,11 @@ const GLOSSARY=[
   {term:'is-a',def:'「〇〇は△△の一種」という関係。継承を使う目安。SavingsAccount is a Account（普通預金は口座の一種）。'},
   {term:'has-a',def:'「〇〇は△△を持つ」という関係。合成（強◆）または集約（弱◇）を使う。Bank has a Branch（銀行は支店を持つ）。'},
   {term:'カプセル化',def:'データと処理をクラスにまとめ、外部から隠す仕組み。private で内部を隠し、public メソッドだけを窓口として公開する。'},
+  {term:'ポリモーフィズム',def:'同じメソッド名の呼び出しが、実際のオブジェクトの型に応じて異なる実装を実行する仕組み。Account[] に SavingsAccount と LoanAccount を混ぜて一括処理できる。'},
+  {term:'オーバーライド',def:'親クラスのメソッドを子クラスで再定義すること。SavingsAccount が Account の calculateInterest() を上書きして独自の計算式を持つ例。'},
+  {term:'抽象クラス',def:'インスタンス化できないクラス。abstract メソッドを持ち、サブクラスに実装を強制する。Account を abstract にすれば「必ず calculateInterest() を実装せよ」と契約できる。'},
+  {term:'インターフェース',def:'メソッドのシグネチャだけを定義した契約書。抽象クラスと違い多重実装できる。Transferable インターフェースを複数の口座クラスに実装させる例。'},
+  {term:'オーバーロード',def:'同じクラス内で同名メソッドを引数の型や数を変えて複数定義すること。transfer(int) と transfer(int, String) のように使う。オーバーライドとは別の概念。'},
 ];
 
 const stories={
@@ -236,7 +261,27 @@ const stories={
   ],
   '3e':[
     {npc:'📊 アナリスト',text:'理解できたね。interestRate を変えると全口座に反映される。balance は口座ごとに独立している。'},
-    {npc:'👔 頭取',text:'「この値はクラス全体で1つあれば十分か？」と問いかけると static を使うべき場面がわかる。お疲れさまでした。'},
+    {npc:'👔 頭取',text:'「この値はクラス全体で1つあれば十分か？」と問いかけると static を使うべき場面がわかる。'},
+  ],
+  4:[
+    {npc:'📂 システム部長',text:'第2章で継承ツリーを作ったね。では、Account 型の変数に SavingsAccount や LoanAccount を入れて、まとめて処理できると思うか？'},
+    {npc:'📂 システム部長',text:'実はできる。これが<strong>ポリモーフィズム</strong>だ。同じ命令 <code>calculateInterest()</code> を呼ぶだけで、各クラスが自分の実装（オーバーライド）を実行する。'},
+    {npc:'📂 システム部長',text:'コードを書く側は「何の口座か」を意識しなくてよい。Account のリストをループするだけで、それぞれが正しい計算をしてくれる。'},
+    {npc:'📂 システム部長',text:'「一括利息計算」ボタンを押して、ポリモーフィズムの動きを目で確かめてくれ。'},
+  ],
+  '4e':[
+    {npc:'📂 システム部長',text:'見た通りだ。SavingsAccount, TimeDeposit, LoanAccount はそれぞれ calculateInterest() をオーバーライドしている。'},
+    {npc:'👔 頭取',text:'「同じメッセージを送る、応答はオブジェクトに任せる」。これがポリモーフィズムの本質だ。'},
+  ],
+  5:[
+    {npc:'📂 システム部長',text:'ここまでで Account クラスを多用してきたが、実は Account 単体でインスタンスを作る必要はない。SavingsAccount や LoanAccount として使うものだ。'},
+    {npc:'👔 頭取',text:'そういうクラスは<strong>抽象クラス</strong>にする。インスタンス化を禁止し、サブクラスが必ず実装すべきメソッドを<strong>抽象メソッド</strong>として宣言できる。'},
+    {npc:'📂 システム部長',text:'似た概念に<strong>インターフェース</strong>がある。メソッドの「名前と引数の型だけ」を定義した契約書だ。抽象クラスと違い、1つのクラスに複数実装できる。'},
+    {npc:'📂 システム部長',text:'Account クラスの各メンバーを「抽象（サブクラスに実装を任せる）」か「具体（デフォルト実装あり）」かに分類してくれ。'},
+  ],
+  '5e':[
+    {npc:'📂 システム部長',text:'正しく設計できた。calculateInterest() のような「クラスによって実装が違うもの」を抽象メソッドにする。共通処理は具体メソッドでよい。'},
+    {npc:'👔 頭取',text:'6章すべてを修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス。これらがオブジェクト指向の根幹だ。お疲れさまでした。'},
   ],
 };
 
@@ -273,7 +318,7 @@ document.addEventListener('click',e=>{
 });
 // テキスト内の用語をクリッカブルスパンに変換
 function glossify(html){
-  const terms=['カプセル化','アクセス修飾子','インスタンス','フィールド','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
+  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','インスタンス','フィールド','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
   const parts=html.split(/(<[^>]+>)/);
   return parts.map((p,i)=>{
     if(i%2===1)return p;
@@ -315,7 +360,7 @@ function render(){
   updateNav();
   const scr=document.getElementById('screen');
   if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
-  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4][G.chapter]();
+  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6][G.chapter]();
   else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
   else scr.innerHTML=renderComplete();
 }
@@ -548,6 +593,116 @@ function g3kill2(){
 }
 function g3ans(i,v){if(g3quiz[i]!==null)return;g3quiz[i]=v;document.getElementById('screen').innerHTML=renderG3();}
 
+// ─── GAME 5: ポリモーフィズム ────────────────────
+const g5accs=[
+  {name:'SavingsAccount',icon:'💰',impl:'balance × 0.1%',result:'¥300 の利息',color:'ok'},
+  {name:'TimeDeposit',   icon:'📅',impl:'balance × 0.5% × term',result:'¥1,500 の利息',color:'ok'},
+  {name:'LoanAccount',   icon:'💳',impl:'balance × 3.0%',result:'¥9,000 の利息費用',color:'wn'},
+];
+const g5q=[
+  {q:'a.calculateInterest() を呼んだとき、実際に実行されるのは？',a:1,opts:['Account クラスのメソッド','各インスタンスの型（サブクラス）のメソッド','エラーが発生する']},
+  {q:'Account[] に SavingsAccount と LoanAccount を混在させられる理由は？',a:0,opts:['どちらも Account を継承しているから（is-a 関係）','同じメソッド名があるから','static フィールドを持つから']},
+  {q:'ポリモーフィズムの主な利点は？',a:0,opts:['型が違っても同じコードで一括処理できる','処理速度が向上する','メモリ使用量が減る']},
+];
+let g5step=-1,g5quiz=[null,null,null];
+
+function renderG5(){
+  const cards=g5accs.map((a,i)=>{
+    const active=g5step===i,done=g5step>i;
+    const bg=done?(a.color==='wn'?'var(--wn)':'var(--ok)'):active?(a.color==='wn'?'var(--wn)':'var(--ac)'):'var(--s2)';
+    const bc=done?(a.color==='wn'?'var(--bwn)':'var(--bok)'):active?(a.color==='wn'?'var(--bwn)':'var(--fac)'):'var(--bd)';
+    return `<div class="poly-card ${active?'active':''} ${done?'done':''}" style="background:${bg};border-color:${bc}">
+      <div class="poly-icon">${a.icon}</div>
+      <div class="poly-class">${a.name}</div>
+      <div class="poly-method">calculateInterest()</div>
+      <div class="poly-impl ${active||done?'show':''}">${a.impl}</div>
+      <div class="poly-result ${active||done?'show':''}" style="color:${a.color==='wn'?'var(--twn)':'var(--tok)'}">${a.result}</div>
+    </div>`;
+  }).join('');
+  const completed=g5step>=g5accs.length;
+  const quiz=completed?g5q.map((q,i)=>{
+    const ans=g5quiz[i];
+    return `<div class="world-quiz">
+      <div class="wq-q">${q.q}</div>
+      <div class="wq-opts">${q.opts.map((o,j)=>{
+        const cl=ans!==null?(ans===j?(q.a===j?'ok':'ng'):''):'';
+        return `<div class="wq-opt ${cl}" onclick="g5ans(${i},${j})">${o}</div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join(''):'';
+  const correct=g5quiz.filter((a,i)=>a===g5q[i].a).length;
+  return `
+    <div class="ch-title">${CHAPTERS[4].name}</div>
+    <div class="ch-heading">${CHAPTERS[4].sub}</div>
+    <p class="game-intro">「一括利息計算」を実行すると、同じ命令 <code>a.calculateInterest()</code> が各クラスの実装を呼び出す。</p>
+    <div class="poly-dispatch">
+      Account[] accounts = {new SavingsAccount(), new TimeDeposit(), new LoanAccount()};<br>
+      <span style="color:var(--tpr)">for</span> (Account a : accounts) {<br>
+      &nbsp;&nbsp;a.<strong>calculateInterest</strong>(); <span style="color:var(--tm)">← 同じ命令</span><br>
+      }
+    </div>
+    <div class="poly-area">${cards}</div>
+    ${!completed?`<button class="btn btn-p" onclick="g5run()" ${g5step>=0?'disabled':''}>一括利息計算を実行 ▶</button>`:''}
+    ${quiz}
+    ${g5quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${correct}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${correct*8+1})">次へ →</button>`:''}`;
+}
+function g5run(){
+  if(g5step>=0)return;
+  g5step=0;
+  document.getElementById('screen').innerHTML=renderG5();
+  function tick(){
+    g5step++;
+    document.getElementById('screen').innerHTML=renderG5();
+    if(g5step<g5accs.length)setTimeout(tick,800);
+  }
+  setTimeout(tick,700);
+}
+function g5ans(i,v){if(g5quiz[i]!==null)return;g5quiz[i]=v;document.getElementById('screen').innerHTML=renderG5();}
+
+// ─── GAME 6: 抽象クラス ───────────────────────────
+const g6members=[
+  {name:'accountId: String',          correct:'concrete', hint:'全口座が持つ共通フィールド。値を持てる。'},
+  {name:'open(): void',               correct:'concrete', hint:'口座開設処理は全口座で共通化できる。'},
+  {name:'calculateInterest(): double', correct:'abstract', hint:'預金・ローン・定期で計算方法が異なる。'},
+  {name:'close(): void',              correct:'concrete', hint:'口座閉鎖手続きは共通でよい。'},
+  {name:'getAccountType(): String',   correct:'abstract', hint:'「普通預金」「ローン」は各クラスが返す。'},
+  {name:'validateTransaction(): bool',correct:'abstract', hint:'取引バリデーションはクラスにより異なる。'},
+];
+let g6sel=g6members.map(()=>'concrete'),g6done=false;
+
+function renderG6(){
+  const rows=g6members.map((m,i)=>{
+    const isCon=g6sel[i]==='concrete',isAbs=g6sel[i]==='abstract';
+    const badge=isAbs?`<span class="abs-badge">abstract</span>`:'';
+    let mark='';
+    if(g6done)mark=`<span style="font-weight:600;margin-left:4px;color:${g6sel[i]===m.correct?'var(--tok)':'var(--tng)'}">${g6sel[i]===m.correct?'✓':'✗'}</span>`;
+    return `<div class="m-row">
+      <span class="m-name">${m.name}${badge}</span>
+      <div class="m-mod-btn">
+        <span class="mod-opt mod-pub ${isCon?'sel':''}" onclick="${g6done?'':'g6set('+i+',\'concrete\')'}">具体</span>
+        <span class="mod-opt mod-pri ${isAbs?'sel':''}" onclick="${g6done?'':'g6set('+i+',\'abstract\')'}">抽象</span>
+        ${mark}
+      </div>
+    </div>`;
+  }).join('');
+  const correct=g6sel.filter((s,i)=>s===g6members[i].correct).length;
+  const hints=g6done?`<br><br>${g6members.map((m,i)=>`<span style="color:${g6sel[i]===m.correct?'var(--tok)':'var(--tng)'}">${g6sel[i]===m.correct?'✓':'✗'} ${m.name} — ${m.hint}</span>`).join('<br>')}`:'';
+  return `
+    <div class="ch-title">${CHAPTERS[5].name}</div>
+    <div class="ch-heading">${CHAPTERS[5].sub}</div>
+    <p class="game-intro">Account を抽象クラスとして設計する。各メンバーを「具体（実装あり）」か「抽象（サブクラスが実装必須）」に分類してください。</p>
+    <div class="info-box">抽象メソッドはサブクラスがオーバーライドしなければコンパイルエラーになる。全サブクラスで共通の処理は具体メソッドにしてよい。</div>
+    <div class="uml-class" style="margin-bottom:1rem">
+      <div class="uml-head">«abstract» Account</div>
+      <div class="uml-sec">${rows}</div>
+    </div>
+    ${g6done
+      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button>`
+      :`<button class="btn btn-p" onclick="g6check()">設計を確認する</button>`}`;
+}
+function g6set(i,v){if(g6done)return;g6sel[i]=v;document.getElementById('screen').innerHTML=renderG6();}
+function g6check(){g6done=true;document.getElementById('screen').innerHTML=renderG6();}
+
 // ─── GAME 4: static / 金利 ─────────────────────
 let g4rate=1.5,g4bal=[300000,150000,520000],g4quiz=[null,null];
 const g4accs=[{name:'田中 一郎',icon:'💼'},{name:'鈴木 花子',icon:'👜'},{name:'佐藤 健',icon:'🧳'}];
@@ -600,13 +755,15 @@ function g4ans(i,v){if(g4quiz[i]!==null)return;g4quiz[i]=v;document.getElementBy
 // ─── COMPLETE ─────────────────────────────────
 function renderComplete(){
   updateNav();document.getElementById('prog').style.width='100%';
-  const max=100,pct=Math.round(G.score/max*100);
+  const max=150,pct=Math.round(G.score/max*100);
   const msg=pct>=80?'銀行システムの設計を完璧に理解した！':pct>=50?'もう少し。もう一度挑戦してみよう。':'基礎を復習してからもう一度！';
   const sums=[
     {t:'アクセス修飾子',b:'public/private/protected で情報を隠す。残高や暗証番号は private にして getBalance() などの窓口だけを公開する。'},
     {t:'継承',b:'is-a 関係でクラスを整理する。SavingsAccount は Account の一種だから、共通処理を親クラスに書いて再利用できる。'},
     {t:'合成 vs 集約',b:'合成は所有者が消えると子も消える（強い has-a）。集約は独立して存在できる（弱い has-a）。'},
     {t:'static',b:'static フィールドはクラス自体に属し全インスタンスで共有。金利はクラス全体で一つ、残高は口座ごとに別々。'},
+    {t:'ポリモーフィズム',b:'同じ命令を送っても、実際のオブジェクト型に応じた実装が呼ばれる。Account[] に混在させて一括処理できる。'},
+    {t:'抽象クラス',b:'インスタンス化できないクラス。abstract メソッドでサブクラスに実装を強制し、設計の契約書となる。'},
   ];
   return `<div class="complete">
     <h2>🏦 銀行システム完成！</h2>
@@ -623,6 +780,8 @@ function restart(){
   g2placed={};g2sel=null;g2done=false;
   g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];
   g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];
+  g5step=-1;g5quiz=[null,null,null];
+  g6sel=g6members.map(()=>'concrete');g6done=false;
   closeGloss();
   render();
 }
