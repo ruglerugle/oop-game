@@ -991,153 +991,182 @@ function g9place(slot){if(!g9sel||g9done)return;g9placed[slot]=g9sel;g9sel=null;
 function g9check(){g9done=true;document.getElementById('screen').innerHTML=renderG9();}
 
 // ─── GAME 10: 設計制約パズル ──────────────────────
-let g10sel={c1:null,c2:null,c3:null};
+const g10puzzles=[
+  {
+    title:'プレミアム口座の設計',
+    context:'富裕層向け <strong>PremiumAccount</strong> を追加する。SavingsAccount は本番稼働中でテスト 2000 件が依存している。<strong>既存クラスは変更不可。</strong>',
+    decisions:[
+      {id:'d1',q:'① PremiumAccount の継承元',opts:[
+        {v:'A',l:'Account を直接継承'},
+        {v:'B',l:'SavingsAccount を継承'},
+        {v:'C',l:'LoanAccount を継承'},
+      ]},
+      {id:'d2',q:'② AdvisorService との関係',opts:[
+        {v:'A',l:'継承（extends AdvisorService）'},
+        {v:'B',l:'合成（内部で new して保持）'},
+        {v:'C',l:'実装しない'},
+      ]},
+      {id:'d3',q:'③ calculatePremiumRate() の可視性',opts:[
+        {v:'A',l:'+ public'},
+        {v:'B',l:'# protected（サブクラスまで）'},
+        {v:'C',l:'− private（自クラスのみ）'},
+      ]},
+      {id:'d4',q:'④ PremiumAccount の種別',opts:[
+        {v:'A',l:'通常クラス（new できる）'},
+        {v:'B',l:'abstract（直接 new 不可）'},
+      ]},
+      {id:'d5',q:'⑤ 将来のサブクラス化',opts:[
+        {v:'A',l:'final（継承禁止）'},
+        {v:'B',l:'通常（継承可能）'},
+      ]},
+    ],
+    constraints:[
+      {label:'普通預金の残高計算・入出金機能をそのまま引き継げる',      check:s=>s.d1==='B',hintQ:'① 継承元の選択'},
+      {label:'優遇金利をサブクラスも含め外部から呼び出せない',          check:s=>s.d3==='C',hintQ:'③ 可視性の選択'},
+      {label:'AdvisorService を将来 LoanAccount にも導入できる',       check:s=>s.d2==='B',hintQ:'② AdvisorService との関係'},
+      {label:'new PremiumAccount() で直接インスタンスを生成できる',    check:s=>s.d4==='A',hintQ:'④ クラスの種別'},
+      {label:'将来 VIPPremiumAccount を PremiumAccount から継承できる',check:s=>s.d5==='B',hintQ:'⑤ サブクラス化の設定'},
+    ],
+  },
+  {
+    title:'監査ログシステムの設計',
+    context:'全口座の取引を記録する <strong>AuditLog</strong> クラスを追加する。Account・Bank は変更不可。ログは法的証拠になるため堅牢な設計が必要。',
+    decisions:[
+      {id:'d1',q:'① AuditLog の独立性',opts:[
+        {v:'A',l:'Bank が合成で保有（Bank 消滅→ログも消える）'},
+        {v:'B',l:'Bank が集約で参照（Bank 消滅→ログは残る）'},
+        {v:'C',l:'どちらにも属さない独立クラス'},
+      ]},
+      {id:'d2',q:'② Account との結合方式',opts:[
+        {v:'A',l:'Account が AuditLog.record() を直接呼ぶ'},
+        {v:'B',l:'AuditLog が Account の変化を監視（Observer）'},
+      ]},
+      {id:'d3',q:'③ AuditLog.record() の可視性',opts:[
+        {v:'A',l:'+ public'},
+        {v:'B',l:'− private'},
+      ]},
+      {id:'d4',q:'④ インスタンスの数',opts:[
+        {v:'A',l:'口座ごとに1つ（記録が分散）'},
+        {v:'B',l:'システム全体で1つ（全口座を一元管理）'},
+        {v:'C',l:'取引ごとに生成・破棄'},
+      ]},
+      {id:'d5',q:'⑤ 保存先の設計',opts:[
+        {v:'A',l:'インメモリ固定'},
+        {v:'B',l:'抽象化して将来 DB に切り替え可能'},
+      ]},
+    ],
+    constraints:[
+      {label:'銀行倒産後もログが消えず、独立して運用できること',  check:s=>s.d1==='C',hintQ:'① 独立性の選択'},
+      {label:'全口座の取引を1か所で一元管理できること',          check:s=>s.d4==='B',hintQ:'④ インスタンス数の選択'},
+      {label:'Account クラスを一切変更しないこと',               check:s=>s.d2==='B',hintQ:'② Account との結合方式'},
+      {label:'外部の監査ツールから record() を呼び出せること',   check:s=>s.d3==='A',hintQ:'③ 可視性の選択'},
+      {label:'将来インメモリから DB 保存に切り替えられること',    check:s=>s.d5==='B',hintQ:'⑤ 保存先の設計'},
+    ],
+  },
+];
 
-function g10constraints({c1,c2,c3}){
-  return [
-    {label:'既存クラスを変更・削除しない',                  ok:true,       set:true},
-    {label:'PremiumAccount が普通預金の全機能を引き継ぐ',   ok:c1==='B',   set:c1!==null},
-    {label:'AdvisorService を将来他クラスでも再利用できる', ok:c2==='B',   set:c2!==null},
-    {label:'優遇金利計算を外部クラスから呼べない',          ok:c3==='C',   set:c3!==null},
-  ];
+let g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
+
+function g10pick(id,v){
+  g10st.sel[id]=v;
+  g10st.sub=false;
+  g10st.hint=null;
+  document.getElementById('screen').innerHTML=renderG10();
 }
 
-function g10pick(k,v){
-  g10sel[k]=v;
+function g10submit(){
+  g10st.sub=true;
+  g10st.tries++;
+  g10st.hint=null;
+  document.getElementById('screen').innerHTML=renderG10();
+}
+
+function g10showHint(){
+  if(g10st.hints<=0)return;
+  const pz=g10puzzles[g10st.p];
+  const failing=pz.constraints.filter(c=>!c.check(g10st.sel));
+  if(!failing.length)return;
+  const c=failing[0];
+  g10st.hints--;
+  g10st.hint=`💡 「${c.label}」を満たすには、<strong>${c.hintQ}</strong> を見直してください。`;
+  document.getElementById('screen').innerHTML=renderG10();
+}
+
+function g10next(){
+  g10st.p++;
+  g10st.sel={};
+  g10st.sub=false;
+  g10st.hints=2;
+  g10st.tries=0;
+  g10st.hint=null;
+  document.getElementById('screen').innerHTML=renderG10();
+}
+
+function retryG10(){
+  g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
   document.getElementById('screen').innerHTML=renderG10();
 }
 
 function renderG10(){
-  const {c1,c2,c3}=g10sel;
-  const cons=g10constraints(g10sel);
-  const allOk=cons.every(c=>c.ok);
+  const pz=g10puzzles[g10st.p];
+  const {sel,sub,hints,tries,hint}=g10st;
+  const allSet=pz.decisions.every(d=>sel[d.id]);
+  const cons=pz.constraints.map(c=>({...c,ok:c.check(sel)}));
+  const allOk=allSet&&cons.every(c=>c.ok);
+  const showRes=sub&&allSet;
 
-  const icon=c=>!c.set?'○':c.ok?'✓':'✗';
-  const clr=c=>!c.set?'var(--tm)':c.ok?'var(--tok)':'var(--tng)';
-  const bg=c=>!c.set?'var(--s2)':c.ok?'rgba(70,170,70,.12)':'rgba(200,60,60,.12)';
+  const conPanel=cons.map(c=>{
+    const state=!showRes?'pending':c.ok?'ok':'ng';
+    return `<div style="display:flex;align-items:center;gap:.5rem;padding:.3rem .6rem;border-radius:6px;background:${state==='pending'?'var(--s2)':state==='ok'?'rgba(70,170,70,.12)':'rgba(200,60,60,.12)'}">
+      <span style="font-weight:700;color:${state==='pending'?'var(--tm)':state==='ok'?'var(--tok)':'var(--tng)'};min-width:16px;text-align:center">${state==='pending'?'◦':state==='ok'?'✓':'✗'}</span>
+      <span style="font-size:12px;color:${state==='pending'?'var(--tm)':state==='ok'?'var(--tok)':'var(--tng)'}">${c.label}</span>
+    </div>`;
+  }).join('');
 
-  const conPanel=cons.map(c=>`
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.3rem .6rem;border-radius:6px;background:${bg(c)}">
-      <span style="font-size:13px;width:16px;text-align:center;color:${clr(c)};font-weight:700">${icon(c)}</span>
-      <span style="font-size:12px;color:${clr(c)}">${c.label}</span>
+  const decPanel=pz.decisions.map(d=>`
+    <div style="margin-bottom:.65rem">
+      <div style="font-size:11px;color:var(--tm);margin-bottom:.3rem">${d.q}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${d.opts.map(o=>`<button class="btn ${sel[d.id]===o.v?'btn-p':''}" onclick="g10pick('${d.id}','${o.v}')" style="font-size:11px">${o.l}</button>`).join('')}
+      </div>
     </div>`).join('');
 
-  const btn=(k,v,label)=>`<button class="btn ${g10sel[k]===v?'btn-p':''}" onclick="g10pick('${k}','${v}')" style="font-size:12px;flex:1">${label}</button>`;
+  let actions='';
+  if(!sub&&allSet){
+    actions=`<button class="btn btn-p" onclick="g10submit()">設計を確定する</button>`;
+  } else if(showRes&&!allOk){
+    const failN=cons.filter(c=>!c.ok).length;
+    actions=`<div class="fb ng show">✗ ${failN}件の制約を満たせていません。</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem">
+      <button class="btn btn-p" onclick="g10submit()">再確定する</button>
+      ${hints>0?`<button class="btn" onclick="g10showHint()">ヒント（残り${hints}）</button>`:`<span style="font-size:11px;color:var(--tm);align-self:center">ヒント使い切り</span>`}
+    </div>`;
+  } else if(showRes&&allOk&&g10st.p<g10puzzles.length-1){
+    actions=`<div class="fb ok show">✓ クリア！（${tries}回目で正解）</div>
+    <button class="btn btn-p" style="margin-top:.5rem" onclick="g10next()">次の問題へ →</button>`;
+  } else if(showRes&&allOk&&g10st.p===g10puzzles.length-1){
+    actions=`<div class="fb ok show">✓ 全問クリア！（${tries}回目で正解）</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem">
+      <button class="btn btn-p" onclick="finishGame(25)">結果を見る →</button>
+      <button class="btn" onclick="retryG10()">最初から ↩</button>
+    </div>`;
+  }
 
   return `
-    <div class="ch-title">${CHAPTERS[9].name}</div>
-    <div class="ch-heading">${CHAPTERS[9].sub}</div>
-    <p class="game-intro">すべての制約が ✓ になる設計の組み合わせを見つけてください。</p>
-    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem">${conPanel}</div>
-    ${g10svg(c1,c2,c3)}
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;display:flex;flex-direction:column;gap:.65rem;margin-bottom:.75rem">
-      <div>
-        <div style="font-size:10px;color:var(--tm);margin-bottom:.3rem">① PremiumAccount の継承先</div>
-        <div style="display:flex;gap:6px">${btn('c1','A','A: Account を直接継承')}${btn('c1','B','B: SavingsAccount を継承')}</div>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--tm);margin-bottom:.3rem">② AdvisorService との関係</div>
-        <div style="display:flex;gap:6px">${btn('c2','A','A: 継承（extends）')}${btn('c2','B','B: 合成（has-a ◆）')}</div>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--tm);margin-bottom:.3rem">③ calculatePremiumRate() の可視性</div>
-        <div style="display:flex;gap:6px">${btn('c3','A','+ public')}${btn('c3','B','# protected')}${btn('c3','C','− private')}</div>
-      </div>
+    <div class="ch-title">${CHAPTERS[9].name} — 問題 ${g10st.p+1}/${g10puzzles.length}</div>
+    <div class="ch-heading">${pz.title}</div>
+    <div class="info-box" style="margin-bottom:.75rem">${pz.context}</div>
+    <div style="margin-bottom:.75rem">
+      <div style="font-size:10px;color:var(--tm);margin-bottom:.4rem;letter-spacing:.05em">制約 — すべて満たす設計を選んでください</div>
+      <div style="display:flex;flex-direction:column;gap:4px">${conPanel}</div>
     </div>
-    ${allOk
-      ?`<div class="fb ok show">✓ 全制約クリア！完璧な設計です。</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem"><button class="btn btn-p" onclick="finishGame(25)">結果を見る →</button><button class="btn" onclick="retryG10()">リセット ↩</button></div>`
-      :c1&&c2&&c3?`<div class="fb ng show">✗ 満たせていない制約があります。組み合わせを変えてみてください。</div>`:''}`;
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.75rem">
+      <div style="font-size:10px;color:var(--tm);margin-bottom:.6rem;letter-spacing:.05em">設計の選択</div>
+      ${decPanel}
+    </div>
+    ${hint?`<div class="info-box" style="margin-bottom:.75rem">${hint}</div>`:''}
+    ${actions}`;
 }
-
-function g10svg(c1,c2,c3){
-  const H=44,HS=58;
-  const acc={x:215,y:12,w:130,h:H}; acc.cx=acc.x+acc.w/2; acc.bottom=acc.y+acc.h;
-  const lv1Y=108;
-  const mkN=(cx,w)=>{const n={cx,y:lv1Y,w,h:H};n.x=cx-w/2;n.bottom=n.y+n.h;return n;};
-  const sav=mkN(80,130),td=mkN(240,110),loan=mkN(385,100);
-
-  const premW=140,advW=128;
-  const premSub=c3?(c3==='A'?'+ ':c3==='B'?'# ':'− ')+'calcPremiumRate()':'';
-  const premH=premSub?HS:H;
-  const prem=c1==='B'
-    ?{cx:80, y:208,w:premW,h:premH,x:80-premW/2}
-    :{cx:505,y:lv1Y,w:premW,h:premH,x:505-premW/2};
-  prem.bottom=prem.y+prem.h;
-  const adv=c1==='B'
-    ?{cx:258,y:208,w:advW,h:H,x:258-advW/2}
-    :{cx:505,y:208,w:advW,h:H,x:505-advW/2};
-  adv.bottom=adv.y+adv.h;
-
-  const E=[];
-  const tri=(cx,tipY,clr='var(--bd)')=>
-    `<polygon points="${cx-6},${tipY+9} ${cx+6},${tipY+9} ${cx},${tipY}" fill="var(--bg)" stroke="${clr}" stroke-width="1.5"/>`;
-  const ln=(x1,y1,x2,y2,clr='var(--bd)',dash='')=>
-    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${clr}" stroke-width="1.5"${dash?` stroke-dasharray="${dash}"`:''}/>`;
-  const diamond=(cx,cy,clr)=>
-    `<polygon points="${cx},${cy-8} ${cx+5},${cy} ${cx},${cy+8} ${cx-5},${cy}" fill="${clr}" stroke="${clr}"/>`;
-
-  // Base bar
-  const barY=lv1Y-10;
-  const barR=c1==='A'?prem.cx:loan.cx;
-  E.push(ln(sav.cx,barY,barR,barY));
-  E.push(ln(acc.cx,acc.bottom,acc.cx,barY));
-  [sav,td,loan].forEach(n=>{E.push(ln(n.cx,barY,n.cx,n.y));E.push(tri(n.cx,n.y));});
-
-  // Boxes
-  const box=(n,title,sub,hl)=>{
-    const s=hl?'#5b9bd5':'var(--bd)';
-    const f=hl?'var(--ac,#16253a)':'var(--s1)';
-    return `<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="4" fill="${f}" stroke="${s}" stroke-width="${hl?2:1.5}"/>
-<text x="${n.cx}" y="${n.y+(sub?18:n.h/2+4)}" text-anchor="middle" font-size="11" font-weight="${hl?600:500}" fill="var(--tp)">${title}</text>
-${sub?`<text x="${n.cx}" y="${n.y+36}" text-anchor="middle" font-size="9" fill="var(--tm)">${sub}</text>`:''}`;
-  };
-  E.push(box(acc,'Account','«abstract»',false));
-  E.push(box(sav,'SavingsAccount','普通預金',false));
-  E.push(box(td,'TimeDeposit','定期預金',false));
-  E.push(box(loan,'LoanAccount','ローン',false));
-
-  // PremiumAccount
-  if(c1){
-    if(c1==='A'){
-      E.push(ln(prem.cx,barY,prem.cx,prem.y,'var(--tok)'));
-      E.push(tri(prem.cx,prem.y,'var(--tok)'));
-    } else {
-      E.push(ln(prem.cx,prem.y,sav.cx,sav.bottom,'var(--tok)'));
-      E.push(tri(sav.cx,sav.bottom-9,'var(--tok)'));
-    }
-    E.push(box(prem,'PremiumAccount',premSub,true));
-  }
-
-  // AdvisorService
-  if(c2){
-    E.push(box(adv,'AdvisorService','',true));
-    if(c2==='B'){
-      if(c1==='A'){
-        // vertical composition
-        E.push(ln(prem.cx,prem.bottom,adv.cx,adv.y,'#5b9bd5'));
-        E.push(diamond(prem.cx,prem.bottom,'#5b9bd5'));
-      } else {
-        // horizontal composition
-        const py=prem.y+prem.h/2;
-        E.push(ln(prem.x+prem.w,py,adv.x,adv.y+adv.h/2,'#5b9bd5'));
-        E.push(diamond(prem.x+prem.w,py,'#5b9bd5'));
-      }
-    } else {
-      // extends (invalid) - red dashed
-      const [x1,y1,x2,y2]=c1==='A'
-        ?[prem.cx,prem.bottom,adv.cx,adv.y]
-        :[prem.x+prem.w,prem.y+prem.h/2,adv.x,adv.y+adv.h/2];
-      E.push(ln(x1,y1,x2,y2,'var(--tng)','4,3'));
-      E.push(`<text x="${(x1+x2)/2}" y="${(y1+y2)/2-4}" text-anchor="middle" font-size="9" fill="var(--tng)">単一継承制限</text>`);
-    }
-  }
-
-  const vW=c1==='A'||!c1?580:430;
-  const vH=c2?adv.bottom+15:c1?prem.bottom+15:lv1Y+H+15;
-  return `<svg viewBox="0 0 ${vW} ${Math.max(185,vH)}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:240px;background:var(--s2);border-radius:var(--r);padding:6px;margin-bottom:.75rem">${E.join('')}</svg>`;
-}
-
-function retryG10(){g10sel={c1:null,c2:null,c3:null};document.getElementById('screen').innerHTML=renderG10();}
 
 // ─── COMPLETE ─────────────────────────────────
 function renderComplete(){
@@ -1186,7 +1215,7 @@ function restart(){
   g7sel=g7members.map(()=>'param');g7done=false;
   g8quiz=[null,null,null,null];
   g9placed={};g9sel=null;g9done=false;
-  g10sel={c1:null,c2:null,c3:null};
+  g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
   closeGloss();
   render();
 }
