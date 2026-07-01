@@ -317,13 +317,21 @@ document.addEventListener('click',e=>{
   if(!e.target.closest('#gloss-popup')&&!e.target.classList.contains('gloss-term'))closeGloss();
 });
 // テキスト内の用語をクリッカブルスパンに変換
+// プレースホルダー方式: 置換済みテキスト内の部分一致を防ぐ
 function glossify(html){
   const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','インスタンス','フィールド','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
+  const ph=[];
   const parts=html.split(/(<[^>]+>)/);
-  return parts.map((p,i)=>{
+  const withPh=parts.map((p,i)=>{
     if(i%2===1)return p;
-    return terms.reduce((s,t)=>s.split(t).join(`<span class="gloss-term" onclick="showGloss(this,'${t}')">${t}</span>`),p);
+    return terms.reduce((s,t)=>{
+      if(!s.includes(t))return s;
+      const idx=ph.length;
+      ph.push(`<span class="gloss-term" onclick="showGloss(this,'${t}')">${t}</span>`);
+      return s.split(t).join(`\x00${idx}\x00`);
+    },p);
   }).join('');
+  return withPh.replace(/\x00(\d+)\x00/g,(_,i)=>ph[+i]);
 }
 
 // ─── NAV & RENDER ────────────────────────────
