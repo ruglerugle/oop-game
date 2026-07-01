@@ -40,13 +40,13 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .progress{height:4px;background:var(--bd);border-radius:2px;margin-bottom:1.25rem}
 .progress-fill{height:100%;background:var(--fac);border-radius:2px;transition:width .4s}
 
-/* ── 用語集 ── */
-.glossary{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
-.glossary-title{font-size:13px;font-weight:500;color:var(--ts);margin-bottom:.75rem}
-.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-.g-term{background:var(--s1);border-radius:var(--r);padding:.625rem .75rem;border:1px solid var(--bd)}
-.g-term strong{display:block;font-size:13px;color:var(--tp);margin-bottom:3px}
-.g-term p{font-size:11px;color:var(--ts);line-height:1.6}
+/* ── 用語ツールチップ ── */
+.gloss-term{color:var(--fac);text-decoration:underline;text-decoration-style:dotted;cursor:help;text-underline-offset:3px}
+.gloss-term:hover{background:var(--ac);border-radius:2px}
+#gloss-popup{display:none;position:fixed;z-index:200;background:var(--s2);border:1px solid var(--bds);border-radius:12px;padding:1rem 1.25rem 1rem 1rem;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:280px;width:calc(100vw - 32px)}
+#gloss-popup strong{display:block;margin-bottom:.5rem;font-size:14px;color:var(--tp)}
+#gloss-popup p{color:var(--ts);line-height:1.65;font-size:13px}
+#gloss-close{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--tm);font-size:18px;line-height:1;padding:2px 6px;font-family:var(--f)}
 
 /* ── ストーリー ── */
 .story-panel{background:var(--s2);border:1px solid var(--bd);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
@@ -156,16 +156,19 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
   <div class="top-bar">
     <div class="chapter-nav" id="ch-nav"></div>
     <div class="top-btns">
-      <button class="btn btn-sm" onclick="toggleGlossary()">📖 用語集</button>
       <button class="btn btn-sm" id="back-btn" onclick="goBack()">← 戻る</button>
     </div>
   </div>
   <div class="progress"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <div id="glossary-panel" style="display:none"></div>
   <div id="screen"></div>
 </div>
+<div id="gloss-popup">
+  <button id="gloss-close" onclick="closeGloss()">×</button>
+  <strong id="gloss-term"></strong>
+  <p id="gloss-def"></p>
+</div>
 <script>
-const G={chapter:0,phase:'story',line:0,score:0,showGlossary:false};
+const G={chapter:0,phase:'story',line:0,score:0};
 const history=[];
 
 const CHAPTERS=[
@@ -245,19 +248,36 @@ function goBack(){
   render();
 }
 
-// ─── GLOSSARY ────────────────────────────────
-function toggleGlossary(){
-  G.showGlossary=!G.showGlossary;
-  const p=document.getElementById('glossary-panel');
-  if(G.showGlossary){
-    p.style.display='block';
-    p.innerHTML=`<div class="glossary">
-      <div class="glossary-title">📖 用語集</div>
-      <div class="glossary-grid">${GLOSSARY.map(g=>`<div class="g-term"><strong>${g.term}</strong><p>${g.def}</p></div>`).join('')}</div>
-    </div>`;
-  }else{
-    p.style.display='none';p.innerHTML='';
-  }
+// ─── GLOSSARY TOOLTIP ────────────────────────
+function showGloss(el,term){
+  const g=GLOSSARY.find(x=>x.term===term);
+  if(!g)return;
+  document.getElementById('gloss-term').textContent=g.term;
+  document.getElementById('gloss-def').textContent=g.def;
+  const pop=document.getElementById('gloss-popup');
+  pop.style.display='block';
+  const r=el.getBoundingClientRect();
+  const pw=Math.min(280,window.innerWidth-32);
+  let left=r.left;
+  if(left+pw>window.innerWidth-8)left=window.innerWidth-pw-8;
+  if(left<8)left=8;
+  let top=r.bottom+6;
+  pop.style.left=left+'px';
+  pop.style.top=top+'px';
+  pop.style.width=pw+'px';
+}
+function closeGloss(){document.getElementById('gloss-popup').style.display='none';}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#gloss-popup')&&!e.target.classList.contains('gloss-term'))closeGloss();
+});
+// テキスト内の用語をクリッカブルスパンに変換
+function glossify(html){
+  const terms=['カプセル化','アクセス修飾子','インスタンス','フィールド','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
+  const parts=html.split(/(<[^>]+>)/);
+  return parts.map((p,i)=>{
+    if(i%2===1)return p;
+    return terms.reduce((s,t)=>s.split(t).join(`<span class="gloss-term" onclick="showGloss(this,'${t}')">${t}</span>`),p);
+  }).join('');
 }
 
 // ─── NAV & RENDER ────────────────────────────
@@ -282,7 +302,7 @@ function storyHTML(lines,idx,onNext,isEpilogue=false){
         <div class="npc-avatar">${l.npc.split(' ')[0]}</div>
         <div style="flex:1">
           <div class="npc-name">${l.npc.split(' ').slice(1).join(' ')}</div>
-          <div class="bubble">${l.text}</div>
+          <div class="bubble">${glossify(l.text)}</div>
         </div>
       </div>
       <div class="story-actions">
@@ -388,23 +408,15 @@ function g2NodeSVG(cx,y,w,h,label,isFixed,slotId){
 
 // UML継承矢印: 空白三角（子→親方向、三角は親側＝線の終端）
 // 分岐バースタイル: 子たちの上端から横棒、中心から親の下端に向かって線+三角
-function g2Arrow(childCenters, parentCx, parentBottomY, barY){
+function g2Arrow(childCenters, childTopY, parentCx, parentBottomY, barY){
   const tri_h=12, tri_w=8;
-  // 三角: 頂点=(parentCx, parentBottomY), 底=(parentCx±tri_w, parentBottomY+tri_h)
-  const triTop=parentBottomY;
   const triBot=parentBottomY+tri_h;
-  let lines=childCenters.map(cx=>`<line x1="${cx}" y1="190" x2="${cx}" y2="${barY}" style="stroke:var(--ts);stroke-width:1.5"/>`).join('');
   const minCx=Math.min(...childCenters), maxCx=Math.max(...childCenters);
-  lines+=`<line x1="${minCx}" y1="${barY}" x2="${maxCx}" y2="${barY}" style="stroke:var(--ts);stroke-width:1.5"/>`;
-  lines+=`<line x1="${parentCx}" y1="${barY}" x2="${parentCx}" y2="${triBot}" style="stroke:var(--ts);stroke-width:1.5"/>`;
-  lines+=`<polygon points="${parentCx},${triTop} ${parentCx-tri_w},${triBot} ${parentCx+tri_w},${triBot}" style="fill:var(--s2);stroke:var(--ts);stroke-width:1.5;stroke-linejoin:round"/>`;
-  return lines;
-}
-function g2ArrowSingle(childCx, childTopY, parentCx, parentBottomY){
-  const tri_h=12, tri_w=8;
-  const triBot=parentBottomY+tri_h;
-  return `<line x1="${childCx}" y1="${childTopY}" x2="${parentCx}" y2="${triBot}" style="stroke:var(--ts);stroke-width:1.5"/>
-    <polygon points="${parentCx},${parentBottomY} ${parentCx-tri_w},${triBot} ${parentCx+tri_w},${triBot}" style="fill:var(--s2);stroke:var(--ts);stroke-width:1.5;stroke-linejoin:round"/>`;
+  let s=childCenters.map(cx=>`<line x1="${cx}" y1="${childTopY}" x2="${cx}" y2="${barY}" style="stroke:var(--ts);stroke-width:1.5"/>`).join('');
+  s+=`<line x1="${minCx}" y1="${barY}" x2="${maxCx}" y2="${barY}" style="stroke:var(--ts);stroke-width:1.5"/>`;
+  s+=`<line x1="${parentCx}" y1="${barY}" x2="${parentCx}" y2="${triBot}" style="stroke:var(--ts);stroke-width:1.5"/>`;
+  s+=`<polygon points="${parentCx},${parentBottomY} ${parentCx-tri_w},${triBot} ${parentCx+tri_w},${triBot}" style="fill:var(--s2);stroke:var(--ts);stroke-width:1.5;stroke-linejoin:round"/>`;
+  return s;
 }
 
 function renderG2(){
@@ -420,12 +432,12 @@ function renderG2(){
     cl:      {cx:480,y:196,w:98,label:g2placed.cl||'',slot:'cl'},
   };
 
-  // 矢印: Dep,Loan → Account (バー y=73)
-  const arrTop=g2Arrow([N.dep.cx,N.loan.cx],N.account.cx,N.account.y+NODE_H,73);
-  // 矢印: Sav,TD → Dep (バー y=163)
-  const arrDep=g2Arrow([N.sav.cx,N.td.cx],N.dep.cx,N.dep.y+NODE_H,163);
-  // 矢印: ML,Car → Loan (バー y=163)
-  const arrLoan=g2Arrow([N.ml.cx,N.cl.cx],N.loan.cx,N.loan.y+NODE_H,163);
+  // 矢印: Dep,Loan → Account  (barY は親底辺44と子上辺105の中間)
+  const arrTop=g2Arrow([N.dep.cx,N.loan.cx],N.dep.y,N.account.cx,N.account.y+NODE_H,75);
+  // 矢印: Sav,TD → Dep       (barY は親底辺139と子上辺196の中間)
+  const arrDep=g2Arrow([N.sav.cx,N.td.cx],N.sav.y,N.dep.cx,N.dep.y+NODE_H,168);
+  // 矢印: ML,Car → Loan
+  const arrLoan=g2Arrow([N.ml.cx,N.cl.cx],N.ml.y,N.loan.cx,N.loan.y+NODE_H,168);
 
   const nodes=Object.entries(N).map(([k,n])=>g2NodeSVG(n.cx,n.y,n.w,NODE_H,n.label,n.fixed,n.slot||null)).join('');
 
@@ -481,7 +493,7 @@ function renderG3(){
       <div class="world-box">
         <div class="world-title">合成 ◆ — 生死を共にする</div>
         <div style="margin-bottom:.5rem">
-          <div class="obj-block">🏦 Bank A</div>
+          <div class="obj-block ${g3bankDead?'dead':''}" id="banka-obj">🏦 Bank A</div>
           <div style="display:flex;flex-direction:column;align-items:center">
             <div class="diamond filled"></div>
             <div class="compose-line solid"></div>
@@ -491,7 +503,7 @@ function renderG3(){
         <div class="rel-label">Bank が消えると支店も消える</div>
         ${!g3bankDead
           ?`<button class="btn" style="width:100%;font-size:12px;padding:.5rem" onclick="g3kill1()">Bank A が倒産 🏚️</button>`
-          :`<div style="font-size:12px;color:var(--tng);font-weight:500">支店も消えた！</div>`}
+          :`<div style="font-size:12px;color:var(--tng);font-weight:500">Bank A も支店も消えた！</div>`}
       </div>
       <div class="world-box">
         <div class="world-title">集約 ◇ — 独立して存在できる</div>
@@ -522,9 +534,11 @@ function renderG3(){
     ${g3quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${g3quiz.filter((a,i)=>a===g3q[i].a).length}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${g3quiz.filter((a,i)=>a===g3q[i].a).length*8+1})">次へ →</button>`:''}`;
 }
 function g3kill1(){
-  const el=document.getElementById('branch-obj');
-  if(el)el.classList.add('dead');
-  setTimeout(()=>{g3bankDead=true;document.getElementById('screen').innerHTML=renderG3();},500);
+  const bank=document.getElementById('banka-obj');
+  const branch=document.getElementById('branch-obj');
+  if(bank)bank.classList.add('dead');
+  if(branch)branch.classList.add('dead');
+  setTimeout(()=>{g3bankDead=true;document.getElementById('screen').innerHTML=renderG3();},600);
 }
 function g3kill2(){
   const el=document.getElementById('bankb-obj');
@@ -603,12 +617,12 @@ function renderComplete(){
 }
 function restart(){
   history.length=0;
-  Object.assign(G,{chapter:0,phase:'story',line:0,score:0,showGlossary:false});
+  Object.assign(G,{chapter:0,phase:'story',line:0,score:0});
   g1sel=g1m.map(()=>'pub');
   g2placed={};g2sel=null;g2done=false;
   g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];
   g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];
-  document.getElementById('glossary-panel').style.display='none';
+  closeGloss();
   render();
 }
 render();
