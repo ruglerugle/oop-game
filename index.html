@@ -196,6 +196,7 @@ const CHAPTERS=[
   {name:'第4章',sub:'金利改定の謎'},
   {name:'第5章',sub:'同じ命令、違う動き'},
   {name:'第6章',sub:'設計の契約書'},
+  {name:'第7章',sub:'口座開設の設計図'},
 ];
 
 const GLOSSARY=[
@@ -285,7 +286,17 @@ const stories={
   ],
   '5e':[
     {npc:'📂 システム部長',text:'正しく設計できた。calculateInterest() のような「クラスによって実装が違うもの」を抽象メソッドにする。共通処理は具体メソッドでよい。'},
-    {npc:'👔 頭取',text:'6章すべてを修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス。これらがオブジェクト指向の根幹だ。お疲れさまでした。'},
+    {npc:'👔 頭取',text:'残るは最後の課題だ。'},
+  ],
+  6:[
+    {npc:'👔 頭取',text:'新しい口座開設システムを作っていたら、こんなバグが報告された。「開設直後の口座で残高がマイナスになっている」「名義人が空欄のまま取引できてしまった」。'},
+    {npc:'📂 システム部長',text:'原因はコンストラクタの設計ミスだ。コンストラクタとは new でインスタンスを作るときに自動で呼ばれる特別なメソッドで、初期値をセットする役割を持つ。'},
+    {npc:'📂 システム部長',text:'コンストラクタには「開設者から受け取るべき情報（引数）」と「システムが自動でセットするデフォルト値」と「コンストラクタで扱わないもの（static など）」がある。'},
+    {npc:'📂 システム部長',text:'各フィールドをどう初期化すべきか分類してくれ。正しく設計すれば、口座開設時のバグはなくなる。'},
+  ],
+  '6e':[
+    {npc:'📂 システム部長',text:'完璧だ。accountId・ownerName・pin は開設者から受け取らないとセットできない。balance=0・createdAt=現在日時はシステムが自動で決めてよい。interestRate は static なのでコンストラクタ不要だ。'},
+    {npc:'👔 頭取',text:'全7章を修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス・コンストラクタ。これらがオブジェクト指向の根幹だ。お疲れさまでした。'},
   ],
 };
 
@@ -377,7 +388,7 @@ function render(){
   updateNav();
   const scr=document.getElementById('screen');
   if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
-  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6][G.chapter]();
+  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6,renderG7][G.chapter]();
   else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
   else scr.innerHTML=renderComplete();
 }
@@ -786,10 +797,71 @@ function g4upRate(){g4rate=parseFloat((g4rate+0.25).toFixed(2));document.getElem
 function g4deposit(i){g4bal[i]+=500000;document.getElementById('screen').innerHTML=renderG4();}
 function g4ans(i,v){if(g4quiz[i]!==null)return;g4quiz[i]=v;document.getElementById('screen').innerHTML=renderG4();}
 
+// ─── GAME 7: コンストラクタ ──────────────────────
+const g7members=[
+  {name:'accountId: String',   correct:'param',   hint:'口座番号は開設時に銀行が発行して渡す。'},
+  {name:'ownerName: String',   correct:'param',   hint:'名義人は申請者が提供する情報。'},
+  {name:'pin: int',            correct:'param',   hint:'暗証番号は顧客が開設時に設定する。'},
+  {name:'balance: double',     correct:'default', hint:'残高は 0 円からスタートが自然。balance = 0'},
+  {name:'createdAt: Date',     correct:'default', hint:'開設日時は new した瞬間の日時でよい。'},
+  {name:'interestRate: double',correct:'none',    hint:'static フィールドはコンストラクタで設定しない。'},
+];
+let g7sel=g7members.map(()=>'param'),g7done=false;
+
+function renderG7(){
+  const params=g7members.filter((_,i)=>g7sel[i]==='param').map(m=>m.name.split(':')[0].trim());
+  const defaults=g7members.filter((_,i)=>g7sel[i]==='default').map(m=>`  this.${m.name.split(':')[0].trim()} = …`);
+  const paramLines=params.map(p=>`  String/int/… ${p}`);
+  const assignLines=params.map(p=>`  this.${p} = ${p};`);
+  const preview=[
+    `BankAccount(`,
+    ...(paramLines.length?paramLines:['  // 引数なし']),
+    `) {`,
+    ...(assignLines.length?assignLines:[]),
+    ...(defaults.length?defaults:[]),
+    `}`,
+  ].join('\n');
+
+  const rows=g7members.map((m,i)=>{
+    const sel=g7sel[i];
+    let mark='';
+    if(g7done)mark=`<span style="font-weight:600;margin-left:4px;color:${sel===m.correct?'var(--tok)':'var(--tng)'}">${sel===m.correct?'✓':'✗'}</span>`;
+    return `<div class="m-row">
+      <span class="m-name">${m.name}</span>
+      <div class="m-mod-btn">
+        <span class="mod-opt mod-pub ${sel==='param'?'sel':''}"   onclick="${g7done?'':'g7set('+i+',\'param\')'}">引数</span>
+        <span class="mod-opt mod-pro ${sel==='default'?'sel':''}" onclick="${g7done?'':'g7set('+i+',\'default\')'}">初期値</span>
+        <span class="mod-opt mod-pri ${sel==='none'?'sel':''}"    onclick="${g7done?'':'g7set('+i+',\'none\')'}">不要</span>
+        ${mark}
+      </div>
+    </div>`;
+  }).join('');
+
+  const correct=g7sel.filter((s,i)=>s===g7members[i].correct).length;
+  const hints=g7done?`<br><br>${g7members.map((m,i)=>`<span style="color:${g7sel[i]===m.correct?'var(--tok)':'var(--tng)'}">${g7sel[i]===m.correct?'✓':'✗'} ${m.name} — ${m.hint}</span>`).join('<br>')}`:'';
+
+  return `
+    <div class="ch-title">${CHAPTERS[6].name}</div>
+    <div class="ch-heading">${CHAPTERS[6].sub}</div>
+    <p class="game-intro">各フィールドをコンストラクタでどう扱うか選んでください。右のプレビューにコンストラクタが組み立てられます。</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;align-items:start">
+      <div class="uml-class">
+        <div class="uml-head">BankAccount</div>
+        <div class="uml-sec">${rows}</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;font-family:var(--m);font-size:11px;line-height:1.9;white-space:pre;overflow-x:auto">${preview}</div>
+    </div>
+    ${g7done
+      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button>`
+      :`<button class="btn btn-p" onclick="g7check()">設計を確認する</button>`}`;
+}
+function g7set(i,v){if(g7done)return;g7sel[i]=v;document.getElementById('screen').innerHTML=renderG7();}
+function g7check(){g7done=true;document.getElementById('screen').innerHTML=renderG7();}
+
 // ─── COMPLETE ─────────────────────────────────
 function renderComplete(){
   updateNav();document.getElementById('prog').style.width='100%';
-  const max=150,pct=Math.round(G.score/max*100);
+  const max=175,pct=Math.round(G.score/max*100);
   const msg=pct>=80?'銀行システムの設計を完璧に理解した！':pct>=50?'もう少し。もう一度挑戦してみよう。':'基礎を復習してからもう一度！';
   const sums=[
     {t:'アクセス修飾子',b:'public/private/protected で情報を隠す。残高や暗証番号は private にして getBalance() などの窓口だけを公開する。'},
@@ -798,6 +870,7 @@ function renderComplete(){
     {t:'static',b:'static フィールドはクラス自体に属し全インスタンスで共有。金利はクラス全体で一つ、残高は口座ごとに別々。'},
     {t:'ポリモーフィズム',b:'同じ命令を送っても、実際のオブジェクト型に応じた実装が呼ばれる。Account[] に混在させて一括処理できる。'},
     {t:'抽象クラス',b:'インスタンス化できないクラス。abstract メソッドでサブクラスに実装を強制し、設計の契約書となる。'},
+    {t:'コンストラクタ',b:'new でインスタンスを作るときに自動で呼ばれるメソッド。引数で受け取る値・デフォルト値・static の3種を正しく使い分けて初期化する。'},
   ];
   return `<div class="complete">
     <h2>🏦 銀行システム完成！</h2>
@@ -816,6 +889,7 @@ function restart(){
   g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];
   g5step=-1;g5quiz=[null,null,null];
   g6sel=g6members.map(()=>'concrete');g6done=false;
+  g7sel=g7members.map(()=>'param');g7done=false;
   closeGloss();
   render();
 }
