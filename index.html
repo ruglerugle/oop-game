@@ -450,7 +450,7 @@ function g1check(){
   const result=g1m.map((m,i)=>g1sel[i]!==m.correct?`<span style="color:var(--tng)">✗ ${m.name}（正解:${m.correct}）</span>`:`<span style="color:var(--tok)">✓ ${m.name}</span>`).join('<br>');
   const fb=document.getElementById('g1fb');
   fb.className='fb '+(ok?'ok':'ng')+' show';
-  fb.innerHTML=`<div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.75rem;font-size:13px">🔍 外部アクセステスト<br>${rows}</div>${ok?'✓ 完璧！':'✗ 不正解あり。'} ${correct}/${g1m.length} 正解<br>${result}<br><br><button class="btn btn-p" onclick="finishGame(${pts})">次へ →</button>`;
+  fb.innerHTML=`<div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.75rem;font-size:13px">🔍 外部アクセステスト<br>${rows}</div>${ok?'✓ 完璧！':'✗ 不正解あり。'} ${correct}/${g1m.length} 正解<br>${result}<br><br><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${pts})">次へ →</button><button class="btn" onclick="retryG1()">もう一度 ↩</button></div>`;
   document.querySelector('[onclick="g1check()"]').disabled=true;
 }
 
@@ -522,7 +522,7 @@ function renderG2(){
   }).join('');
 
   const fb=g2done
-    ?`<div class="fb ok show">✓ 完成！Account を頂点とした継承ツリーができました。</div><button class="btn btn-p" onclick="finishGame(25)">次へ →</button>`
+    ?`<div class="fb ok show">✓ 完成！Account を頂点とした継承ツリーができました。</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(25)">次へ →</button><button class="btn" onclick="retryG2()">もう一度 ↩</button></div>`
     :`<div class="fb" id="g2fb"></div><button class="btn btn-p" onclick="g2check()">確認する</button>`;
 
   return `
@@ -622,7 +622,7 @@ function renderG3(){
         </div>
       </div>`;
     }).join(''):''}
-    ${g3quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${g3quiz.filter((a,i)=>a===g3q[i].a).length}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${g3quiz.filter((a,i)=>a===g3q[i].a).length*8+1})">次へ →</button>`:''}`;
+    ${g3quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${g3quiz.filter((a,i)=>a===g3q[i].a).length}/3 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${g3quiz.filter((a,i)=>a===g3q[i].a).length*8+1})">次へ →</button><button class="btn" onclick="retryG3()">もう一度 ↩</button></div>`:''}`;
 }
 function g3kill1(){
   const bank=document.getElementById('banka-obj');
@@ -689,7 +689,7 @@ function renderG5(){
     <div class="poly-area">${cards}</div>
     ${!completed?`<button class="btn btn-p" onclick="g5run()" ${g5step>=0?'disabled':''}>一括利息計算を実行 ▶</button>`:''}
     ${quiz}
-    ${g5quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${correct}/3 正解！</div><button class="btn btn-p" onclick="finishGame(${correct*8+1})">次へ →</button>`:''}`;
+    ${g5quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${correct}/3 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${correct*8+1})">次へ →</button><button class="btn" onclick="retryG5()">もう一度 ↩</button></div>`:''}`;
 }
 function g5run(){
   if(g5step>=0)return;
@@ -742,7 +742,7 @@ function renderG6(){
       <div class="uml-sec">${rows}</div>
     </div>
     ${g6done
-      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button>`
+      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button><button class="btn" onclick="retryG6()">もう一度 ↩</button></div>`
       :`<button class="btn btn-p" onclick="g6check()">設計を確認する</button>`}`;
 }
 function g6set(i,v){if(g6done)return;g6sel[i]=v;document.getElementById('screen').innerHTML=renderG6();}
@@ -791,7 +791,7 @@ function renderG4(){
       </div>
     </div>
     ${quiz}
-    ${allAns?`<div class="fb ok show">✓ ${correct}/2 正解！</div><button class="btn btn-p" onclick="finishGame(${correct*10+5})">結果を見る →</button>`:''}`;
+    ${allAns?`<div class="fb ok show">✓ ${correct}/2 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${correct*10+5})">結果を見る →</button><button class="btn" onclick="retryG4()">もう一度 ↩</button></div>`:''}`;
 }
 function g4upRate(){g4rate=parseFloat((g4rate+0.25).toFixed(2));document.getElementById('screen').innerHTML=renderG4();}
 function g4deposit(i){g4bal[i]+=500000;document.getElementById('screen').innerHTML=renderG4();}
@@ -852,7 +852,7 @@ function renderG7(){
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;font-family:var(--m);font-size:11px;line-height:1.9;white-space:pre;overflow-x:auto">${preview}</div>
     </div>
     ${g7done
-      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button>`
+      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button><button class="btn" onclick="retryG7()">もう一度 ↩</button></div>`
       :`<button class="btn btn-p" onclick="g7check()">設計を確認する</button>`}`;
 }
 function g7set(i,v){if(g7done)return;g7sel[i]=v;document.getElementById('screen').innerHTML=renderG7();}
@@ -880,6 +880,14 @@ function renderComplete(){
     <button class="btn btn-p" onclick="restart()">最初からやり直す</button>
   </div>`;
 }
+function retryG1(){g1sel=g1m.map(()=>'pub');document.getElementById('screen').innerHTML=renderG1();}
+function retryG2(){g2placed={};g2sel=null;g2done=false;document.getElementById('screen').innerHTML=renderG2();}
+function retryG3(){g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];document.getElementById('screen').innerHTML=renderG3();}
+function retryG4(){g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];document.getElementById('screen').innerHTML=renderG4();}
+function retryG5(){g5step=-1;g5quiz=[null,null,null];document.getElementById('screen').innerHTML=renderG5();}
+function retryG6(){g6sel=g6members.map(()=>'concrete');g6done=false;document.getElementById('screen').innerHTML=renderG6();}
+function retryG7(){g7sel=g7members.map(()=>'param');g7done=false;document.getElementById('screen').innerHTML=renderG7();}
+
 function restart(){
   history.length=0;
   Object.assign(G,{chapter:0,phase:'story',line:0,score:0});
