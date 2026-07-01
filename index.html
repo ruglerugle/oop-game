@@ -440,11 +440,9 @@ function g1check(){
 }
 
 // ─── GAME 2: 継承ツリー（SVG） ──────────────────
-// レイアウト定数 (viewBox 0 0 600 240)
-// Account(cx=300,y=10,w=96) → DepositAccount(cx=192,y=100,w=136) / LoanAccount(cx=408,y=100,w=122)
-// → Sav(cx=130,y=190,w=96) TD(cx=254,y=190,w=96) ML(cx=354,y=190,w=96) Car(cx=462,y=190,w=96)
 const g2correct={dep:'DepositAccount',loan:'LoanAccount',sav:'SavingsAccount',td:'TimeDeposit',ml:'MortgageLoan',cl:'CarLoan'};
 const g2cards=Object.values(g2correct);
+const g2jp={'Account':'口座','DepositAccount':'預金口座','LoanAccount':'ローン口座','SavingsAccount':'普通預金','TimeDeposit':'定期預金','MortgageLoan':'住宅ローン','CarLoan':'カーローン'};
 let g2placed={},g2sel=null,g2done=false;
 
 function g2NodeSVG(cx,y,w,h,label,isFixed,slotId){
@@ -453,20 +451,22 @@ function g2NodeSVG(cx,y,w,h,label,isFixed,slotId){
   const stroke=isEmpty?(hl?'var(--fac)':'var(--tm)'):'var(--ts)';
   const bg=hl?'var(--ac)':'var(--s2)';
   const tc=isEmpty?(hl?'var(--tac)':'var(--tm)'):'var(--tp)';
+  const tc2=isEmpty?(hl?'var(--tac)':'var(--tm)'):'var(--ts)';
   const dash=isEmpty?'stroke-dasharray="6 3"':'';
-  const sw=isFixed?'2':'2';
   const click=slotId?`onclick="g2place('${slotId}')" style="cursor:pointer"`:'';
   const x=cx-w/2;
+  const jp=label?g2jp[label]:'';
+  const mainY=jp?y+h*0.38:y+h/2+4;
+  const subY=y+h*0.72;
   return `<g ${click}>
     <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3"
-      style="fill:${bg};stroke:${stroke};stroke-width:${sw}" ${dash}/>
-    <text x="${cx}" y="${y+h/2+4}" text-anchor="middle"
+      style="fill:${bg};stroke:${stroke};stroke-width:2" ${dash}/>
+    <text x="${cx}" y="${mainY}" text-anchor="middle"
       style="font-size:11px;font-weight:500;fill:${tc}" pointer-events="none">${label||'?'}</text>
+    ${jp?`<text x="${cx}" y="${subY}" text-anchor="middle" style="font-size:9px;fill:${tc2}" pointer-events="none">${jp}</text>`:''}
   </g>`;
 }
 
-// UML継承矢印: 空白三角（子→親方向、三角は親側＝線の終端）
-// 分岐バースタイル: 子たちの上端から横棒、中心から親の下端に向かって線+三角
 function g2Arrow(childCenters, childTopY, parentCx, parentBottomY, barY){
   const tri_h=12, tri_w=8;
   const triBot=parentBottomY+tri_h;
@@ -479,30 +479,31 @@ function g2Arrow(childCenters, childTopY, parentCx, parentBottomY, barY){
 }
 
 function renderG2(){
-  const NODE_H=34;
-  // ノード座標
+  // NODE_H=46 で2行表示
+  const NODE_H=46;
   const N={
-    account: {cx:300,y:10,w:96,label:'Account',fixed:true},
-    dep:     {cx:192,y:105,w:140,label:g2placed.dep||'',slot:'dep'},
-    loan:    {cx:408,y:105,w:128,label:g2placed.loan||'',slot:'loan'},
-    sav:     {cx:108,y:196,w:98,label:g2placed.sav||'',slot:'sav'},
-    td:      {cx:228,y:196,w:98,label:g2placed.td||'',slot:'td'},
-    ml:      {cx:360,y:196,w:98,label:g2placed.ml||'',slot:'ml'},
-    cl:      {cx:480,y:196,w:98,label:g2placed.cl||'',slot:'cl'},
+    account: {cx:300,y:10, w:96, label:'Account',      fixed:true},
+    dep:     {cx:192,y:116,w:140,label:g2placed.dep||'',slot:'dep'},
+    loan:    {cx:408,y:116,w:128,label:g2placed.loan||'',slot:'loan'},
+    sav:     {cx:108,y:220,w:98, label:g2placed.sav||'',slot:'sav'},
+    td:      {cx:228,y:220,w:98, label:g2placed.td||'', slot:'td'},
+    ml:      {cx:360,y:220,w:98, label:g2placed.ml||'', slot:'ml'},
+    cl:      {cx:480,y:220,w:98, label:g2placed.cl||'', slot:'cl'},
   };
-
-  // 矢印: Dep,Loan → Account  (barY は親底辺44と子上辺105の中間)
-  const arrTop=g2Arrow([N.dep.cx,N.loan.cx],N.dep.y,N.account.cx,N.account.y+NODE_H,75);
-  // 矢印: Sav,TD → Dep       (barY は親底辺139と子上辺196の中間)
-  const arrDep=g2Arrow([N.sav.cx,N.td.cx],N.sav.y,N.dep.cx,N.dep.y+NODE_H,168);
-  // 矢印: ML,Car → Loan
-  const arrLoan=g2Arrow([N.ml.cx,N.cl.cx],N.ml.y,N.loan.cx,N.loan.y+NODE_H,168);
+  // barY = 親bottom と 子top の中間
+  // Account bottom=56, Dep/Loan top=116 → bar=86
+  // Dep/Loan bottom=162, Leaf top=220 → bar=191
+  const arrTop =g2Arrow([N.dep.cx,N.loan.cx],N.dep.y, N.account.cx,N.account.y+NODE_H,86);
+  const arrDep =g2Arrow([N.sav.cx,N.td.cx], N.sav.y, N.dep.cx,   N.dep.y+NODE_H,   191);
+  const arrLoan=g2Arrow([N.ml.cx,N.cl.cx],  N.ml.y,  N.loan.cx,  N.loan.y+NODE_H,  191);
 
   const nodes=Object.entries(N).map(([k,n])=>g2NodeSVG(n.cx,n.y,n.w,NODE_H,n.label,n.fixed,n.slot||null)).join('');
 
   const cards=g2cards.map(c=>{
     const pl=Object.values(g2placed).includes(c);
-    return `<div class="class-card ${pl?'placed':''} ${g2sel===c?'selected':''}" onclick="g2sel_fn('${c}')">${c}</div>`;
+    return `<div class="class-card ${pl?'placed':''} ${g2sel===c?'selected':''}" onclick="g2sel_fn('${c}')" style="text-align:center;line-height:1.4">
+      ${c}<br><span style="font-size:10px;font-weight:400;opacity:.65">${g2jp[c]}</span>
+    </div>`;
   }).join('');
 
   const fb=g2done
@@ -515,7 +516,7 @@ function renderG2(){
     <p class="game-intro">カードを選んでスロット（?）に配置してください。矢印は子クラス→親クラスの方向（UML標準）。</p>
     <div class="cards-area">${cards}</div>
     <div class="tree-wrap">
-      <svg viewBox="0 0 590 240" style="width:100%;min-width:320px;display:block;color:var(--ts)">
+      <svg viewBox="0 0 590 276" style="width:100%;min-width:320px;display:block;color:var(--ts)">
         ${arrTop}${arrDep}${arrLoan}${nodes}
       </svg>
     </div>
