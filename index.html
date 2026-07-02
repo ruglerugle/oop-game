@@ -329,7 +329,7 @@ const stories={
   9:[
     {npc:'📂 システム部長',text:'銀行システムの OOP 設計を習得した。だが実務では、金融以外のドメインでも全く同じ設計判断を迫られる。'},
     {npc:'📂 システム部長',text:'継承・カプセル化・ポリモーフィズムは「どこでも通用する武器」だ。複数の制約をすべて満たす設計を、論理的に導き出せるか試してみよう。'},
-    {npc:'💼 企画部長',text:'問題は全部で4問。答えを選んで「確定」するまで正誤は分からない。ヒントは各問2回まで使える。'},
+    {npc:'💼 企画部長',text:'答えを選んで「確定」するまで正誤は分からない。ヒントは各問2回まで使える。'},
   ],
   '9e':[
     {npc:'📂 システム部長',text:'全問クリアした。銀行・ゲーム・EC——ドメインが変わっても OOP の設計判断の軸は変わらない。'},
@@ -1213,6 +1213,44 @@ const g10puzzles=[
       {label:'乗車距離にマイナス値を設定できないこと',                   check:s=>s.d3==='B',  hintQ:'③ distance の管理'},
       {label:'calcLuxuryFee() は外部からは隠しつつ将来の VIPPremiumRide サブクラスからも呼べる', check:s=>s.d4==='C', hintQ:'④ calcLuxuryFee() の公開範囲'},
       {label:'全プランの料金集計が単純なループで書ける',                  check:s=>s.d5==='A',  hintQ:'⑤ 一括処理の方法'},
+    ],
+  },
+  {
+    title:'決済システムのインターフェース設計',
+    context:'EC サイトの決済に <strong>CreditCard・PayPay・BankTransfer</strong> を追加したい。各支払い方法は完全に独自のロジックを持つ。将来 CreditCard は払い戻し機能も持つ予定で、さらに支払い方法が増える可能性がある。',
+    decisions:[
+      {id:'d1',q:'① 支払い方法の共通の型をどう定義するか',opts:[
+        {v:'A',l:'abstract PaymentBase クラスを継承する'},
+        {v:'B',l:'Payable インターフェースを実装する（implements）'},
+        {v:'C',l:'共通の型は持たせない（各クラス独立）'},
+      ]},
+      {id:'d2',q:'② pay() メソッドの定義方法',opts:[
+        {v:'A',l:'PaymentBase に実装済みの pay() を全クラスが共有する'},
+        {v:'B',l:'Payable にシグネチャだけ定義し、各クラスが独自に実装する'},
+        {v:'C',l:'決済サービス側で支払い方法ごとに処理を書く'},
+      ]},
+      {id:'d3',q:'③ 将来の払い戻し機能の追加方法',opts:[
+        {v:'A',l:'Payable インターフェースに refund() を追加（全クラスに実装を強制）'},
+        {v:'B',l:'Payable を継承した PayableAndRefundable インターフェースを作る'},
+        {v:'C',l:'Refundable インターフェースを別に定義して必要なクラスだけ implements する'},
+      ]},
+      {id:'d4',q:'④ CreditCard 専用の不正検出 detectFraud() の定義場所',opts:[
+        {v:'A',l:'Payable インターフェースに追加（全支払い方法に強制）'},
+        {v:'B',l:'CreditCard クラスに直接メソッドとして定義する'},
+        {v:'C',l:'FraudDetectable インターフェースを別途定義して CreditCard が implements する'},
+      ]},
+      {id:'d5',q:'⑤ 決済サービスが支払いを受け取る型',opts:[
+        {v:'A',l:'CreditCard・PayPay・BankTransfer を直接参照（具体的な型）'},
+        {v:'B',l:'Payable インターフェース型として受け取る'},
+        {v:'C',l:'PaymentBase 抽象クラス型として受け取る'},
+      ]},
+    ],
+    constraints:[
+      {label:'CreditCard が将来 Payable と Refundable を同時に実装できる（多重実装）',            check:s=>s.d1==='B',hintQ:'① 型の定義（abstract クラスは単一継承のみ）'},
+      {label:'各支払い方法が完全に独自の pay() ロジックを持ち、共通実装を押し付けない',           check:s=>s.d2==='B',hintQ:'② pay() の定義（インターフェースはシグネチャのみ）'},
+      {label:'払い戻し不要な BankTransfer に refund() の実装を強制しない',                       check:s=>s.d3==='C',hintQ:'③ 払い戻し機能の追加方法'},
+      {label:'detectFraud() を将来 DebitCard にも共通の型として型安全に再利用できる',             check:s=>s.d4==='C',hintQ:'④ 不正検出の定義場所（インターフェースで型を共有）'},
+      {label:'決済サービスが具体的な支払いクラスを一切知らなくてよい（疎結合）',                  check:s=>s.d5==='B',hintQ:'⑤ 決済サービスの依存型'},
     ],
   },
 ];
