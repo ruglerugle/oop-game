@@ -199,7 +199,9 @@ const CHAPTERS=[
   {name:'第7章',sub:'口座開設の設計図'},
   {name:'第8章',sub:'型の正体を見抜け'},
   {name:'第9章',sub:'障害に備えるシステム'},
-  {name:'実践編',sub:'プレミアム口座の設計'},
+  {name:'第10章',sub:'クラスの依存関係'},
+  {name:'第11章',sub:'インターフェースの実現'},
+  {name:'実践編',sub:'設計制約パズル'},
 ];
 
 const GLOSSARY=[
@@ -232,6 +234,8 @@ const GLOSSARY=[
   {term:'instanceof',def:'オブジェクトが特定のクラスのインスタンスかどうかを確認する演算子。if (a instanceof SavingsAccount) のように使う。ダウンキャスト前の安全確認に役立つ。'},
   {term:'例外処理',def:'実行時エラーを安全に捕まえて対処する仕組み。throw で例外を投げ、try で主処理を囲み、catch でエラーを受け取り、finally で後処理を実行する。'},
   {term:'throw',def:'例外を意図的に発生させるキーワード。throw new InsufficientFundsException() のように書く。条件チェックで異常を検知したときに使う。'},
+  {term:'依存',def:'あるクラスが別のクラスを「一時的に使う」関係。メソッドの引数やローカル変数として使うだけで、フィールドには持たない。最も弱い結合。UML では点線矢印 →。'},
+  {term:'実現',def:'クラスがインターフェースを implements すること。「このクラスはこの契約を果たす」という関係。メソッドを全て正確なシグネチャで実装する必要がある。UML では点線＋白抜き三角 ▷。'},
 ];
 
 const stories={
@@ -327,11 +331,30 @@ const stories={
     {npc:'👔 頭取',text:'全9章の基礎学習を修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス・コンストラクタ・型キャスト・例外処理。いよいよ実践だ。'},
   ],
   9:[
+    {npc:'📂 システム部長',text:'クラス図には矢印が4種類ある。継承・合成・集約はすでに学んだ。残る1つが<strong>依存</strong>だ。'},
+    {npc:'📂 システム部長',text:'依存とは、あるクラスが別のクラスを「一時的に使う」関係だ。メソッドの引数やローカル変数として使うだけで、フィールドには持たない。UML では点線矢印 →。'},
+    {npc:'🔐 セキュリティ部長',text:'依存は最も弱い関係だが、依存の向きは重要だ。上位モジュールが下位に依存するのではなく、インターフェースを挟んで逆転させることができる。'},
+    {npc:'📂 システム部長',text:'5つのコードが示す関係を見抜いてくれ。依存・合成・集約・継承のどれかを答えてほしい。'},
+  ],
+  '9e':[
+    {npc:'📂 システム部長',text:'完璧だ。依存は「引数やローカル変数として一時的に使う」だけで、フィールドには持たない。これが最も弱い結合で、疎結合設計の基本になる。'},
+    {npc:'🔐 セキュリティ部長',text:'依存の方向を意識することが重要だ。どのクラスがどのクラスに依存しているかを把握すれば、変更の影響範囲が読める。'},
+  ],
+  10:[
+    {npc:'📂 システム部長',text:'第6章でインターフェースを学んだ。クラスがインターフェースを implements することを<strong>実現</strong>という。UML では点線＋白抜き三角 ▷ で表す。'},
+    {npc:'📂 システム部長',text:'実現には厳格な契約がある。インターフェースで定義されたメソッドを、<strong>すべて・正確なシグネチャ（名前・引数・戻り値型）で</strong>実装しなければならない。'},
+    {npc:'💼 企画部長',text:'1つでも欠けていれば、1つでも型が違えば、コンパイルエラーになる。インターフェースの3つの実装例を見て、正しく実現できているか判定してくれ。'},
+  ],
+  '10e':[
+    {npc:'📂 システム部長',text:'正確な判定だ。実現関係では「メソッドの存在」だけでなく「戻り値型・引数型の完全一致」が必要だ。'},
+    {npc:'💼 企画部長',text:'これがインターフェースの強さでもある。実現できていなければコンパイル時点で発覚する。実行時ではなく設計段階でバグを防げる。'},
+  ],
+  11:[
     {npc:'📂 システム部長',text:'銀行システムの OOP 設計を習得した。だが実務では、金融以外のドメインでも全く同じ設計判断を迫られる。'},
     {npc:'📂 システム部長',text:'継承・カプセル化・ポリモーフィズムは「どこでも通用する武器」だ。複数の制約をすべて満たす設計を、論理的に導き出せるか試してみよう。'},
     {npc:'💼 企画部長',text:'答えを選んで「確定」するまで正誤は分からない。ヒントは各問2回まで使える。'},
   ],
-  '9e':[
+  '11e':[
     {npc:'📂 システム部長',text:'全問クリアした。銀行・ゲーム・EC——ドメインが変わっても OOP の設計判断の軸は変わらない。'},
     {npc:'💼 企画部長',text:'制約を読んで論理的に答えを絞り込む力。それが実務で求められる設計力だ。'},
   ],
@@ -371,7 +394,7 @@ document.addEventListener('click',e=>{
 // テキスト内の用語をクリッカブルスパンに変換
 // プレースホルダー方式: 置換済みテキスト内の部分一致を防ぐ
 function glossify(html){
-  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','コンストラクタ','バリデーション','ダウンキャスト','型キャスト','instanceof','例外処理','throw','オブジェクト','インスタンス','フィールド','メンバー','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
+  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','コンストラクタ','バリデーション','ダウンキャスト','型キャスト','instanceof','例外処理','throw','依存','実現','オブジェクト','インスタンス','フィールド','メンバー','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
   const ph=[];
   const parts=html.split(/(<[^>]+>)/);
   const withPh=parts.map((p,i)=>{
@@ -425,7 +448,7 @@ function render(){
   updateNav();
   const scr=document.getElementById('screen');
   if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
-  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6,renderG7,renderG8,renderG9,renderG10][G.chapter]();
+  else if(G.phase==='game') scr.innerHTML=[renderG1,renderG2,renderG3,renderG4,renderG5,renderG6,renderG7,renderG8,renderG9,renderG10,renderG11,renderGP][G.chapter]();
   else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
   else scr.innerHTML=renderComplete();
 }
@@ -991,7 +1014,7 @@ function g9place(slot){if(!g9sel||g9done)return;g9placed[slot]=g9sel;g9sel=null;
 function g9check(){g9done=true;document.getElementById('screen').innerHTML=renderG9();}
 
 // ─── GAME 10: 設計制約パズル ──────────────────────
-const g10puzzles=[
+const gPpuzzles=[
   {
     title:'プレミアム口座の設計',
     context:'富裕層向け <strong>PremiumAccount</strong> を追加する。SavingsAccount は本番稼働中でテスト 2000 件が依存している。<strong>既存クラスは変更不可。</strong>',
@@ -1255,51 +1278,180 @@ const g10puzzles=[
   },
 ];
 
-let g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
+// ─── G10: 依存 ────────────────────────────────
+const g10items=[
+  {code:`class ATM {\n  void dispense(BankNote note) { note.getAmount(); }\n}`,label:'ATM が BankNote をメソッド引数として受け取り、一時的に使う',ans:'A'},
+  {code:`class Bank {\n  private Branch[] branches;\n  Bank() { branches=new Branch[5]; }\n}`,label:'Bank が Branch を生成・所有し、Bank が消えると Branch も消える',ans:'B'},
+  {code:`class Branch {\n  private List&lt;Customer&gt; customers;\n}`,label:'Branch が Customer を参照するが、Customer は独立して存在できる',ans:'C'},
+  {code:`class SavingsAccount extends DepositAccount {}`,label:'SavingsAccount は DepositAccount の一種（is-a 関係）',ans:'D'},
+  {code:`class ReportService {\n  void generate(List&lt;Transaction&gt; txList) { ... }\n}`,label:'ReportService がメソッド引数として Transaction リストを一時的に使う',ans:'A'},
+];
+const g10opts=[
+  {v:'A',l:'依存（点線矢印 →）'},
+  {v:'B',l:'合成（塗り菱形 ◆）'},
+  {v:'C',l:'集約（白抜き菱形 ◇）'},
+  {v:'D',l:'継承（白抜き三角 △）'},
+];
+let g10ans=[null,null,null,null,null];
 
-function g10pick(id,v){
-  g10st.sel[id]=v;
-  g10st.sub=false;
-  g10st.hint=null;
-  document.getElementById('screen').innerHTML=renderG10();
+function g10pick(i,v){g10ans[i]=v;document.getElementById('screen').innerHTML=renderG10();}
+function retryG10(){g10ans=[null,null,null,null,null];document.getElementById('screen').innerHTML=renderG10();}
+function renderG10(){
+  const done=g10ans.every(a=>a!==null);
+  const checked=g10ans.map((a,i)=>a!==null&&a===g10items[i].ans);
+  const score25=done?checked.filter(Boolean).length*5:null;
+
+  const rows=g10items.map((it,i)=>`
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.65rem">
+      <pre style="font-size:11px;background:var(--s2);border-radius:6px;padding:.6rem;overflow-x:auto;margin-bottom:.5rem">${it.code}</pre>
+      <div style="font-size:11px;color:var(--tm);margin-bottom:.4rem">${it.label}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${g10opts.map(o=>{
+          const sel=g10ans[i]===o.v;
+          const show=done&&sel;
+          const ok=g10items[i].ans===o.v;
+          let style='';
+          if(show) style=ok?'background:rgba(70,170,70,.18);border-color:var(--tok)':'background:rgba(200,60,60,.12);border-color:var(--tng)';
+          return `<button class="btn ${sel?'btn-p':''}" onclick="g10pick(${i},'${o.v}')" style="font-size:11px;${style}">${o.l}</button>`;
+        }).join('')}
+      </div>
+      ${done?`<div style="font-size:11px;margin-top:.35rem;color:${checked[i]?'var(--tok)':'var(--tng)'}">${checked[i]?'✓ 正解':'✗ 正解: '+g10opts.find(o=>o.v===g10items[i].ans).l}</div>`:''}
+    </div>`).join('');
+
+  return `
+    <div class="ch-title">${CHAPTERS[9].name} — 関係分類ドリル</div>
+    <div class="ch-heading">UML の関係を見抜け</div>
+    <div class="info-box" style="margin-bottom:.75rem">各コードが表す関係を選んでください。依存は「メソッド引数・ローカル変数として一時的に使う」最も弱い結合です。</div>
+    ${rows}
+    ${!done?`<div style="font-size:12px;color:var(--tm)">全 ${g10items.length} 問を選択してください</div>`
+      :`<div class="fb ${score25>=20?'ok':'ng'} show">${score25>=20?'✓':'✗'} ${score25} / 25 点</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
+          <button class="btn btn-p" onclick="finishGame(${score25})">次へ →</button>
+          <button class="btn" onclick="retryG10()">やり直し ↩</button>
+        </div>`}`;
 }
 
-function g10submit(){
-  g10st.sub=true;
-  g10st.tries++;
-  g10st.hint=null;
-  document.getElementById('screen').innerHTML=renderG10();
+// ─── G11: 実現 ────────────────────────────────
+const g11scenarios=[
+  {
+    iface:`interface Printable {\n  String format();\n  void print();\n}`,
+    impl:`class Receipt implements Printable {\n  public String format() { ... }\n  public void print() { ... }\n}`,
+    ok:true,
+    explain:'format() と print() を正しいシグネチャで実装している。実現の条件を満たす。'
+  },
+  {
+    iface:`interface Authenticatable {\n  boolean verify(String password);\n  void lockAccount();\n}`,
+    impl:`class PinAuth implements Authenticatable {\n  public boolean verify(String password) { ... }\n  // lockAccount() の実装なし\n}`,
+    ok:false,
+    explain:'lockAccount() が未実装。インターフェースのメソッドはすべて実装する必要がある。'
+  },
+  {
+    iface:`interface Transferable {\n  int calcFee(int amount);\n}`,
+    impl:`class WireTransfer implements Transferable {\n  public String calcFee(int amount) { ... }\n}`,
+    ok:false,
+    explain:'calcFee() の戻り値型が String。インターフェースは int を要求しているため、シグネチャが一致せず実現できていない。'
+  },
+  {
+    iface:`interface Loggable {\n  void log(String msg);\n}`,
+    impl:`class AuditLogger implements Loggable {\n  public void log(String message) { ... }\n}`,
+    ok:true,
+    explain:'引数名の違いはシグネチャに影響しない。戻り値・引数型・メソッド名がすべて一致しているので実現できている。'
+  },
+  {
+    iface:`interface Notifiable {\n  void notify(String channel, String message);\n}`,
+    impl:`class EmailNotifier implements Notifiable {\n  public void notify(String message) { ... }\n}`,
+    ok:false,
+    explain:'notify() の引数が1個（message のみ）。インターフェースは2個（channel, message）を要求しており、シグネチャ不一致。'
+  },
+];
+let g11ans=[null,null,null,null,null];
+
+function g11pick(i,v){g11ans[i]=v;document.getElementById('screen').innerHTML=renderG11();}
+function retryG11(){g11ans=[null,null,null,null,null];document.getElementById('screen').innerHTML=renderG11();}
+function renderG11(){
+  const scenarios=g11scenarios;
+  const done=g11ans.every(a=>a!==null);
+  const checked=g11ans.map((a,i)=>a!==null&&((a==='ok')===scenarios[i].ok));
+  const score25=done?checked.filter(Boolean).length*5:null;
+
+  const rows=scenarios.map((sc,i)=>`
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.65rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+        <div>
+          <div style="font-size:10px;color:var(--tm);margin-bottom:.25rem;letter-spacing:.05em">インターフェース</div>
+          <pre style="font-size:10px;background:var(--s2);border-radius:6px;padding:.5rem;overflow-x:auto;margin:0">${sc.iface}</pre>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--tm);margin-bottom:.25rem;letter-spacing:.05em">実装クラス</div>
+          <pre style="font-size:10px;background:var(--s2);border-radius:6px;padding:.5rem;overflow-x:auto;margin:0">${sc.impl}</pre>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:.35rem">
+        <button class="btn ${g11ans[i]==='ok'?'btn-p':''}" onclick="g11pick(${i},'ok')" style="font-size:11px">✓ 実現できている</button>
+        <button class="btn ${g11ans[i]==='ng'?'btn-p':''}" onclick="g11pick(${i},'ng')" style="font-size:11px">✗ 実現できていない</button>
+      </div>
+      ${done?`<div style="font-size:11px;color:${checked[i]?'var(--tok)':'var(--tng)'};padding:.4rem .6rem;border-radius:6px;background:${checked[i]?'rgba(70,170,70,.1)':'rgba(200,60,60,.1)'}">${checked[i]?'✓ 正解':'✗ 不正解'} — ${sc.explain}</div>`:''}
+    </div>`).join('');
+
+  return `
+    <div class="ch-title">${CHAPTERS[10].name} — 実現判定ドリル</div>
+    <div class="ch-heading">これは実現できているか？</div>
+    <div class="info-box" style="margin-bottom:.75rem">インターフェースのメソッドを<strong>すべて・正確なシグネチャで</strong>実装しているか判定してください。</div>
+    ${rows}
+    ${!done?`<div style="font-size:12px;color:var(--tm)">全 ${scenarios.length} 問を選択してください</div>`
+      :`<div class="fb ${score25>=20?'ok':'ng'} show">${score25>=20?'✓':'✗'} ${score25} / 25 点</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
+          <button class="btn btn-p" onclick="finishGame(${score25})">次へ →</button>
+          <button class="btn" onclick="retryG11()">やり直し ↩</button>
+        </div>`}`;
 }
 
-function g10showHint(){
-  if(g10st.hints<=0)return;
-  const pz=g10puzzles[g10st.p];
-  const failing=pz.constraints.filter(c=>!c.check(g10st.sel));
+// ─── 実践編 ───────────────────────────────────
+let gPst={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
+
+function gPpick(id,v){
+  gPst.sel[id]=v;
+  gPst.sub=false;
+  gPst.hint=null;
+  document.getElementById('screen').innerHTML=renderGP();
+}
+
+function gPsubmit(){
+  gPst.sub=true;
+  gPst.tries++;
+  gPst.hint=null;
+  document.getElementById('screen').innerHTML=renderGP();
+}
+
+function gPshowHint(){
+  if(gPst.hints<=0)return;
+  const pz=gPpuzzles[gPst.p];
+  const failing=pz.constraints.filter(c=>!c.check(gPst.sel));
   if(!failing.length)return;
   const c=failing[0];
-  g10st.hints--;
-  g10st.hint=`💡 「${c.label}」を満たすには、<strong>${c.hintQ}</strong> を見直してください。`;
-  document.getElementById('screen').innerHTML=renderG10();
+  gPst.hints--;
+  gPst.hint=`💡 「${c.label}」を満たすには、<strong>${c.hintQ}</strong> を見直してください。`;
+  document.getElementById('screen').innerHTML=renderGP();
 }
 
-function g10next(){
-  g10st.p++;
-  g10st.sel={};
-  g10st.sub=false;
-  g10st.hints=2;
-  g10st.tries=0;
-  g10st.hint=null;
-  document.getElementById('screen').innerHTML=renderG10();
+function gPnext(){
+  gPst.p++;
+  gPst.sel={};
+  gPst.sub=false;
+  gPst.hints=2;
+  gPst.tries=0;
+  gPst.hint=null;
+  document.getElementById('screen').innerHTML=renderGP();
 }
 
-function retryG10(){
-  g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
-  document.getElementById('screen').innerHTML=renderG10();
+function retryGP(){
+  gPst={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
+  document.getElementById('screen').innerHTML=renderGP();
 }
 
-function renderG10(){
-  const pz=g10puzzles[g10st.p];
-  const {sel,sub,hints,tries,hint}=g10st;
+function renderGP(){
+  const pz=gPpuzzles[gPst.p];
+  const {sel,sub,hints,tries,hint}=gPst;
   const allSet=pz.decisions.every(d=>sel[d.id]);
   const cons=pz.constraints.map(c=>({...c,ok:c.check(sel)}));
   const allOk=allSet&&cons.every(c=>c.ok);
@@ -1317,33 +1469,33 @@ function renderG10(){
     <div style="margin-bottom:.65rem">
       <div style="font-size:11px;color:var(--tm);margin-bottom:.3rem">${d.q}</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px">
-        ${d.opts.map(o=>`<button class="btn ${sel[d.id]===o.v?'btn-p':''}" onclick="g10pick('${d.id}','${o.v}')" style="font-size:11px">${o.l}</button>`).join('')}
+        ${d.opts.map(o=>`<button class="btn ${sel[d.id]===o.v?'btn-p':''}" onclick="gPpick('${d.id}','${o.v}')" style="font-size:11px">${o.l}</button>`).join('')}
       </div>
     </div>`).join('');
 
   let actions='';
   if(!sub&&allSet){
-    actions=`<button class="btn btn-p" onclick="g10submit()">設計を確定する</button>`;
+    actions=`<button class="btn btn-p" onclick="gPsubmit()">設計を確定する</button>`;
   } else if(showRes&&!allOk){
     const failN=cons.filter(c=>!c.ok).length;
     actions=`<div class="fb ng show">✗ ${failN}件の制約を満たせていません。</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem">
-      <button class="btn btn-p" onclick="g10submit()">再確定する</button>
-      ${hints>0?`<button class="btn" onclick="g10showHint()">ヒント（残り${hints}）</button>`:`<span style="font-size:11px;color:var(--tm);align-self:center">ヒント使い切り</span>`}
+      <button class="btn btn-p" onclick="gPsubmit()">再確定する</button>
+      ${hints>0?`<button class="btn" onclick="gPshowHint()">ヒント（残り${hints}）</button>`:`<span style="font-size:11px;color:var(--tm);align-self:center">ヒント使い切り</span>`}
     </div>`;
-  } else if(showRes&&allOk&&g10st.p<g10puzzles.length-1){
+  } else if(showRes&&allOk&&gPst.p<gPpuzzles.length-1){
     actions=`<div class="fb ok show">✓ クリア！（${tries}回目で正解）</div>
-    <button class="btn btn-p" style="margin-top:.5rem" onclick="g10next()">次の問題へ →</button>`;
-  } else if(showRes&&allOk&&g10st.p===g10puzzles.length-1){
+    <button class="btn btn-p" style="margin-top:.5rem" onclick="gPnext()">次の問題へ →</button>`;
+  } else if(showRes&&allOk&&gPst.p===gPpuzzles.length-1){
     actions=`<div class="fb ok show">✓ 全問クリア！（${tries}回目で正解）</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem">
       <button class="btn btn-p" onclick="finishGame(25)">結果を見る →</button>
-      <button class="btn" onclick="retryG10()">最初から ↩</button>
+      <button class="btn" onclick="retryGP()">最初から ↩</button>
     </div>`;
   }
 
   return `
-    <div class="ch-title">${CHAPTERS[9].name} — 問題 ${g10st.p+1}/${g10puzzles.length}</div>
+    <div class="ch-title">${CHAPTERS[11].name} — 問題 ${gPst.p+1}/${gPpuzzles.length}</div>
     <div class="ch-heading">${pz.title}</div>
     <div class="info-box" style="margin-bottom:.75rem">${pz.context}</div>
     <div style="margin-bottom:.75rem">
@@ -1361,7 +1513,7 @@ function renderG10(){
 // ─── COMPLETE ─────────────────────────────────
 function renderComplete(){
   updateNav();document.getElementById('prog').style.width='100%';
-  const max=250,pct=Math.round(G.score/max*100);
+  const max=300,pct=Math.round(G.score/max*100);
   const msg=pct>=80?'銀行システムの設計を完璧に理解した！':pct>=50?'もう少し。もう一度挑戦してみよう。':'基礎を復習してからもう一度！';
   const sums=[
     {t:'アクセス修飾子',b:'public/private/protected で情報を隠す。残高や暗証番号は private にして getBalance() などの窓口だけを公開する。'},
@@ -1373,6 +1525,8 @@ function renderComplete(){
     {t:'コンストラクタ',b:'new でインスタンスを作るときに自動で呼ばれるメソッド。引数で受け取る値・デフォルト値・static の3種を正しく使い分けて初期化する。'},
     {t:'型キャスト',b:'親クラス型の変数を子クラス型に変換するダウンキャスト。instanceof で型を確認してからキャストすると ClassCastException を防げる。'},
     {t:'例外処理',b:'throw で例外を投げ、try で主処理を囲み、catch でエラーを受け取り、finally で後処理を確実に実行する。'},
+    {t:'依存',b:'あるクラスが別のクラスをメソッド引数・ローカル変数として一時的に使う最も弱い関係。フィールドに持たないため疎結合を保てる。UML では点線矢印 →。'},
+    {t:'実現',b:'クラスがインターフェースを implements すること。すべてのメソッドを正確なシグネチャで実装する必要がある。UML では点線＋白抜き三角 ▷。'},
     {t:'設計制約パズル',b:'継承・合成・アクセス修飾子の選択が複数の制約に同時に影響する。「全制約を満たす組み合わせ」を論理的に探す実践力が身につく。'},
   ];
   return `<div class="complete">
@@ -1405,7 +1559,9 @@ function restart(){
   g7sel=g7members.map(()=>'param');g7done=false;
   g8quiz=[null,null,null,null];
   g9placed={};g9sel=null;g9done=false;
-  g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
+  g10ans=[null,null,null,null,null];
+  g11ans=[null,null,null,null,null];
+  gPst={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
   closeGloss();
   render();
 }
