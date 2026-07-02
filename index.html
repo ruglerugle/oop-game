@@ -327,13 +327,13 @@ const stories={
     {npc:'👔 頭取',text:'全9章の基礎学習を修了した。アクセス修飾子・継承・合成/集約・static・ポリモーフィズム・抽象クラス・コンストラクタ・型キャスト・例外処理。いよいよ実践だ。'},
   ],
   9:[
-    {npc:'💼 企画部長',text:'新サービスの提案が来た。富裕層向け「プレミアム口座」だ。普通預金の全機能に加え、専任アドバイザーサービスと優遇金利計算を提供する。'},
-    {npc:'💼 企画部長',text:'ただし制約がある。SavingsAccount は本番稼働中でテストが 2000 件依存している。<strong>既存クラスは一切変更できない</strong>。'},
-    {npc:'📂 システム部長',text:'設計の選択肢は複数ある。継承か合成か、どの位置に配置するか。すべての制約を同時に満たす組み合わせを見つけてくれ。'},
+    {npc:'📂 システム部長',text:'銀行システムの OOP 設計を習得した。だが実務では、金融以外のドメインでも全く同じ設計判断を迫られる。'},
+    {npc:'📂 システム部長',text:'継承・カプセル化・ポリモーフィズムは「どこでも通用する武器」だ。複数の制約をすべて満たす設計を、論理的に導き出せるか試してみよう。'},
+    {npc:'💼 企画部長',text:'問題は全部で4問。答えを選んで「確定」するまで正誤は分からない。ヒントは各問2回まで使える。'},
   ],
   '9e':[
-    {npc:'📂 システム部長',text:'完璧な設計だ。SavingsAccount を継承して既存機能を引き継ぎ、AdvisorService は合成で持ち、優遇金利は private で保護した。'},
-    {npc:'💼 企画部長',text:'これが OOP の真価だ。既存コードを変えずに機能を追加し、再利用性と情報隠蔽を両立した。実務でも同じ判断を積み重ねることになる。'},
+    {npc:'📂 システム部長',text:'全問クリアした。銀行・ゲーム・EC——ドメインが変わっても OOP の設計判断の軸は変わらない。'},
+    {npc:'💼 企画部長',text:'制約を読んで論理的に答えを絞り込む力。それが実務で求められる設計力だ。'},
   ],
 };
 
@@ -1061,6 +1061,82 @@ const g10puzzles=[
       {label:'Account クラスを一切変更しないこと',               check:s=>s.d2==='B',hintQ:'② Account との結合方式'},
       {label:'外部の監査ツールから record() を呼び出せること',   check:s=>s.d3==='A',hintQ:'③ 可視性の選択'},
       {label:'将来インメモリから DB 保存に切り替えられること',    check:s=>s.d5==='B',hintQ:'⑤ 保存先の設計'},
+    ],
+  },
+  {
+    title:'RPG キャラクタークラスの設計（継承）',
+    context:'RPG ゲームの <strong>Warrior・Mage・Healer</strong> を Character クラスから継承して実装したい。Character クラスはゲームエンジンが参照しており変更不可。',
+    decisions:[
+      {id:'d1',q:'① Warrior の高 HP をどう実装するか',opts:[
+        {v:'A',l:'Character.hp フィールドに直接代入する'},
+        {v:'B',l:'super(baseHP + BONUS) でコンストラクタ経由でセット'},
+        {v:'C',l:'Warrior に hpBonus フィールドを追加して HP を二重管理'},
+      ]},
+      {id:'d2',q:'② Mage 専用の castSpell() をどこに置くか',opts:[
+        {v:'A',l:'Character に castSpell() を追加（全クラスが持つ）'},
+        {v:'B',l:'Mage クラスにだけ castSpell() を定義する'},
+        {v:'C',l:'Character を abstract にして全クラスに実装を強制'},
+      ]},
+      {id:'d3',q:'③ 各クラスの attack() の実装方針',opts:[
+        {v:'A',l:'Character.attack() を全員がそのまま使う'},
+        {v:'B',l:'各クラスで attack() をオーバーライドして独自の攻撃'},
+        {v:'C',l:'attack() を abstract にして各クラスに強制実装'},
+      ]},
+      {id:'d4',q:'④ Healer.heal() の公開範囲',opts:[
+        {v:'A',l:'+ public（パーティ全員から呼べる）'},
+        {v:'B',l:'# protected（Healer サブクラスのみ）'},
+        {v:'C',l:'− private（Healer 内部のみ）'},
+      ]},
+      {id:'d5',q:'⑤ パーティの型管理',opts:[
+        {v:'A',l:'Warrior[]・Mage[]・Healer[] を別々に管理'},
+        {v:'B',l:'Character[] でまとめて管理する'},
+        {v:'C',l:'Object[] でまとめて管理する'},
+      ]},
+    ],
+    constraints:[
+      {label:'HP は1つのフィールドで管理し、直接代入もしない',         check:s=>s.d1==='B',  hintQ:'① HP の実装方法'},
+      {label:'Mage だけが castSpell() を持ち、Character を変更しない', check:s=>s.d2==='B',  hintQ:'② castSpell() の配置'},
+      {label:'戦士は剣、魔法使いは魔法など、各クラスが独自の attack() を持つ', check:s=>s.d3==='B', hintQ:'③ attack() の実装'},
+      {label:'パーティ全員に attack() を一斉送信できる',               check:s=>s.d5==='B',  hintQ:'⑤ 型管理の選択'},
+      {label:'パーティメンバーが Healer に heal() を依頼できる',        check:s=>s.d4==='A',  hintQ:'④ heal() の公開範囲'},
+    ],
+  },
+  {
+    title:'EC カートの商品設計（ポリモーフィズム＋カプセル化）',
+    context:'EC サイトのカートに <strong>RegularItem・SaleItem・SubscriptionItem</strong> の3種を追加したい。将来さらに商品タイプが増えても、カートの計算コードを変えたくない。',
+    decisions:[
+      {id:'d1',q:'① 商品クラスの構造',opts:[
+        {v:'A',l:'Item に type フィールドを持たせて種別を管理'},
+        {v:'B',l:'Item を親クラスにして3種を継承で定義'},
+        {v:'C',l:'3種を継承なしの独立クラスとして作る'},
+      ]},
+      {id:'d2',q:'② 価格計算 calcPrice() の置き場所',opts:[
+        {v:'A',l:'カート側で if/else タイプ判別して計算'},
+        {v:'B',l:'各商品クラスで calcPrice() をオーバーライド'},
+        {v:'C',l:'Item に共通の calcPrice() を置いて全商品が使う'},
+      ]},
+      {id:'d3',q:'③ Item.price フィールドの公開範囲',opts:[
+        {v:'A',l:'+ public（外部から直接変更可）'},
+        {v:'B',l:'− private（外部から参照・変更不可）'},
+        {v:'C',l:'# protected（外部からは隠しサブクラスからは参照可）'},
+      ]},
+      {id:'d4',q:'④ SaleItem の discountRate（割引率）管理',opts:[
+        {v:'A',l:'+ public フィールド（外部から自由に変更可）'},
+        {v:'B',l:'− private ＋ setDiscount() でバリデーション付き変更'},
+        {v:'C',l:'定数にしてハードコード（変更不可）'},
+      ]},
+      {id:'d5',q:'⑤ カートの合計金額計算方法',opts:[
+        {v:'A',l:'Item[] をループして item.calcPrice() を呼ぶ'},
+        {v:'B',l:'switch/case で商品タイプを判別して計算'},
+        {v:'C',l:'item.price に直接アクセスして合算'},
+      ]},
+    ],
+    constraints:[
+      {label:'全商品を共通の型として扱い、カートが型を意識しない',     check:s=>s.d1==='B',  hintQ:'① 商品クラスの構造'},
+      {label:'新商品タイプを追加してもカートの計算コードを変えなくてよい', check:s=>s.d5==='A',hintQ:'⑤ カートの計算方法'},
+      {label:'各商品が独自の価格計算ロジックを持つ',                   check:s=>s.d2==='B',  hintQ:'② calcPrice() の置き場所'},
+      {label:'price を外から書き換えられないが、サブクラスの calcPrice() からは参照できる', check:s=>s.d3==='C', hintQ:'③ price の公開範囲'},
+      {label:'割引率の設定で「0〜100% 以外はエラー」にできる',         check:s=>s.d4==='B',  hintQ:'④ discountRate の管理'},
     ],
   },
 ];
