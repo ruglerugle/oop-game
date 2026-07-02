@@ -1139,6 +1139,82 @@ const g10puzzles=[
       {label:'割引率の設定で「0〜100% 以外はエラー」にできる',         check:s=>s.d4==='B',  hintQ:'④ discountRate の管理'},
     ],
   },
+  {
+    title:'SNS 通知システムの設計（ポリモーフィズム）',
+    context:'SNS の <strong>LikeNotification・CommentNotification・FollowNotification</strong> を設計したい。通知センターは全種の通知をまとめてループ処理する。',
+    decisions:[
+      {id:'d1',q:'① 通知クラスの構造',opts:[
+        {v:'A',l:'Notification に type フィールドで種別管理'},
+        {v:'B',l:'Notification を親に3種を継承で定義'},
+        {v:'C',l:'3種を共通の親なしで独立クラスとして作る'},
+      ]},
+      {id:'d2',q:'② 通知文 display() の実装場所',opts:[
+        {v:'A',l:'通知センター側で if/else 判別してメッセージ生成'},
+        {v:'B',l:'各通知クラスで display() をオーバーライド'},
+        {v:'C',l:'Notification に固定の display() を定義（全通知共通）'},
+      ]},
+      {id:'d3',q:'③ 送信先ユーザー ID の管理',opts:[
+        {v:'A',l:'+ public userId フィールド（直接変更可）'},
+        {v:'B',l:'− private userId ＋ getUserId() メソッド'},
+        {v:'C',l:'static で全通知共通のユーザーを管理'},
+      ]},
+      {id:'d4',q:'④ 既読フラグの管理',opts:[
+        {v:'A',l:'+ public isRead フィールド（外部から直接書き換え可）'},
+        {v:'B',l:'− private isRead ＋ markAsRead() メソッドのみで変更'},
+        {v:'C',l:'既読管理は通知クラスの責務ではない'},
+      ]},
+      {id:'d5',q:'⑤ 通知センターのループ処理方法',opts:[
+        {v:'A',l:'Notification[] でループして display() を呼ぶ'},
+        {v:'B',l:'3種の配列を別々にループ処理する'},
+        {v:'C',l:'Object[] でまとめてループ処理する'},
+      ]},
+    ],
+    constraints:[
+      {label:'全通知を共通の型として一括管理できる',                     check:s=>s.d1==='B',  hintQ:'① 通知クラスの構造'},
+      {label:'新通知タイプを追加してもセンターのコードを変えなくてよい', check:s=>s.d5==='A',  hintQ:'⑤ ループ処理の方法'},
+      {label:'「いいね」「コメント」など通知ごとに異なる文面を持つ',     check:s=>s.d2==='B',  hintQ:'② display() の実装場所'},
+      {label:'送信先ユーザー ID を生成後に書き換えられないこと',         check:s=>s.d3==='B',  hintQ:'③ ユーザー ID の管理'},
+      {label:'既読フラグを外部から直接 false に戻せないこと',           check:s=>s.d4==='B',  hintQ:'④ 既読フラグの管理'},
+    ],
+  },
+  {
+    title:'配車サービスの料金設計（継承＋集約＋protected）',
+    context:'配車アプリで <strong>StandardRide・PremiumRide・SharedRide</strong> の3プランの料金計算を設計したい。ドライバーは乗車とは独立したエンティティとして管理されている。',
+    decisions:[
+      {id:'d1',q:'① 乗車プランクラスの構造',opts:[
+        {v:'A',l:'Ride に planType フィールドで種別管理'},
+        {v:'B',l:'Ride を親に3プランを継承で定義'},
+        {v:'C',l:'3プランを共通の親なしで独立クラスとして作る'},
+      ]},
+      {id:'d2',q:'② Driver との関係',opts:[
+        {v:'A',l:'Ride が Driver を継承する（is-a）'},
+        {v:'B',l:'Ride が Driver を合成で保持（Ride 消滅→ Driver も消える）'},
+        {v:'C',l:'Ride が Driver を集約で参照（Ride 消滅→ Driver は残る）'},
+      ]},
+      {id:'d3',q:'③ 乗車距離 distance の管理',opts:[
+        {v:'A',l:'+ public（外部から直接変更可）'},
+        {v:'B',l:'− private ＋ setDistance() でバリデーション（負の値不可）'},
+        {v:'C',l:'# protected（サブクラスから直接変更可）'},
+      ]},
+      {id:'d4',q:'④ PremiumRide 限定の calcLuxuryFee() の公開範囲',opts:[
+        {v:'A',l:'+ public（誰でも呼べる）'},
+        {v:'B',l:'− private（PremiumRide 内部のみ）'},
+        {v:'C',l:'# protected（PremiumRide と将来のサブクラスまで）'},
+      ]},
+      {id:'d5',q:'⑤ 全プランの一括料金計算方法',opts:[
+        {v:'A',l:'Ride[] でループして calcFare() を呼ぶ'},
+        {v:'B',l:'3プランの配列を別々にループする'},
+        {v:'C',l:'ride.distance に直接アクセスして合算する'},
+      ]},
+    ],
+    constraints:[
+      {label:'新プランを追加してもアプリのコードを変えなくてよい',         check:s=>s.d1==='B',  hintQ:'① プランクラスの構造'},
+      {label:'乗車完了後、同じドライバーを別の乗車に再割り当てできる',    check:s=>s.d2==='C',  hintQ:'② Driver との関係'},
+      {label:'乗車距離にマイナス値を設定できないこと',                   check:s=>s.d3==='B',  hintQ:'③ distance の管理'},
+      {label:'calcLuxuryFee() は外部からは隠しつつ将来の VIPPremiumRide サブクラスからも呼べる', check:s=>s.d4==='C', hintQ:'④ calcLuxuryFee() の公開範囲'},
+      {label:'全プランの料金集計が単純なループで書ける',                  check:s=>s.d5==='A',  hintQ:'⑤ 一括処理の方法'},
+    ],
+  },
 ];
 
 let g10st={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
