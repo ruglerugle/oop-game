@@ -502,7 +502,7 @@ function renderG0(){
 
   // ── フェーズ0：コピペ地獄 ──
   if(phase===0) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 1 / 4</div>
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 1 / 9</div>
     <div class="ch-heading">同じものを3回書いている…</div>
     <p class="game-intro">あなたは創造主。まず「犬」「猫」「鳥」を設計してみた。それぞれの<strong>能力カード</strong>を見てほしい。</p>
     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1rem">
@@ -524,7 +524,7 @@ function renderG0(){
       <span>🐕 犬</span><span>→</span><span>🐱 猫</span><span>→</span><span>🐦 鳥</span>
     </div>`;
     return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 2 / 4</div>
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 2 / 9</div>
     <div class="ch-heading">「動物」という共通の親を作る</div>
     <p class="game-intro">「犬は動物の一種」「猫は動物の一種」——この <strong>is-a 関係</strong>を使って、共通部分を<strong>Animal（動物）</strong>クラスにまとめよう。これが<strong>継承</strong>だ。</p>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
@@ -558,7 +558,7 @@ function renderG0(){
     ];
     const allSet=sounds.dog&&sounds.cat&&sounds.bird;
     return `
-      <div class="ch-title">${CHAPTERS[0].name} — STEP 3 / 4</div>
+      <div class="ch-title">${CHAPTERS[0].name} — STEP 3 / 9</div>
       <div class="ch-heading">「鳴く」は親には書けない → 抽象クラス</div>
       <p class="game-intro">「食べる」「寝る」は Animal に書けた。でも<strong>鳴き声</strong>は生き物ごとに違う。親に「鳴く()」と書いても、何て鳴かせればいい？</p>
       <p style="font-size:13px;color:var(--ts);margin-bottom:.75rem">そこで Animal を<strong>抽象クラス</strong>にして「鳴く()は各自で決めること」と宣言する。これを<strong>抽象メソッド</strong>という。</p>
@@ -588,7 +588,7 @@ function renderG0(){
 
   // ── フェーズ3：インターフェース ──
   if(phase===3) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 4 / 4</div>
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 4 / 9</div>
     <div class="ch-heading">犬・車・ロボットをレースさせたい</div>
     <p class="game-intro">新しい存在が現れた。この3者全員に「動く()」能力を持たせて、<strong>一緒にレース</strong>させたい。</p>
     <div style="display:flex;gap:8px;margin-bottom:1rem">
@@ -630,9 +630,122 @@ function renderG0(){
         これがインターフェースの本質：<em>継承関係がなくても「同じ型」を与えられる。</em>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-p" onclick="finishGame(25)">理解した！ 第1章へ →</button>
+        <button class="btn btn-p" onclick="g0do('next')">次：アクセス修飾子へ →</button>
         <button class="btn" onclick="retryG0()">最初から ↩</button>
       </div>`:''}`;
+
+  // ── フェーズ4：アクセス修飾子 ──
+  if(phase===4) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 5 / 9</div>
+    <div class="ch-heading">「秘密にしたい情報」をどう守る？</div>
+    <p class="game-intro">クラスのフィールドやメソッドには<strong>アクセス修飾子</strong>を設定できる。「誰がアクセスできるか」を制限する仕組みだ。</p>
+    <div style="margin-bottom:1rem">
+      ${g0card('🐕 犬',[
+        '<span style="color:var(--tok)">＋ 名前　　　→ 誰でも読める（public）</span>',
+        '<span style="color:var(--tpr)"># 体重　　　→ 飼い主クラスまで（protected）</span>',
+        '<span style="color:var(--tng)">－ 持病の記録 → 本人クラスだけ（private）</span>',
+      ],'var(--bd)')}
+    </div>
+    <div class="info-box">
+      <strong>＋ public</strong>：誰でもアクセス可<br>
+      <strong># protected</strong>：自分と子クラスまで<br>
+      <strong>－ private</strong>：自クラスの中だけ<br><br>
+      大事な情報（残高・暗証番号）を private にすれば、外から勝手に書き換えられない。これが<strong>カプセル化</strong>。
+    </div>
+    <button class="btn btn-p" onclick="g0do('next')">次：ポリモーフィズムへ →</button>`;
+
+  // ── フェーズ5：ポリモーフィズム ──
+  if(phase===5) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 6 / 9</div>
+    <div class="ch-heading">同じ命令、違う動き</div>
+    <p class="game-intro">抽象クラスで「鳴く()」を定義したとき、Animal 型の変数に犬・猫・鳥を入れて一括で呼べる——これが<strong>ポリモーフィズム</strong>だ。</p>
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:1rem">
+      <div style="font-size:12px;color:var(--tm);margin-bottom:.5rem">全員まとめて「鳴く()」を呼ぶ</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${[['🐕 犬','ワン！'],['🐱 猫','ニャー'],['🐦 鳥','チュン']].map(([e,v])=>`
+          <div style="display:flex;align-items:center;gap:10px;background:var(--s2);border-radius:6px;padding:.45rem .65rem">
+            <span style="font-size:14px">${e}</span>
+            <span style="flex:1;font-size:12px;color:var(--tm)">鳴く() →</span>
+            <span style="font-size:13px;font-weight:700;color:var(--tok)">「${v}」</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="info-box">
+      呼び出す側は「動物に鳴いて」と言うだけ。<strong>実際に何が鳴くかは知らなくていい。</strong><br>
+      これにより、新しい生き物を追加しても呼び出し側のコードを変えなくて済む。
+    </div>
+    <button class="btn btn-p" onclick="g0do('next')">次：合成 vs 集約へ →</button>`;
+
+  // ── フェーズ6：合成 vs 集約 ──
+  if(phase===6) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 7 / 9</div>
+    <div class="ch-heading">「部品」と「仲間」の違い</div>
+    <p class="game-intro">has-a 関係（〜は〜を持つ）にも2種類ある。<strong>合成</strong>は「部品」、<strong>集約</strong>は「仲間」と考えるとわかりやすい。</p>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--tng);margin-bottom:.4rem">◆ 合成（強い所有）</div>
+        ${g0card('🏦 銀行',['🏢 支店 ◆','↑ 銀行が倒産したら支店も消える'],'var(--tng)')}
+        <div style="font-size:11px;color:var(--ts);margin-top:.4rem;text-align:center">生死を共にする</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--tok);margin-bottom:.4rem">◇ 集約（弱い参照）</div>
+        ${g0card('🏦 銀行',['👤 顧客 ◇','↑ 銀行が倒産しても顧客は別の銀行へ'],'var(--tok)')}
+        <div style="font-size:11px;color:var(--ts);margin-top:.4rem;text-align:center">独立して存在できる</div>
+      </div>
+    </div>
+    <div class="info-box">
+      「所有者が消えたとき、相手も消えるか？」——これが<strong>合成 vs 集約</strong>の判断基準。
+    </div>
+    <button class="btn btn-p" onclick="g0do('next')">次：static へ →</button>`;
+
+  // ── フェーズ7：static ──
+  if(phase===7) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 8 / 9</div>
+    <div class="ch-heading">全員で共有する情報</div>
+    <p class="game-intro">フィールドには「全員で1つ共有するもの」と「1人ずつ持つもの」がある。前者に使うのが <strong>static</strong> だ。</p>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--tpr);margin-bottom:.4rem">static（クラス全体で1つ）</div>
+        ${g0card('💹 金利 1.5%',[
+          '口座A ─┐',
+          '口座B ─┼→ 同じ金利',
+          '口座C ─┘',
+        ],'var(--tpr)')}
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--tac);margin-bottom:.4rem">インスタンス（口座ごとに別々）</div>
+        ${g0card('💰 残高',[
+          '口座A → 30万円',
+          '口座B → 15万円',
+          '口座C → 52万円',
+        ],'var(--tac)')}
+      </div>
+    </div>
+    <div class="info-box">
+      「この値はクラス全体で1つあれば十分か？」——Yesなら static、Noならインスタンスフィールド。
+    </div>
+    <button class="btn btn-p" onclick="g0do('next')">次：コンストラクタへ →</button>`;
+
+  // ── フェーズ8：コンストラクタ ──
+  if(phase===8) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 9 / 9</div>
+    <div class="ch-heading">作る瞬間に決めること</div>
+    <p class="game-intro">オブジェクトを作るとき（new するとき）自動で呼ばれる特別な処理が<strong>コンストラクタ</strong>だ。</p>
+    <div style="margin-bottom:1rem">
+      ${g0card('🐕 犬を new するとき',[
+        '<span style="color:var(--tac)">📥 引数で受け取る　→ 名前（飼い主が決める）</span>',
+        '<span style="color:var(--tok)">🤖 自動でセット　　→ 誕生日（システムが決める）</span>',
+        '<span style="color:var(--tpr)">🌐 不要　　　　　　→ 種（static なので共通）</span>',
+      ],'var(--bd)')}
+    </div>
+    <div class="info-box">
+      コンストラクタを正しく設計すると「名前が空欄の犬」や「誕生日が未来の犬」を作れなくなる。<br>
+      <strong>初期状態の整合性を保証する</strong>のがコンストラクタの役割。
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
+      <button class="btn btn-p" onclick="finishGame(25)">序章クリア！ 第1章へ →</button>
+      <button class="btn" onclick="retryG0()">最初から ↩</button>
+    </div>`;
 }
 
 // ─── GAME 1: アクセス修飾子 ──────────────────────
