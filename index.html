@@ -241,16 +241,14 @@ const GLOSSARY=[
 
 const stories={
   0:[
-    {npc:'👔 頭取',text:'よく来てくれた。新人エンジニアの君に、まずオブジェクト指向（OOP）の基本を押さえてもらう。銀行システムはすべてこの考え方で設計されている。'},
-    {npc:'📂 システム部長',text:'OOP の中心にあるのが<strong>クラス</strong>と<strong>オブジェクト</strong>だ。クラスは「設計図」、オブジェクトはその設計図から作った「実体」だと思えばいい。'},
-    {npc:'📂 システム部長',text:'たとえば <code>BankAccount</code> クラスという設計図から、田中さんの口座・鈴木さんの口座という個別のオブジェクトを生み出す。設計図は1つ、インスタンスは何個でも作れる。'},
-    {npc:'📂 システム部長',text:'クラスは<strong>フィールド（属性）</strong>と<strong>メソッド（操作）</strong>の2種類のメンバーを持つ。フィールドはデータを保持し、メソッドはそのデータを使った処理を定義する。'},
-    {npc:'💼 先輩エンジニア',text:'銀行口座で考えると——残高・口座番号・名義人はフィールド、入金する・引き出す・残高を確認するはメソッドだ。各要素を正しく分類してみよう。'},
+    {npc:'🌍 ナレーター',text:'あなたは創造主。この世界では、すべての存在を「クラス」という設計図から作ることができます。'},
+    {npc:'🌍 ナレーター',text:'最初は犬・猫・鳥を作るだけ。でもコードを書けば書くほど、同じ処理が何度も現れてきます。'},
+    {npc:'🌍 ナレーター',text:'そのたびにコードを賢く整理する方法を発見して、設計力を磨いていきましょう。継承・抽象クラス・インターフェース——全部「楽をするための発明」です。'},
   ],
   '0e':[
-    {npc:'📂 システム部長',text:'完璧だ。データを保持するものがフィールド、処理を行うものがメソッド。この2種類でクラスは構成される。'},
-    {npc:'💼 先輩エンジニア',text:'OOP を使うメリットは「関連するデータと処理をひとまとめにできること」だ。口座に関するすべてをBankAccountクラスに集約すれば、コードが読みやすく変更に強くなる。'},
-    {npc:'👔 頭取',text:'基礎は理解できた。では実際の設計課題に取り掛かろう。'},
+    {npc:'🌍 ナレーター',text:'完璧な理解だ。コピペ地獄 → 継承 → 抽象クラス → インターフェース。この流れが OOP の進化の本質だ。'},
+    {npc:'🌍 ナレーター',text:'インターフェースは「継承関係がなくても共通の型を与えられる道具」だ。これが後の章でも設計の核心になってくる。'},
+    {npc:'👔 頭取',text:'では実際の銀行システム設計に取り掛かろう。'},
   ],
   1:[
     {npc:'👔 頭取',text:'よく来てくれた。君が今日から配属される新人エンジニアだね。わが銀行のシステムを任せる。'},
@@ -480,48 +478,161 @@ function advEpilogue(){
 function finishGame(pts){saveHistory();G.score+=pts;G.phase='epilogue';G.line=0;render();}
 
 // ─── GAME 0: 序章 ────────────────────────────────
-const g0items=[
-  {name:'balance: double',     ans:'F', hint:'残高という「データ」を保持する'},
-  {name:'ownerName: String',   ans:'F', hint:'名義人という「データ」を保持する'},
-  {name:'createdAt: Date',     ans:'F', hint:'開設日という「データ」を保持する'},
-  {name:'deposit(int amount)', ans:'M', hint:'入金という「処理」を定義する'},
-  {name:'getBalance()',        ans:'M', hint:'残高を返すという「処理」を定義する'},
-  {name:'calculateInterest()', ans:'M', hint:'利息計算という「処理」を定義する'},
-];
-let g0ans=[null,null,null,null,null,null];
+let g0st={phase:0,sounds:{},moveTried:false,movableOk:false};
 
-function g0pick(i,v){g0ans[i]=v;document.getElementById('screen').innerHTML=renderG0();}
-function retryG0(){g0ans=g0items.map(()=>null);document.getElementById('screen').innerHTML=renderG0();}
+function g0do(act,p){
+  if(act==='next') g0st.phase++;
+  else if(act==='sound') g0st.sounds[p.who]=p.s;
+  else if(act==='moveTry') g0st.moveTried=true;
+  else if(act==='movable'){g0st.movableOk=true;}
+  document.getElementById('screen').innerHTML=renderG0();
+}
+function retryG0(){g0st={phase:0,sounds:{},moveTried:false,movableOk:false};document.getElementById('screen').innerHTML=renderG0();}
+
 function renderG0(){
-  const done=g0ans.every(a=>a!==null);
-  const checked=g0ans.map((a,i)=>a!==null&&a===g0items[i].ans);
-  const pts=done?checked.filter(Boolean).length*4+1:null;
+  const {phase,sounds,moveTried,movableOk}=g0st;
 
-  const rows=g0items.map((it,i)=>`
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.65rem .75rem;margin-bottom:.5rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <code style="flex:1;font-family:var(--m);font-size:12px;min-width:160px">${it.name}</code>
-      <div style="display:flex;gap:6px">
-        <button class="btn ${g0ans[i]==='F'?'btn-p':''}" onclick="g0pick(${i},'F')" style="font-size:11px">フィールド</button>
-        <button class="btn ${g0ans[i]==='M'?'btn-p':''}" onclick="g0pick(${i},'M')" style="font-size:11px">メソッド</button>
-      </div>
-      ${done?`<div style="font-size:11px;width:100%;color:${checked[i]?'var(--tok)':'var(--tng)'}">${checked[i]?'✓ 正解':'✗ 不正解 — '+it.hint}</div>`:''}
-    </div>`).join('');
-
-  return `
-    <div class="ch-title">${CHAPTERS[0].name}</div>
-    <div class="ch-heading">クラスの中身を分類せよ</div>
-    <p class="game-intro">BankAccount クラスの各メンバーが「フィールド（データ）」か「メソッド（処理）」かを判定してください。</p>
-    <div class="info-box" style="margin-bottom:.75rem">
-      <strong>フィールド</strong>：クラスが保持するデータ（変数）。例：残高・名前<br>
-      <strong>メソッド</strong>：クラスが行う処理（関数）。例：入金する・計算する
+  // ── フェーズ0：コピペ地獄 ──
+  if(phase===0) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 1 / 4</div>
+    <div class="ch-heading">コピペ地獄の発見</div>
+    <p class="game-intro">犬・猫・鳥を作った。コードを見てみよう——</p>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1rem">
+      ${['Dog 🐕','Cat 🐱','Bird 🐦'].map(n=>`
+        <div style="background:var(--s2);border:1.5px solid var(--bd);border-radius:10px;overflow:hidden">
+          <div style="background:var(--s0);padding:5px 8px;font-size:11px;font-weight:700;border-bottom:1px solid var(--bd)">${n}</div>
+          <div style="padding:7px 8px;font-family:var(--m);font-size:9px;line-height:1.9">
+            <div>String name</div>
+            <div style="color:var(--tng)">void eat(){…}</div>
+            <div style="color:var(--tng)">void sleep(){…}</div>
+          </div>
+        </div>`).join('')}
     </div>
-    ${rows}
-    ${!done?`<div style="font-size:12px;color:var(--tm)">全 ${g0items.length} 問を選択してください</div>`
-      :`<div class="fb ${pts>=20?'ok':'ng'} show">${pts>=20?'✓':'✗'} ${pts} / 25 点</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
-          <button class="btn btn-p" onclick="finishGame(${pts})">次の章へ →</button>
-          <button class="btn" onclick="retryG0()">やり直し ↩</button>
-        </div>`}`;
+    <div style="background:var(--ng);border:1px solid var(--bng);border-radius:var(--r);padding:.7rem 1rem;font-size:13px;color:var(--tng);margin-bottom:1rem">
+      ✗ <strong>eat() と sleep() が3クラスに丸ごとコピーされている。</strong><br>
+      生き物が100種になったら？　バグを直すたびに100箇所直すの？
+    </div>
+    <button class="btn btn-p" onclick="g0do('next')">なんとかしたい →</button>`;
+
+  // ── フェーズ1：継承 ──
+  if(phase===1) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 2 / 4</div>
+    <div class="ch-heading">継承で共通部分をまとめる</div>
+    <div class="info-box" style="margin-bottom:.85rem">
+      💡 <strong>Animal クラス</strong>に共通処理をまとめ、Dog・Cat・Bird は <code>extends Animal</code> するだけにしよう。
+      これが<strong>継承</strong>——「is-a 関係（犬は動物の一種）」のときに使える。
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--tng);margin-bottom:.35rem">Before（コピペ）</div>
+        <div style="background:var(--ng);border-radius:8px;padding:.6rem .7rem;font-family:var(--m);font-size:10px;line-height:1.85">
+          class Dog {<br>
+          &nbsp;String name;<br>
+          &nbsp;<span style="color:var(--tng)">void eat(){…}</span><br>
+          &nbsp;<span style="color:var(--tng)">void sleep(){…}</span><br>
+          }<br>
+          class Cat {<br>
+          &nbsp;String name;<br>
+          &nbsp;<span style="color:var(--tng)">void eat(){…}</span><br>
+          &nbsp;<span style="color:var(--tng)">void sleep(){…}</span><br>
+          }
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--tok);margin-bottom:.35rem">After（継承）</div>
+        <div style="background:var(--ok);border-radius:8px;padding:.6rem .7rem;font-family:var(--m);font-size:10px;line-height:1.85">
+          class Animal {<br>
+          &nbsp;String name;<br>
+          &nbsp;<span style="color:var(--tok)">void eat(){…}</span><br>
+          &nbsp;<span style="color:var(--tok)">void sleep(){…}</span><br>
+          }<br>
+          class Dog<br>
+          &nbsp;&nbsp;extends Animal {}<br>
+          class Cat<br>
+          &nbsp;&nbsp;extends Animal {}
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--ok);border:1px solid var(--bok);border-radius:var(--r);padding:.7rem 1rem;font-size:13px;color:var(--tok);margin-bottom:1rem">
+      ✓ <strong>重複コードが消えた！</strong>　新しい生き物を追加するとき <code>extends Animal</code> の1行で eat()/sleep() が使える。
+    </div>
+    <button class="btn btn-p" onclick="g0do('next')">次：抽象クラスへ →</button>`;
+
+  // ── フェーズ2：抽象クラス ──
+  if(phase===2){
+    const opts=[
+      {who:'dog', label:'Dog 🐕', choices:['ワン！','ウォン','グルル']},
+      {who:'cat', label:'Cat 🐱', choices:['ニャー','シャー','ミャウ']},
+      {who:'bird',label:'Bird 🐦',choices:['チュン','ピヨ','カァ']},
+    ];
+    const allSet=sounds.dog&&sounds.cat&&sounds.bird;
+    return `
+      <div class="ch-title">${CHAPTERS[0].name} — STEP 3 / 4</div>
+      <div class="ch-heading">鳴き声は決められない……→ 抽象クラス</div>
+      <p class="game-intro">Animal に <code>makeSound()</code> を書こうとしたが、鳴き声は生き物によって違う。<strong>抽象メソッド</strong>にして、サブクラスに実装を任せよう。</p>
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.7rem .85rem;font-family:var(--m);font-size:11px;line-height:1.9;margin-bottom:1rem">
+        <span style="color:var(--tpr)">abstract</span> class Animal {<br>
+        &nbsp;&nbsp;void eat() {…}&nbsp;&nbsp;<span style="color:var(--tm)">// 実装済み ✓</span><br>
+        &nbsp;&nbsp;void sleep() {…}&nbsp;<span style="color:var(--tm)">// 実装済み ✓</span><br>
+        &nbsp;&nbsp;<span style="color:var(--tpr)">abstract</span> void makeSound();&nbsp;<span style="color:var(--tm)">// ← サブクラスに任せる</span><br>
+        }
+      </div>
+      <p style="font-size:13px;color:var(--ts);margin-bottom:.6rem">各生き物の makeSound() を実装してください：</p>
+      ${opts.map(o=>`
+        <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.55rem .75rem;margin-bottom:.45rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-weight:600;font-size:13px;min-width:64px">${o.label}</span>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            ${o.choices.map(c=>`<button class="btn ${sounds[o.who]===c?'btn-p':''}" onclick="g0do('sound',{who:'${o.who}',s:'${c}'})" style="font-size:12px">${c}</button>`).join('')}
+          </div>
+          ${sounds[o.who]?`<span style="font-size:11px;color:var(--tok)">✓ "${sounds[o.who]}" を実装</span>`:''}
+        </div>`).join('')}
+      ${allSet
+        ?`<div class="fb ok show">✓ 全サブクラスが makeSound() を実装した！ コンパイルエラーなし。</div>
+           <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('next')">次：インターフェースへ →</button>`
+        :`<div style="font-size:12px;color:var(--tm)">3つ全員に鳴き声を設定してください</div>`}`;
+  }
+
+  // ── フェーズ3：インターフェース ──
+  if(phase===3) return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 4 / 4</div>
+    <div class="ch-heading">犬・車・ロボットを同じ型で扱いたい</div>
+    <p class="game-intro">新たな存在が現れた。3者全員に <code>move()</code> を持たせて、<code>race()</code> で一括レースをしたい。</p>
+    <div style="display:flex;gap:8px;margin-bottom:1rem">
+      ${['🐕 Dog','🚗 Car','🤖 Robot'].map(e=>`
+        <div style="flex:1;background:var(--s2);border:1.5px solid var(--bd);border-radius:10px;padding:.65rem;text-align:center;font-size:13px;font-weight:600">${e}</div>`).join('')}
+    </div>
+    ${!moveTried&&!movableOk?`
+      <p style="font-size:13px;color:var(--ts);margin-bottom:.75rem">どうやって move() を共有する？</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="g0do('moveTry')" style="font-size:13px">Animal に move() を追加する</button>
+        <button class="btn btn-p" onclick="g0do('movable')" style="font-size:13px">Movable インターフェースを作る</button>
+      </div>`:''}
+    ${moveTried&&!movableOk?`
+      <div class="fb ng show">
+        ✗ 「Car は Animal じゃない！」<br>
+        継承は <strong>is-a 関係</strong>（〜は〜の一種）のときだけ使える。<br>
+        車は動物ではないし、ロボットも Animal を継承するのは不自然だ。
+      </div>
+      <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('movable')">Movable インターフェースを作る →</button>`:''}
+    ${movableOk?`
+      <div style="background:var(--pr);border:1px solid var(--tpr);border-radius:var(--r);padding:.7rem .85rem;font-family:var(--m);font-size:10px;line-height:1.9;margin-bottom:.85rem">
+        <span style="color:var(--tpr)">interface</span> Movable { void move(); }<br><br>
+        class Dog&nbsp;&nbsp;extends Animal<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--tpr)">implements</span> Movable { void move(){走る} }<br>
+        class Car&nbsp;&nbsp;<span style="color:var(--tpr)">implements</span> Movable { void move(){走行} }<br>
+        class Robot <span style="color:var(--tpr)">implements</span> Movable { void move(){歩行} }<br><br>
+        <span style="color:var(--tm)">// 継承関係に関係なく、同じ型として扱える！</span><br>
+        void race(<span style="color:var(--tpr)">Movable</span> m) { m.move(); }
+      </div>
+      <div style="background:var(--ok);border:1px solid var(--bok);border-radius:var(--r);padding:.7rem 1rem;font-size:13px;color:var(--tok);margin-bottom:1rem">
+        ✓ <strong>インターフェース＝「型を作る」道具。</strong><br>
+        Dog・Car・Robot は全然違うクラスでも、<code>Movable</code> という共通の型を持てる。<br>
+        <code>race(Movable m)</code> はどんな Movable でも受け取れる——これがポリモーフィズムの本質。
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-p" onclick="finishGame(25)">理解した！ 第1章へ →</button>
+        <button class="btn" onclick="retryG0()">最初から ↩</button>
+      </div>`:''}`;
 }
 
 // ─── GAME 1: アクセス修飾子 ──────────────────────
@@ -1609,7 +1720,7 @@ function retryG7(){g7sel=g7members.map(()=>'param');g7done=false;document.getEle
 function restart(){
   history.length=0;
   Object.assign(G,{chapter:0,phase:'story',line:0,score:0});
-  g0ans=g0items.map(()=>null);
+  g0st={phase:0,sounds:{},moveTried:false,movableOk:false};
   g1sel=g1m.map(()=>'pub');
   g2placed={};g2sel=null;g2done=false;
   g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];
