@@ -920,14 +920,23 @@ function smoothJapaneseInlineHtml(html){
     .replace(/([「『（\(])\s*<(strong|code)(\b[^>]*)>/g, '<$2$3>$1')
     .replace(/([「『（\(])\s*(<span\b[^>]*>)/g, '$2$1');
 
-  // タグ直後の助詞・句読点を、その直前のインライン要素の中へ吸収する。
+  // タグ直後の句読点は、その直前のインライン要素の中へ吸収する（強調と一体でも問題ないため）。
   // 例: <strong>属性</strong>、 → <strong>属性、</strong>
-  //     <span>クラス</span>を → <span>クラスを</span>
-  const suffix = '(?:[、。，．｡､！？!?：；;）\\)］\\]｝\\}」』】〉》〕〗〙〛・]|から|まで|だけ|には|では|とは|なら|より|の|を|が|は|に|へ|と|で|や|も)';
+  const punct = '(?:[、。，．｡､！？!?：；;）\\)］\\]｝\\}」』】〉》〕〗〙〛・])';
+  // タグ直後の助詞は、タグの外側に残したまま改行だけ防ぐ。
+  // 強調(<strong>)やクリック可能な用語(<span class="gloss-term">)の範囲に
+  // 助詞まで巻き込んでしまわないようにするため、要素の中へは吸収しない。
+  // 例: <span>クラス</span>を → <span class="jp-nobr"><span>クラス</span>を</span>
+  const particle = '(?:から|まで|だけ|には|では|とは|なら|より|の|を|が|は|に|へ|と|で|や|も)';
+  const wrapOutside = (m,already,tag,ws,suf) => already ? m : `<span class="jp-nobr">${tag}${suf}</span>`;
   for(let i=0;i<8;i++){
     const before = out;
-    out = out.replace(new RegExp('(<(strong|code)\\b[^>]*>[\\s\\S]*?)(<\\/\\2>)(\\s*)('+suffix+')','g'), '$1$5$3');
-    out = out.replace(new RegExp('(<span\\b[^>]*>[\\s\\S]*?)(<\\/span>)(\\s*)('+suffix+')','g'), '$1$4$2');
+    out = out.replace(new RegExp('(<(strong|code)\\b[^>]*>[\\s\\S]*?)(<\\/\\2>)(\\s*)('+punct+')','g'), '$1$5$3');
+    out = out.replace(new RegExp('(<span\\b[^>]*>[\\s\\S]*?)(<\\/span>)(\\s*)('+punct+')','g'), '$1$4$2');
+    out = out.replace(new RegExp('(<span class="jp-nobr">)?(<(?:strong|code)\\b[^>]*>[\\s\\S]*?<\\/(?:strong|code)>)(\\s*)('+particle+')','g'),
+      (m,already,tag,ws,suf)=>wrapOutside(m,already,tag,ws,suf));
+    out = out.replace(new RegExp('(<span class="jp-nobr">)?(<span\\b(?![^>]*jp-nobr)[^>]*>[\\s\\S]*?<\\/span>)(\\s*)('+particle+')','g'),
+      (m,already,tag,ws,suf)=>wrapOutside(m,already,tag,ws,suf));
     if(out===before) break;
   }
 
