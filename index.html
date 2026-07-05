@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新人エンジニアの銀行</title>
+<title>OOPクエスト 序章：動物園チュートリアル</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -125,6 +125,36 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .poly-result.show{opacity:1}
 .poly-dispatch{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem 1rem;font-family:var(--m);font-size:12px;line-height:2;margin-bottom:1rem}
 
+
+/* ── 序章：継承ツリー図 ── */
+.g0-tree-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.g0-tree-caption{font-size:12px;font-weight:700;color:var(--tp);margin-bottom:.35rem}
+.g0-tree-note{font-size:12px;color:var(--ts);line-height:1.6;margin-bottom:.75rem}
+.g0-tree{min-width:650px;text-align:center;padding:.25rem 0 .5rem}
+.g0-row{display:flex;justify-content:center;gap:16px;align-items:flex-start}
+.g0-row.mid{justify-content:space-between}
+.g0-family{width:31%;display:flex;flex-direction:column;align-items:center;position:relative}
+.g0-tree-node{background:var(--s2);border:2px solid var(--bds);border-radius:8px;overflow:hidden;min-width:120px;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+.g0-tree-node.movable{border-color:var(--tpr)}
+.g0-tree-node.animal{border-color:var(--bok)}
+.g0-tree-node.vehicle{border-color:var(--bac)}
+.g0-tree-node.machine{border-color:var(--bwn)}
+.g0-tree-node.leaf{min-width:72px;font-size:11px}
+.g0-node-title{font-weight:700;font-size:13px;padding:5px 8px;background:var(--s0);border-bottom:1px solid var(--bd)}
+.g0-tree-node.movable .g0-node-title{background:var(--pr);color:var(--tpr)}
+.g0-tree-node.animal .g0-node-title{background:var(--ok);color:var(--tok)}
+.g0-tree-node.vehicle .g0-node-title{background:var(--ac);color:var(--tac)}
+.g0-tree-node.machine .g0-node-title{background:var(--wn);color:var(--twn)}
+.g0-node-sub{font-size:10px;color:var(--tm);padding:3px 8px 0;font-family:var(--m)}
+.g0-node-items{font-family:var(--m);font-size:10px;line-height:1.55;color:var(--ts);padding:4px 8px 6px;text-align:left}
+.g0-arrow{font-size:18px;color:var(--ts);line-height:1;margin:.25rem 0 .1rem}
+.g0-arrow.up{margin:.25rem 0 0}
+.g0-branch{height:16px;border-top:2px solid var(--ts);border-left:2px solid var(--ts);border-right:2px solid var(--ts);width:68%;margin:0 auto -1px}
+.g0-mini-branch{height:12px;border-top:2px solid var(--ts);border-left:2px solid var(--ts);border-right:2px solid var(--ts);width:72%;margin:0 auto -1px}
+.g0-leaves{display:flex;gap:6px;justify-content:center;align-items:flex-start;width:100%}
+.g0-tree-tip{background:var(--wn);border:1px solid var(--bwn);border-radius:8px;padding:.65rem .8rem;font-size:12px;color:var(--twn);line-height:1.7;margin-top:.75rem}
+@media(max-width:500px){.g0-tree{min-width:760px}.g0-tree-wrap{padding:.85rem}.g0-family{width:32%}.g0-tree-node{min-width:118px}.g0-tree-node.leaf{min-width:78px}}
+
 /* ── 抽象クラス ── */
 .abs-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px;font-style:italic;background:var(--pr);color:var(--tpr)}
 
@@ -152,6 +182,8 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .fb.ok{background:var(--ok);color:var(--tok);border:1px solid var(--bok)}
 .fb.ng{background:var(--ng);color:var(--tng);border:1px solid var(--bng)}
 .info-box{background:var(--ac);border:1px solid var(--bac);border-radius:var(--r);padding:.75rem 1rem;font-size:13px;color:var(--tac);margin-bottom:1rem;line-height:1.8}
+.code-sample{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem 1rem;font-family:var(--m);font-size:12px;line-height:1.75;white-space:pre-wrap;overflow:auto;margin-bottom:1rem}
+.lesson-point{background:var(--wn);border:1px solid var(--bwn);color:var(--twn);border-radius:var(--r);padding:.7rem 1rem;font-size:13px;line-height:1.75;margin-bottom:1rem}
 
 .complete{text-align:center;padding:2rem 0}
 .complete h2{font-size:22px;font-weight:500;margin-bottom:.5rem}
@@ -167,18 +199,288 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
   .m-name{font-size:11px}
   .ctrl-box.static-ctrl{flex-direction:column;align-items:flex-start}
 }
+
+
+/* ===== Screenshot-like RPG UI polish ===== */
+:root{
+  --bg-a:#0d1b25;--bg-b:#142938;--bg-c:#09131b;
+  --paper:#fffdf9;--paper2:#f8fbff;--ink:#162232;--muted:#657587;
+  --line:#cbd6e2;--blue:#1678c8;--green:#1aa85a;--gold:#ffd44a;
+  --dark-panel:rgba(25,39,49,.92);--dark-panel2:rgba(18,30,39,.96);
+  --side-line:rgba(255,255,255,.18);
+  --shadow:0 18px 45px rgba(0,0,0,.35);
+}
+@media(prefers-color-scheme:dark){:root{--s0:#eef3f8;--s1:#f7fbff;--s2:#fff;--tp:#182536;--ts:#5d6b7b;--tm:#8a98a8;--bd:rgba(10,35,60,.16);--bds:rgba(10,35,60,.28)}}
+body{display:block;min-height:100vh;padding:0;background:radial-gradient(circle at 20% 0%,#29465a 0,#122838 34%,#09141d 100%);color:var(--ink);font-weight:650;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.06),transparent 35%,rgba(255,255,255,.035));}
+.wrap{max-width:none;width:auto}.top-bar,.progress{display:none!important}
+.app-shell{min-height:100vh;display:flex;flex-direction:column;gap:10px;padding:8px 10px 10px;}
+.game-header{height:86px;display:grid;grid-template-columns:310px 1fr auto;gap:18px;align-items:center;color:#fff;}
+.brand-title{font-size:28px;line-height:1.05;font-weight:950;letter-spacing:.02em;color:#ffdf5a;text-shadow:0 2px 0 rgba(0,0,0,.35);white-space:nowrap;}
+.brand-sub{font-size:14px;margin-top:5px;color:#fff;font-weight:900}.brand-sub::before{content:"🐾 ";}
+.chapter-title{font-size:18px;font-weight:950;margin-bottom:9px;color:#fff;display:flex;align-items:center;gap:14px}.step-num{color:#5eed97;font-size:20px;letter-spacing:.08em;white-space:nowrap}.head-progress{height:18px;background:rgba(255,255,255,.22);border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.28)}
+.head-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#96f7c8,#2ec66e);border-radius:999px;transition:width .3s;position:relative}.head-progress-fill::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.28) 0 26px,transparent 26px 42px)}
+.header-actions{display:flex;align-items:center;gap:14px}.score-box{height:64px;padding:8px 18px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);border-radius:10px;text-align:center;min-width:150px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}.score-label{font-size:13px;color:#eaf4ff}.score-val{font-size:21px;color:#ffe15d;font-weight:950;margin-top:3px}.head-btn{height:50px;padding:0 18px;border:2px solid rgba(255,255,255,.78);border-radius:9px;background:rgba(0,0,0,.18);color:#fff;font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.26)}
+.game-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:14px;flex:1;min-height:0;transition:grid-template-columns .25s ease}.side-panel{background:linear-gradient(180deg,rgba(39,55,64,.96),rgba(23,38,48,.98));position:sticky;top:8px;align-self:start;border:1px solid rgba(255,255,255,.22);border-radius:8px;box-shadow:var(--shadow);padding:0;color:#fff;overflow:hidden;transition:width .25s ease}.side-head{font-size:14px;font-weight:900;color:#dbe8f3;padding:10px 10px;border-bottom:1px solid var(--side-line);display:flex;align-items:center;gap:8px;min-height:48px}.side-head-text{white-space:nowrap}.side-toggle{width:36px;height:32px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:rgba(255,255,255,.10);color:#fff;font-weight:950;font-size:18px;cursor:pointer;line-height:1}.step-list{display:flex;flex-direction:column}.side-step{display:grid;grid-template-columns:30px 1fr 24px;gap:6px;align-items:center;min-height:78px;padding:10px 10px;border-bottom:1px solid var(--side-line);color:#cbd6de;position:relative;cursor:pointer;user-select:none}.side-step:hover{background:rgba(255,255,255,.07)}.side-step.upcoming{opacity:.86}.side-step.active{background:rgba(9,22,31,.52);outline:2px solid #d7b219;outline-offset:-3px;color:#fff}.side-step.done .paw{color:#ffd64c}.side-step.locked{opacity:.58}.paw{font-size:21px;color:#9ba7ad}.check,.lock{font-size:20px}.check{color:#51d184}.lock{color:#e8dfc9}.step-main{font-size:16px;font-weight:950;line-height:1.25}.step-sub{font-size:13px;margin-top:4px;line-height:1.35;color:#fff;font-weight:850}.side-actions{padding:12px 8px}.side-back{width:100%;height:48px;border:1px solid rgba(255,255,255,.22);border-radius:9px;background:rgba(255,244,209,.10);color:#fff;font-weight:900;font-size:15px}.gloss-box{margin:0 8px 10px;padding:14px 12px;border-radius:8px;background:rgba(31,76,93,.70);border:1px solid rgba(97,178,205,.45)}.gloss-title{color:#82d4ff;font-weight:950;margin-bottom:12px}.gloss-note{font-size:12px;line-height:1.65;color:#e8f6ff;font-weight:750}
+.main-area{background:var(--paper);border:1px solid #d8e2ec;border-radius:8px;padding:16px 14px 10px;box-shadow:var(--shadow);overflow:auto;min-height:690px}.main-area .ch-title{display:inline-block;background:#1aa65d;color:#fff;border-radius:7px;padding:7px 14px;font-size:18px;font-weight:950;letter-spacing:.02em;margin:0 12px 0 0}.main-area .ch-title::after{content:""}.main-area .ch-heading{display:inline;font-size:22px;font-weight:950;color:#172235}.main-area .game-intro{clear:both;border-top:1px solid #c9d2da;padding-top:9px;margin-top:8px;font-size:16px;color:#172235;line-height:1.7;font-weight:780}.story-panel,.tree-wrap,.g0-tree-wrap{background:#f7fbff;border:1px solid #cbd6e2;border-radius:8px;box-shadow:inset 0 1px 0 #fff}.story-panel{margin-top:12px}.bubble{background:#fff;border:1px solid #cbd6e2;color:#172235;font-weight:750}.npc-avatar{font-size:38px}.npc-name{font-size:15px;color:#0967ae;font-weight:950}.btn{font-weight:900;border-radius:8px}.btn-p{background:linear-gradient(#29af5e,#129044);border-color:#0d7d37;color:#fff;box-shadow:0 3px 0 #0a6930}.code-sample{background:#eef4fa;color:#20344a;border-color:#cbd6e2;font-weight:750}.lesson-point{background:#fff4df;border-color:#e6b76a;color:#4c3514;font-weight:800}.fb.show{font-weight:800}.info-box{font-weight:800}.game-footer{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px;align-items:center}.footer-tip{background:#fff2dd;border:1px solid #e9b76d;border-radius:7px;padding:11px 16px;font-size:14px;color:#3e2d16;font-weight:900}.footer-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.footer-prev,.footer-next{height:50px;border:none;border-radius:8px;color:white;font-size:16px;font-weight:950;cursor:pointer}.footer-prev{background:linear-gradient(#7a8794,#596673);box-shadow:0 3px 0 #3e4750}.footer-next{background:linear-gradient(#2181d8,#1667ad);box-shadow:0 3px 0 #0a4d87}.footer-prev:disabled,.footer-next:disabled,.head-btn:disabled,.side-back:disabled{opacity:.45;cursor:default;filter:grayscale(.35);box-shadow:none}.uml-class{border-color:#7a8da3}.uml-head{background:#edf4fb;color:#15283c;font-weight:950}.g0-tree-wrap{padding:12px}.g0-tree-caption{font-size:14px;color:#5b6774}.g0-tree-note{display:none}.g0-tree-node{box-shadow:0 2px 0 rgba(0,0,0,.08);background:#fff}.g0-node-title{font-size:15px;color:#111827}.g0-node-sub{font-weight:950}.g0-node-items{font-size:11px;color:#25364b;font-weight:850}.g0-arrow{font-size:23px;color:#2f3a45}.g0-branch,.g0-mini-branch{border-color:#2f3a45}.chapter-prefix{display:inline-block;background:#1aa65d;color:#fff;padding:7px 12px;border-radius:7px;margin-right:8px;font-weight:950}.quiz-choice{display:flex;align-items:center;gap:10px;border-bottom:1px solid #d7dfe8;padding:13px 8px;font-size:16px}.quiz-radio{width:22px;height:22px;border:2px solid #aebccc;border-radius:50%;display:inline-block;position:relative;background:#fff}.quiz-choice.selected .quiz-radio{border-color:#1d83df}.quiz-choice.selected .quiz-radio::after{content:"";position:absolute;inset:4px;border-radius:50%;background:#1d83df}.quiz-actions{display:flex;gap:18px;align-items:center;margin-top:18px}.confirm-btn{margin-left:auto;min-width:185px;height:64px;border:none;border-radius:12px;background:linear-gradient(#22b75d,#128943);color:#fff;font-size:24px;font-weight:950;box-shadow:0 3px 0 #0b682f}.hint-btn{height:38px;padding:0 16px;border-radius:7px;border:1px solid #96aec4;background:#fff;color:#1e74bd;font-size:14px;font-weight:900}
+
+
+/* ===== Character dialogue system ===== */
+.dialog-scene{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin:12px 0 16px;
+}
+.dialog-row{
+  display:grid;
+  grid-template-columns:132px minmax(0,1fr);
+  gap:12px;
+  align-items:stretch;
+  border:1px solid #cbd6e2;
+  background:linear-gradient(180deg,#ffffff,#f8fbff);
+  border-radius:10px;
+  padding:10px 12px;
+  box-shadow:inset 0 1px 0 #fff,0 2px 0 rgba(20,45,70,.04);
+}
+.dialog-row.right{
+  grid-template-columns:minmax(0,1fr) 144px;
+}
+.dialog-row.right .dialog-character{order:2}
+.dialog-row.right .dialog-bubble{order:1}
+.dialog-character{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  min-width:0;
+}
+.dialog-character img{
+  width:112px;
+  max-width:100%;
+  height:auto;
+  display:block;
+  object-fit:contain;
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.12));
+}
+.dialog-name{
+  margin-top:-2px;
+  padding:4px 12px;
+  border-radius:7px;
+  color:#fff;
+  font-weight:950;
+  font-size:13px;
+  line-height:1.2;
+  box-shadow:0 2px 0 rgba(0,0,0,.16);
+  white-space:nowrap;
+}
+.dialog-name.cat{background:linear-gradient(#4e9548,#2d7332)}
+.dialog-name.rabbit{background:linear-gradient(#e78091,#ca5368)}
+.dialog-bubble{
+  position:relative;
+  align-self:center;
+  background:#fff;
+  border:1px solid #cbd6e2;
+  border-radius:12px;
+  padding:13px 16px;
+  color:#172235;
+  font-size:15px;
+  line-height:1.85;
+  font-weight:800;
+  min-height:84px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.dialog-bubble::before{
+  content:"";
+  position:absolute;
+  left:-10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:0;height:0;
+  border-top:10px solid transparent;
+  border-bottom:10px solid transparent;
+  border-right:10px solid #cbd6e2;
+}
+.dialog-bubble::after{
+  content:"";
+  position:absolute;
+  left:-8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:0;height:0;
+  border-top:9px solid transparent;
+  border-bottom:9px solid transparent;
+  border-right:9px solid #fff;
+}
+.dialog-row.right .dialog-bubble::before{
+  left:auto;right:-10px;
+  border-right:0;
+  border-left:10px solid #cbd6e2;
+}
+.dialog-row.right .dialog-bubble::after{
+  left:auto;right:-8px;
+  border-right:0;
+  border-left:9px solid #fff;
+}
+.dialog-bubble strong,.dialog-bubble .hot{color:#d61e1e;font-weight:950}
+.dialog-bubble .blue{color:#0967ae;font-weight:950}
+.dialog-choice-panel{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin:12px 0 16px;
+}
+.design-slot{
+  background:#fff;
+  border:2px solid #d5dde8;
+  border-radius:10px;
+  min-height:88px;
+  padding:10px 12px;
+  box-shadow:inset 0 1px 0 #fff;
+}
+.design-slot.good{border-color:#a35ff2;background:#fbf7ff}
+.design-slot-title{font-weight:950;font-size:14px;margin-bottom:6px;color:#162232}
+.design-slot-sub{font-family:var(--m);font-size:12px;line-height:1.8;color:#4b5d70;font-weight:800}
+@media(max-width:700px){
+  .dialog-row,.dialog-row.right{grid-template-columns:88px minmax(0,1fr);padding:8px;gap:8px}
+  .dialog-row.right .dialog-character{order:0}
+  .dialog-row.right .dialog-bubble{order:1}
+  .dialog-character img{width:82px}
+  .dialog-name{font-size:11px;padding:3px 8px}
+  .dialog-bubble{font-size:13px;line-height:1.7;padding:10px 12px;min-height:70px}
+  .dialog-row.right .dialog-bubble::before{left:-10px;right:auto;border-left:0;border-right:10px solid #cbd6e2}
+  .dialog-row.right .dialog-bubble::after{left:-8px;right:auto;border-left:0;border-right:9px solid #fff}
+  .dialog-choice-panel{grid-template-columns:1fr}
+}
+
+
+
+/* ===== 不自然な途中改行の抑制 =====
+   用語・メソッド名だけが1語で次行に送られないようにする */
+.dialog-bubble,
+.bubble,
+.game-intro,
+.lesson-point,
+.fb,
+.info-box,
+.footer-tip,
+.g0-tree-note,
+.g0-tree-tip,
+.sum-card p{
+  line-break: strict;
+  word-break: auto-phrase;
+  overflow-wrap: normal;
+  text-wrap: pretty;
+}
+@supports not (word-break: auto-phrase){
+  .dialog-bubble,.bubble,.game-intro,.lesson-point,.fb,.info-box,.footer-tip,.g0-tree-note,.g0-tree-tip,.sum-card p{
+    word-break: normal;
+  }
+}
+.gloss-term,
+.dialog-bubble strong,
+.dialog-bubble code,
+.bubble strong,
+.bubble code,
+.game-intro strong,
+.lesson-point strong,
+.fb strong,
+.info-box strong,
+code{
+  white-space: nowrap;
+  word-break: keep-all;
+}
+.jp-nobr{
+  white-space: nowrap;
+  word-break: keep-all;
+  display:inline;
+}
+.jp-phrase{
+  white-space: nowrap;
+  word-break: keep-all;
+  display:inline;
+}
+.m-name{
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* サイドナビ収納：アイコンだけ残す */
+.app-shell.side-collapsed .game-layout{grid-template-columns:64px minmax(0,1fr)}
+.app-shell.side-collapsed .side-panel{width:64px}
+.app-shell.side-collapsed .side-head{justify-content:center;padding:8px 6px}
+.app-shell.side-collapsed .side-head-text{display:none}
+.app-shell.side-collapsed .step-list{display:flex;flex-direction:column}
+.app-shell.side-collapsed .side-step{grid-template-columns:1fr;justify-items:center;min-height:58px;padding:8px 4px;gap:0}
+.app-shell.side-collapsed .side-step>div:nth-child(2),
+.app-shell.side-collapsed .side-step>div:nth-child(3),
+.app-shell.side-collapsed .side-actions,
+.app-shell.side-collapsed .gloss-box{display:none}
+.app-shell.side-collapsed .paw{font-size:22px}
+.app-shell.side-collapsed .side-step.active{outline-offset:-4px}
+@media(max-width:900px){
+  .app-shell{padding:8px;gap:8px}
+  .game-header{height:auto;grid-template-columns:1fr;gap:10px}
+  .brand-title{font-size:24px}
+  .header-actions{flex-wrap:wrap;gap:8px}
+  .game-layout{grid-template-columns:64px minmax(0,1fr);gap:8px}
+  .app-shell:not(.side-collapsed) .game-layout{grid-template-columns:220px minmax(0,1fr)}
+  .side-panel{display:block;order:0;position:sticky;top:8px}
+  .side-head{padding:10px 12px}
+  .step-list{display:flex;flex-direction:column}
+  .side-step{min-height:58px;padding:8px;grid-template-columns:24px 1fr 20px}
+  .paw{font-size:17px}.step-main{font-size:13px}.step-sub{font-size:11px}
+  .side-actions,.gloss-box{display:none}
+  .main-area{min-height:auto;padding:12px 10px}
+  .game-footer{grid-template-columns:1fr;gap:8px}.footer-actions{grid-template-columns:1fr 1fr;width:100%}.footer-prev,.footer-next{width:100%}
+}
+@media(max-width:560px){
+  .app-shell:not(.side-collapsed) .game-layout{grid-template-columns:1fr}
+  .app-shell:not(.side-collapsed) .side-panel{position:relative;top:auto}
+}
+
 </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="top-bar">
-    <div class="chapter-nav" id="ch-nav"></div>
-    <div class="top-btns">
-      <button class="btn btn-sm" id="back-btn" onclick="goBack()">← 戻る</button>
+<div class="app-shell">
+  <header class="game-header">
+    <div>
+      <div class="brand-title">OOP設計クエスト</div>
+      <div class="brand-sub">君だけのオブジェクト指向RPG〜</div>
     </div>
+    <div>
+      <div class="chapter-title"><span>序章：動物たちの国を作ろう</span><span class="step-num" id="head-step">STEP 1 / 8</span></div>
+      <div class="head-progress"><div class="head-progress-fill" id="prog"></div></div>
+    </div>
+    <div class="header-actions">
+      <div class="score-box"><div class="score-label">現在のスコア</div><div class="score-val">⭐ <span id="score-now">0</span> pt</div></div>
+      <button class="head-btn" onclick="toggleSidebar()">☰ ナビ</button>
+      <button class="head-btn" onclick="goBack()" id="back-btn">← 前のページ</button>
+      <button class="head-btn" onclick="toggleGlossary()">▣ 用語集</button>
+    </div>
+  </header>
+  <div class="game-layout">
+    <aside class="side-panel" id="side-panel">
+      <div class="side-head"><button class="side-toggle" onclick="toggleSidebar()" title="ナビを開閉">☰</button><span class="side-head-text">序章のステップ</span></div>
+      <div class="step-list" id="ch-nav"></div>
+      <div class="side-actions"><button class="side-back" id="side-back-btn" onclick="goBack()">← 前のページに戻る</button></div>
+      <div class="gloss-box" id="side-gloss">
+        <div class="gloss-title">用語集（クリックで表示）</div>
+        <div class="gloss-note">画面の青い用語をクリックすると説明が表示されます。</div>
+      </div>
+    </aside>
+    <main class="main-area" id="main-area" tabindex="-1"><div id="screen"></div></main>
   </div>
-  <div class="progress"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <div id="screen"></div>
+  <footer class="game-footer">
+    <div class="footer-tip">💡 ポイント：継承は「is-a（〜は〜の一種）」の関係を表す。上のクラスの性質や振る舞いを下のクラスが受け継ぐよ！</div>
+    <div class="footer-actions">
+      <button class="footer-prev" id="footer-prev-btn" onclick="goBack()">◀ 前のページへ戻る</button>
+      <button class="footer-next" onclick="footerNext()">次のステップへ ▶</button>
+    </div>
+  </footer>
 </div>
 <div id="gloss-popup">
   <button id="gloss-close" onclick="closeGloss()">×</button>
@@ -189,195 +491,70 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 const G={chapter:0,phase:'story',line:0,score:0};
 const history=[];
 
-const CHAPTERS=[
-  {name:'序章',sub:'OOPの基礎を知れ'},
-  {name:'第1章',sub:'口座情報を守れ'},
-  {name:'第2章',sub:'金融商品の分類'},
-  {name:'第3章',sub:'銀行と支店と顧客'},
-  {name:'第4章',sub:'金利改定の謎'},
-  {name:'第5章',sub:'同じ命令、違う動き'},
-  {name:'第6章',sub:'設計の契約書'},
-  {name:'第7章',sub:'口座開設の設計図'},
-  {name:'第8章',sub:'型の正体を見抜け'},
-  {name:'第9章',sub:'障害に備えるシステム'},
-  {name:'第10章',sub:'クラスの依存関係'},
-  {name:'第11章',sub:'インターフェースの実現'},
-  {name:'実践編',sub:'設計制約パズル'},
-];
+const CHAPTERS=[{name:'序章',sub:'OOP体験版：動物園を完成させよう'}];
 
 const GLOSSARY=[
-  {term:'クラス',def:'オブジェクトの設計図。BankAccount クラスのように、フィールドとメソッドをまとめたもの。'},
-  {term:'オブジェクト',def:'クラスから作られた実体。インスタンスとほぼ同義で使われる。「田中さんの口座オブジェクト」のように、データと処理をひとまとめにしたもの。'},
-  {term:'インスタンス',def:'クラスから作られた実体。new BankAccount() で作る一つひとつが「インスタンス」。田中さんの口座と鈴木さんの口座はそれぞれ別のインスタンス。'},
-  {term:'コンストラクタ',def:'new でインスタンスを作るときに自動的に呼ばれる特別なメソッド。口座番号や名義人など初期値をセットするのに使う。クラス名と同じ名前で定義する。'},
-  {term:'バリデーション',def:'値や状態が正しい条件を満たしているか確認する処理。「残高が0以上か」「取引額が上限以内か」などのチェック。認証（誰か確認）や認可（権限確認）とは別の概念。'},
-  {term:'フィールド',def:'クラスが持つ変数（データ）。balance や pin など、状態を保持する場所。'},
-  {term:'メソッド',def:'クラスが持つ関数（処理）。getBalance() や validatePin() など、動作を定義したもの。'},
-  {term:'メンバー',def:'クラスが持つフィールドとメソッドの総称。クラスの「構成要素」全体を指す言葉。'},
-  {term:'アクセス修飾子',def:'public / private / protected のこと。クラスのメンバーに「誰がアクセスできるか」を指定する。カプセル化の基本機能。'},
-  {term:'public',def:'どこからでもアクセスできる修飾子（+）。外部に公開するメソッドやデータに使う。'},
-  {term:'private',def:'クラス自身のコードからのみアクセスできる修飾子（−）。残高や暗証番号など外部に見せたくないデータに使う。'},
-  {term:'protected',def:'自クラスと子クラスからのみアクセスできる修飾子（#）。継承して使いたいが外部には隠したい場合に使う。'},
-  {term:'継承',def:'親クラスの性質を子クラスが引き継ぐ仕組み。is-a 関係。SavingsAccount は Account の一種なので継承できる。'},
-  {term:'合成',def:'強い has-a 関係（◆）。所有者が消えると所有されるものも消える。銀行が倒産すると支店も消滅する例。'},
-  {term:'集約',def:'弱い has-a 関係（◇）。所有されるものは独立して存在できる。銀行が倒産しても顧客は別の銀行に移れる例。'},
-  {term:'static',def:'インスタンスではなくクラス自体に属するフィールドやメソッド。全インスタンスで1つの値を共有する。金利はどの口座でも同じなので static が適切。'},
-  {term:'is-a',def:'「〇〇は△△の一種」という関係。継承を使う目安。SavingsAccount is a Account（普通預金は口座の一種）。'},
-  {term:'has-a',def:'「〇〇は△△を持つ」という関係。合成（強◆）または集約（弱◇）を使う。Bank has a Branch（銀行は支店を持つ）。'},
-  {term:'カプセル化',def:'データと処理をクラスにまとめ、外部から隠す仕組み。private で内部を隠し、public メソッドだけを窓口として公開する。'},
-  {term:'ポリモーフィズム',def:'同じメソッド名の呼び出しが、実際のオブジェクトの型に応じて異なる実装を実行する仕組み。Account[] に SavingsAccount と LoanAccount を混ぜて一括処理できる。'},
-  {term:'オーバーライド',def:'親クラスのメソッドを子クラスで再定義すること。SavingsAccount が Account の calculateInterest() を上書きして独自の計算式を持つ例。'},
-  {term:'抽象クラス',def:'インスタンス化できないクラス。abstract メソッドを持ち、サブクラスに実装を強制する。Account を abstract にすれば「必ず calculateInterest() を実装せよ」と契約できる。'},
-  {term:'インターフェース',def:'メソッドのシグネチャだけを定義した契約書。抽象クラスと違い多重実装できる。Transferable インターフェースを複数の口座クラスに実装させる例。'},
-  {term:'オーバーロード',def:'同じクラス内で同名メソッドを引数の型や数を変えて複数定義すること。transfer(int) と transfer(int, String) のように使う。オーバーライドとは別の概念。'},
-  {term:'型キャスト',def:'変数の型を別の型に変換する操作。親クラス型を子クラス型に変換するのはダウンキャスト。実際のオブジェクトと違う型にキャストすると ClassCastException が発生する。'},
-  {term:'ダウンキャスト',def:'親クラス型の変数を子クラス型に変換すること。SavingsAccount s = (SavingsAccount) a; のように書く。instanceof で型を確認してから行うのが安全。'},
-  {term:'instanceof',def:'オブジェクトが特定のクラスのインスタンスかどうかを確認する演算子。if (a instanceof SavingsAccount) のように使う。ダウンキャスト前の安全確認に役立つ。'},
-  {term:'例外処理',def:'実行時エラーを安全に捕まえて対処する仕組み。throw で例外を投げ、try で主処理を囲み、catch でエラーを受け取り、finally で後処理を実行する。'},
-  {term:'throw',def:'例外を意図的に発生させるキーワード。throw new InsufficientFundsException() のように書く。条件チェックで異常を検知したときに使う。'},
-  {term:'依存',def:'あるクラスが別のクラスを「一時的に使う」関係。メソッドの引数やローカル変数として使うだけで、フィールドには持たない。最も弱い結合。UML では点線矢印 →。'},
-  {term:'実現',def:'クラスがインターフェースを implements すること。「このクラスはこの契約を果たす」という関係。メソッドを全て正確なシグネチャで実装する必要がある。UML では点線＋白抜き三角 ▷。'},
+  {term:'クラス',def:'オブジェクトの設計図。動物クラスのように、データと動作をまとめたもの。'},
+  {term:'オブジェクト',def:'クラスから作られた実体。犬のポチ、猫のミケのような一つひとつの存在。'},
+  {term:'インスタンス',def:'クラスから作られた実体。new 犬() で作られる一匹一匹がインスタンス。'},
+  {term:'コンストラクタ',def:'インスタンスを作るときに初期値をセットする特別な処理。名前や初期体力などを決める。'},
+  {term:'フィールド',def:'クラスが持つデータ。名前、体力、空腹度など。'},
+  {term:'メソッド',def:'クラスが持つ動作。食べる、歩く、鳴くなど。'},
+  {term:'メンバー',def:'クラスが持つフィールドとメソッドの総称。'},
+  {term:'アクセス修飾子',def:'public / private / protected のこと。誰がそのメンバーに触れるかを決める。'},
+  {term:'public',def:'外部から使える。公開された窓口。'},
+  {term:'private',def:'クラス自身だけが使える。外部から勝手に触らせたくないデータに使う。'},
+  {term:'protected',def:'自分自身と子クラスから使える。継承先にだけ見せたい時に使う。'},
+  {term:'継承',def:'親クラスの性質を子クラスが引き継ぐ仕組み。「犬は動物の一種」のような is-a 関係。'},
+  {term:'static',def:'インスタンスごとではなくクラス全体に属する値。動物の総数のように全体で1つあればよいものに使う。'},
+  {term:'is-a',def:'「〇〇は△△の一種」と言える関係。継承を使う目安。'},
+  {term:'カプセル化',def:'データを外部から直接触れないように隠し、メソッドだけを窓口にする考え方。'},
+  {term:'ポリモーフィズム',def:'親型でまとめて扱っても、実際の中身に応じて違う処理が呼ばれる仕組み。'},
+  {term:'オーバーライド',def:'親クラスで決めたメソッドを、子クラスで自分用に実装し直すこと。'},
+  {term:'抽象クラス',def:'そのままではインスタンス化せず、子クラスに実装を任せるための親クラス。'},
+  {term:'インターフェース',def:'継承関係がなくても「同じ操作ができる」という共通の型を与える契約。'},
+  {term:'型キャスト',def:'親型として扱っていたものを、必要に応じて具体的な子クラス型として扱い直す操作。'},
+  {term:'ダウンキャスト',def:'親クラス型から子クラス型へ戻す型キャスト。'},
+  {term:'instanceof',def:'実際の中身が特定の型かどうか確認する演算子。安全にダウンキャストする前に使う。'},
+  {term:'例外処理',def:'エラーが起きた時にプログラムを安全に続けるための仕組み。'},
+  {term:'throw',def:'例外を意図的に発生させるキーワード。'}
 ];
+
+const CHAR_IMAGES={
+  cat:"images/cat.png",
+  catThink:"images/catThink.png",
+  rabbit:"images/rabbit.png",
+  rabbitThink:"images/rabbitThink.png"
+};
 
 const stories={
   0:[
     {npc:'🌍 ナレーター',text:'あなたは創造主。この世界では、すべての存在を「クラス」という設計図から作ることができます。'},
     {npc:'🌍 ナレーター',text:'最初は犬・猫・鳥を作るだけ。でもコードを書けば書くほど、同じ処理が何度も現れてきます。'},
-    {npc:'🌍 ナレーター',text:'そのたびにコードを賢く整理する方法を発見して、設計力を磨いていきましょう。継承・抽象クラス・インターフェース——全部「楽をするための発明」です。'},
+    {npc:'🌍 ナレーター',text:'困った場面を解決しながら、継承・抽象クラス・ポリモーフィズム・インターフェース・カプセル化を体験していきましょう。'},
   ],
   '0e':[
-    {npc:'🌍 ナレーター',text:'完璧な理解だ。コピペ地獄 → 継承 → 抽象クラス → インターフェース。この流れが OOP の進化の本質だ。'},
-    {npc:'🌍 ナレーター',text:'インターフェースは「継承関係がなくても共通の型を与えられる道具」だ。これが後の章でも設計の核心になってくる。'},
-    {npc:'👔 頭取',text:'では実際の銀行システム設計に取り掛かろう。'},
-  ],
-  1:[
-    {npc:'👔 頭取',text:'よく来てくれた。君が今日から配属される新人エンジニアだね。わが銀行のシステムを任せる。'},
-    {npc:'👔 頭取',text:'さっそく問題が起きている。昨夜、不審なプログラムが顧客の口座残高と暗証番号を読み取ろうとした。'},
-    {npc:'🔐 セキュリティ部長',text:'原因は BankAccount クラスのアクセス修飾子の設定ミスだ。フィールドが全部 public になっていた。'},
-    {npc:'🔐 セキュリティ部長',text:'アクセス修飾子を正しく設定すれば、外部のコードが直接触れる情報を制限できる。<br><br><span style="color:var(--tok)"><strong>+ public</strong></span>：誰でもアクセス可<br><span style="color:var(--tng)"><strong>− private</strong></span>：クラス自身のみ<br><span style="color:var(--tpr)"><strong># protected</strong></span>：自クラスと子クラスのみ'},
-    {npc:'🔐 セキュリティ部長',text:'各フィールドとメソッドに適切な修飾子を設定してくれ。<strong>balance と pin は絶対に外部から見えてはいけない。</strong>'},
-  ],
-  '1e':[
-    {npc:'🔐 セキュリティ部長',text:'完璧だ。balance と pin を private にしたことで、外部のコードから直接アクセスできなくなった。'},
-    {npc:'👔 頭取',text:'残高を知りたければ getBalance() を通す。「窓口（public メソッド）だけを公開して、内部データは隠す」。これがカプセル化だ。'},
-  ],
-  2:[
-    {npc:'📂 システム部長',text:'次は銀行が扱う金融商品のシステム設計だ。商品ごとにバラバラなコードが書かれていて管理が大変だ。'},
-    {npc:'📂 システム部長',text:'<strong>継承</strong>を使えば整理できる。「普通預金は口座の一種」という is-a 関係でクラスを階層化する。'},
-    {npc:'📂 システム部長',text:'親クラスに共通の処理を書いておけば、子クラスで繰り返さなくてよい。これがコードの再利用だ。'},
-    {npc:'📂 システム部長',text:'カードを選んでスロット（?）に配置し、継承ツリーを完成させてくれ。矢印は子→親の方向だ。'},
-  ],
-  '2e':[
-    {npc:'📂 システム部長',text:'整理できた。SavingsAccount も TimeDeposit も Account の is-a だから、Account に書いた利息計算などの処理を共有できる。'},
-    {npc:'👔 頭取',text:'「〇〇は△△の一種である」という文が成り立てば継承が使える。設計の基本だ。'},
-  ],
-  3:[
-    {npc:'📂 システム部長',text:'設計書を見ていたら、関係の種類について議論になった。「銀行と支店」と「銀行と顧客」は同じ has-a に見えて、実は性質が異なる。'},
-    {npc:'💼 先輩エンジニア',text:'<strong>合成（Composition）</strong>は生死を共にする強い関係だ。銀行が倒産すれば支店も消滅する。塗りつぶしひし形 ◆ で表す。'},
-    {npc:'💼 先輩エンジニア',text:'<strong>集約（Aggregation）</strong>は独立して存在できる弱い関係だ。銀行が倒産しても顧客は別の銀行に移れる。空のひし形 ◇ で表す。'},
-    {npc:'💼 先輩エンジニア',text:'まず「倒産ボタン」を押して違いを目で確かめてから、クイズに答えてくれ。'},
-  ],
-  '3e':[
-    {npc:'💼 先輩エンジニア',text:'そうだ。「所有者が消えたとき、所有されるものも消えるか？」が判断の鍵だ。'},
-    {npc:'👔 頭取',text:'合成はクラスが「所有して管理する」もの、集約は「参照するだけ」のものに使う。'},
-  ],
-  4:[
-    {npc:'📊 アナリスト',text:'最後の課題だ。今朝、日銀が政策金利を変更した。すると、なぜか全口座の金利が一斉に変わった。'},
-    {npc:'📊 アナリスト',text:'しかし残高はそれぞれ別々のままだ。なぜ金利だけが全口座で共有されているのか？'},
-    {npc:'📊 アナリスト',text:'答えは <strong>static</strong> だ。static なフィールドはインスタンスではなく<strong>クラス自体に属する</strong>。全インスタンスで1つの値を共有する。'},
-    {npc:'📊 アナリスト',text:'金利は「この銀行の全口座に適用される利率」だから static が自然だ。残高は口座ごとに違うのでインスタンスフィールドだ。実際に操作して確かめてくれ。'},
-  ],
-  '4e':[
-    {npc:'📊 アナリスト',text:'理解できたね。interestRate を変えると全口座に反映される。balance は口座ごとに独立している。'},
-    {npc:'👔 頭取',text:'「この値はクラス全体で1つあれば十分か？」と問いかけると static を使うべき場面がわかる。'},
-  ],
-  5:[
-    {npc:'📂 システム部長',text:'第2章で継承ツリーを作ったね。では、Account 型の変数に SavingsAccount や LoanAccount を入れて、まとめて処理できると思うか？'},
-    {npc:'📂 システム部長',text:'実はできる。これが<strong>ポリモーフィズム</strong>だ。同じ命令 <code>calculateInterest()</code> を呼ぶだけで、各クラスが自分の実装（オーバーライド）を実行する。'},
-    {npc:'📂 システム部長',text:'コードを書く側は「何の口座か」を意識しなくてよい。Account のリストをループするだけで、それぞれが正しい計算をしてくれる。'},
-    {npc:'📂 システム部長',text:'「一括利息計算」ボタンを押して、ポリモーフィズムの動きを目で確かめてくれ。'},
-  ],
-  '5e':[
-    {npc:'📂 システム部長',text:'見た通りだ。SavingsAccount, TimeDeposit, LoanAccount はそれぞれ calculateInterest() をオーバーライドしている。'},
-    {npc:'👔 頭取',text:'「同じメッセージを送る、応答はオブジェクトに任せる」。これがポリモーフィズムの本質だ。'},
-  ],
-  6:[
-    {npc:'📂 システム部長',text:'ここまでで Account クラスを多用してきたが、実は Account 単体でインスタンスを作る必要はない。SavingsAccount や LoanAccount として使うものだ。'},
-    {npc:'👔 頭取',text:'そういうクラスは<strong>抽象クラス</strong>にする。インスタンス化を禁止し、サブクラスが必ず実装すべきメソッドを<strong>抽象メソッド</strong>として宣言できる。'},
-    {npc:'📂 システム部長',text:'似た概念に<strong>インターフェース</strong>がある。メソッドの「名前と引数の型だけ」を定義した契約書だ。抽象クラスと違い、1つのクラスに複数実装できる。'},
-    {npc:'📂 システム部長',text:'Account クラスの各メンバーを「抽象（サブクラスに実装を任せる）」か「具体（デフォルト実装あり）」かに分類してくれ。'},
-  ],
-  '6e':[
-    {npc:'📂 システム部長',text:'正しく設計できた。calculateInterest() のような「クラスによって実装が違うもの」を抽象メソッドにする。共通処理は具体メソッドでよい。'},
-    {npc:'👔 頭取',text:'残るは最後の課題だ。'},
-  ],
-  7:[
-    {npc:'👔 頭取',text:'新しい口座開設システムを作っていたら、こんなバグが報告された。「開設直後の口座で残高がマイナスになっている」「名義人が空欄のまま取引できてしまった」。'},
-    {npc:'📂 システム部長',text:'原因はコンストラクタの設計ミスだ。コンストラクタとは new でインスタンスを作るときに自動で呼ばれる特別なメソッドで、初期値をセットする役割を持つ。'},
-    {npc:'📂 システム部長',text:'コンストラクタには「開設者から受け取るべき情報（引数）」と「システムが自動でセットするデフォルト値」と「コンストラクタで扱わないもの（static など）」がある。'},
-    {npc:'📂 システム部長',text:'各フィールドをどう初期化すべきか分類してくれ。正しく設計すれば、口座開設時のバグはなくなる。'},
-  ],
-  '7e':[
-    {npc:'📂 システム部長',text:'完璧だ。accountId・ownerName・pin は開設者から受け取らないとセットできない。balance=0・createdAt=現在日時はシステムが自動で決めてよい。interestRate は static なのでコンストラクタ不要だ。'},
-    {npc:'👔 頭取',text:'あと2つだ。続けよう。'},
-  ],
-  8:[
-    {npc:'📂 システム部長',text:'第5章でポリモーフィズムを学んだ。Account[] に混在させて一括処理するのは便利だが、特定の口座だけの機能（定期預金の満期日など）を呼び出したいときはどうする？'},
-    {npc:'📂 システム部長',text:'そこで<strong>型キャスト（ダウンキャスト）</strong>を使う。Account 型の変数を実際のサブクラス型に変換する操作だ。'},
-    {npc:'📂 システム部長',text:'ただし実際のオブジェクトと違う型にキャストすると <code>ClassCastException</code> が発生する。<strong>instanceof</strong> で型を確認してからキャストするのが安全だ。'},
-    {npc:'📂 システム部長',text:'4つのコードが成功するか例外になるか判定してくれ。'},
-  ],
-  '8e':[
-    {npc:'📂 システム部長',text:'instanceof で確認してからキャストすれば ClassCastException を防げる。Java 16 以降は <code>instanceof TimeDeposit td</code> と書くとキャストと変数宣言を同時にできる。'},
-    {npc:'👔 頭取',text:'最後の章へ進もう。'},
-  ],
-  9:[
-    {npc:'👔 頭取',text:'昨夜、残高不足の状態で引き出し操作が実行され、システムがクラッシュした。エラーを適切に処理するコードがなかったのが原因だ。'},
-    {npc:'📂 システム部長',text:'<strong>例外処理</strong>を使えばエラーを安全に捕まえて対処できる。残高不足なら <code>throw</code> で例外を投げ、<code>try/catch</code> で受け取る。'},
-    {npc:'📂 システム部長',text:'try：例外が発生するかもしれない処理。catch：例外を受け取って対処。finally：成功・失敗どちらでも必ず実行される後処理。throw：例外を意図的に発生させる。'},
-    {npc:'📂 システム部長',text:'withdraw() メソッドの骨格が完成している。4つのコード片を正しい場所に配置してくれ。'},
-  ],
-  '9e':[
-    {npc:'📂 システム部長',text:'完璧だ。throw で例外を投げ、try で操作を実行し、catch でエラー処理、finally でログを残す。この流れが例外処理の基本だ。'},
-    {npc:'👔 頭取',text:'例外処理まで学んだ。残りは依存・実現という2つの関係性だ。UML で必ず登場する。しっかりマスターしよう。'},
-  ],
-  10:[
-    {npc:'📂 システム部長',text:'クラス図には矢印が4種類ある。継承・合成・集約はすでに学んだ。残る1つが<strong>依存</strong>だ。'},
-    {npc:'📂 システム部長',text:'依存とは、あるクラスが別のクラスを「一時的に使う」関係だ。メソッドの引数やローカル変数として使うだけで、フィールドには持たない。UML では点線矢印 →。'},
-    {npc:'🔐 セキュリティ部長',text:'依存は最も弱い関係だが、依存の向きは重要だ。上位モジュールが下位に依存するのではなく、インターフェースを挟んで逆転させることができる。'},
-    {npc:'📂 システム部長',text:'5つのコードが示す関係を見抜いてくれ。依存・合成・集約・継承のどれかを答えてほしい。'},
-  ],
-  '10e':[
-    {npc:'📂 システム部長',text:'完璧だ。依存は「引数やローカル変数として一時的に使う」だけで、フィールドには持たない。これが最も弱い結合で、疎結合設計の基本になる。'},
-    {npc:'🔐 セキュリティ部長',text:'依存の方向を意識することが重要だ。どのクラスがどのクラスに依存しているかを把握すれば、変更の影響範囲が読める。'},
-  ],
-  11:[
-    {npc:'📂 システム部長',text:'第6章でインターフェースを学んだ。クラスがインターフェースを implements することを<strong>実現</strong>という。UML では点線＋白抜き三角 ▷ で表す。'},
-    {npc:'📂 システム部長',text:'実現には厳格な契約がある。インターフェースで定義されたメソッドを、<strong>すべて・正確なシグネチャ（名前・引数・戻り値型）で</strong>実装しなければならない。'},
-    {npc:'💼 企画部長',text:'1つでも欠けていれば、1つでも型が違えば、コンパイルエラーになる。インターフェースの3つの実装例を見て、正しく実現できているか判定してくれ。'},
-  ],
-  '11e':[
-    {npc:'📂 システム部長',text:'正確な判定だ。実現関係では「メソッドの存在」だけでなく「戻り値型・引数型の完全一致」が必要だ。'},
-    {npc:'💼 企画部長',text:'これがインターフェースの強さでもある。実現できていなければコンパイル時点で発覚する。実行時ではなく設計段階でバグを防げる。'},
-  ],
-  12:[
-    {npc:'📂 システム部長',text:'銀行システムの OOP 設計を習得した。だが実務では、金融以外のドメインでも全く同じ設計判断を迫られる。'},
-    {npc:'📂 システム部長',text:'継承・カプセル化・ポリモーフィズムは「どこでも通用する武器」だ。複数の制約をすべて満たす設計を、論理的に導き出せるか試してみよう。'},
-    {npc:'💼 企画部長',text:'答えを選んで「確定」するまで正誤は分からない。ヒントは各問2回まで使える。'},
-  ],
-  '12e':[
-    {npc:'📂 システム部長',text:'全問クリアした。銀行・ゲーム・EC——ドメインが変わっても OOP の設計判断の軸は変わらない。'},
-    {npc:'💼 企画部長',text:'制約を読んで論理的に答えを絞り込む力。それが実務で求められる設計力だ。'},
+    {npc:'🌍 ナレーター',text:'動物園システムが完成しました。重複を減らし、同じ命令で動物を動かし、必要な時だけ具体的な型に戻し、外部からの改ざんも防げるようになりました。'},
+    {npc:'🌍 ナレーター',text:'これで「オブジェクト指向の基本」は一通り体験済みです。次は銀行・EC・ゲームなど、別の世界にも同じ考え方を応用できます。'},
   ],
 };
-
 // ─── HISTORY / BACK ──────────────────────────
-function saveHistory(){history.push({chapter:G.chapter,phase:G.phase,line:G.line,score:G.score});}
+function clonePlain(v){ return JSON.parse(JSON.stringify(v)); }
+function saveHistory(){
+  history.push({
+    chapter:G.chapter,
+    phase:G.phase,
+    line:G.line,
+    score:G.score,
+    g0st: typeof g0st!=='undefined' ? clonePlain(g0st) : null
+  });
+}
 function goBack(){
   if(history.length===0)return;
   const prev=history.pop();
   G.chapter=prev.chapter;G.phase=prev.phase;G.line=prev.line;G.score=prev.score;
-  render();
+  if(prev.g0st && typeof g0st!=='undefined') g0st=clonePlain(prev.g0st);
+  render({scroll:true});
 }
 
 // ─── GLOSSARY TOOLTIP ────────────────────────
@@ -405,7 +582,7 @@ document.addEventListener('click',e=>{
 // テキスト内の用語をクリッカブルスパンに変換
 // プレースホルダー方式: 置換済みテキスト内の部分一致を防ぐ
 function glossify(html){
-  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','オーバーロード','アクセス修飾子','コンストラクタ','バリデーション','ダウンキャスト','型キャスト','instanceof','例外処理','throw','依存','実現','オブジェクト','インスタンス','フィールド','メンバー','メソッド','クラス','継承','合成','集約','static','public','private','protected','is-a','has-a'];
+  const terms=['カプセル化','ポリモーフィズム','オーバーライド','抽象クラス','インターフェース','アクセス修飾子','コンストラクタ','ダウンキャスト','型キャスト','instanceof','例外処理','throw','オブジェクト','インスタンス','フィールド','メンバー','メソッド','クラス','継承','static','public','private','protected','is-a'];
   const ph=[];
   const parts=html.split(/(<[^>]+>)/);
   const withPh=parts.map((p,i)=>{
@@ -420,22 +597,119 @@ function glossify(html){
   return withPh.replace(/\x00(\d+)\x00/g,(_,i)=>ph[+i]);
 }
 
+
+// ─── PAGE TRANSITION SCROLL ─────────────────────
+// ステップ切り替え時に前のスクロール位置を引き継がない。
+// 「なんとかしたい」などを押したあと、必ず新しい画面の先頭から読めるようにする。
+function scrollToMainTop(behavior='smooth'){
+  const main=document.getElementById('main-area') || document.getElementById('screen');
+  if(!main)return;
+  const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const b=reduced?'auto':behavior;
+  requestAnimationFrame(()=>{
+    if(typeof main.scrollTo==='function') main.scrollTo({top:0,behavior:b});
+    else main.scrollTop=0;
+    const y=main.getBoundingClientRect().top + window.pageYOffset - 8;
+    window.scrollTo({top:Math.max(0,y),behavior:b});
+    try{main.focus({preventScroll:true});}catch(e){}
+  });
+}
+function scrollToSection(id,behavior='smooth'){
+  const el=document.getElementById(id);
+  const main=document.getElementById('main-area') || document.getElementById('screen');
+  if(!el){scrollToMainTop(behavior);return;}
+  const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const b=reduced?'auto':behavior;
+  requestAnimationFrame(()=>{
+    if(main && typeof main.scrollTo==='function'){
+      const top=el.offsetTop-12;
+      main.scrollTo({top:Math.max(0,top),behavior:b});
+    }
+    const y=el.getBoundingClientRect().top + window.pageYOffset - 8;
+    window.scrollTo({top:Math.max(0,y),behavior:b});
+    try{el.setAttribute('tabindex','-1');el.focus({preventScroll:true});}catch(e){}
+  });
+}
+
 // ─── NAV & RENDER ────────────────────────────
 function jumpTo(ch){
   saveHistory();
   G.chapter=ch;G.phase='story';G.line=0;
-  render();
+  render({scroll:true});
+}
+function currentStep(){
+  if(G.phase==='game') return Math.min(8,(g0st?.phase??0)+1);
+  if(G.phase==='epilogue'||G.phase==='complete') return 8;
+  return 1;
 }
 function updateNav(){
-  document.getElementById('ch-nav').innerHTML=CHAPTERS.map((c,i)=>{
-    const cl=i<G.chapter?'done':i===G.chapter?'active':'';
-    return `<div class="ch-dot ${cl}" onclick="jumpTo(${i})" title="${c.sub}" style="cursor:pointer">${c.name}</div>`;
-  }).join('');
-  const total=CHAPTERS.length*2;
-  const done=G.chapter*2+(G.phase==='epilogue'?1.5:G.phase==='game'?1:0);
-  document.getElementById('prog').style.width=Math.min(100,done/total*100)+'%';
-  const backBtn=document.getElementById('back-btn');
-  if(backBtn)backBtn.disabled=history.length===0;
+  const steps=[
+    ['同じものを3回書いている','（クラスと重複）'],
+    ['動物という共通の親','（継承）'],
+    ['鳴くは親には書けない','（抽象クラス・オーバーライド）'],
+    ['同じ命令で全員鳴く','（ポリモーフィズム・型キャスト）'],
+    ['種類を超えて動かす','（インターフェース）'],
+    ['外から守る','（アクセス修飾子とカプセル化）'],
+    ['初期設定と共有値','（コンストラクタ・static）'],
+    ['動物園システム完成','（まとめ）']
+  ];
+  const step=currentStep();
+  const nav=document.getElementById('ch-nav');
+  if(nav){
+    nav.innerHTML=steps.map((it,i)=>{
+      const n=i+1; const cl=n<step?'done':n===step?'active':'upcoming';
+      const mark=n<step?'<span class="check">●</span>':n===step?'':'<span class="lock">○</span>';
+      return `<div class="side-step ${cl}" role="button" tabindex="0" onclick="jumpToStep(${n})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();jumpToStep(${n})}" title="${n} / 8 ${it[0]} ${it[1]}へ移動"><div class="paw">🐾</div><div><div class="step-main">${n} / 8</div><div class="step-sub">${it[0]}<br>${it[1]}</div></div><div>${mark}</div></div>`;
+    }).join('');
+  }
+  const pct=(step/8)*100;
+  const prog=document.getElementById('prog'); if(prog) prog.style.width=pct+'%';
+  const hs=document.getElementById('head-step'); if(hs) hs.textContent=`STEP ${step} / 8`;
+  const sc=document.getElementById('score-now'); if(sc) sc.textContent=G.score;
+  const disabled=history.length===0;
+  ['back-btn','footer-prev-btn','side-back-btn'].forEach(id=>{
+    const btn=document.getElementById(id);
+    if(btn) btn.disabled=disabled;
+  });
+}
+function toggleSidebar(){
+  const app=document.querySelector('.app-shell');
+  if(!app)return;
+  app.classList.toggle('side-collapsed');
+  try{localStorage.setItem('oopQuestSidebarCollapsed', app.classList.contains('side-collapsed')?'1':'0');}catch(e){}
+}
+(function initSidebarState(){
+  const app=document.querySelector('.app-shell');
+  if(!app)return;
+  let saved='';
+  try{saved=localStorage.getItem('oopQuestSidebarCollapsed')||'';}catch(e){}
+  if(saved==='1' || (!saved && window.matchMedia && window.matchMedia('(max-width: 900px)').matches)){
+    app.classList.add('side-collapsed');
+  }
+})();
+function toggleGlossary(){
+  const g=document.getElementById('side-gloss');
+  if(!g)return;
+  const words=GLOSSARY.slice(0,12).map(x=>`<span class="gloss-term" onclick="showGloss(this,'${x.term}')">${x.term}</span>`).join(' / ');
+  g.innerHTML=`<div class="gloss-title">用語集</div><div class="gloss-note">${words}</div>`;
+}
+function jumpToStep(step){
+  const n=Math.max(1,Math.min(8,Number(step)||1));
+  saveHistory();
+  G.chapter=0;
+  G.phase='game';
+  G.line=0;
+  g0st.phase=n-1;
+  render({scroll:true});
+}
+function footerNext(){
+  if(G.phase==='story') return advStory();
+  if(G.phase==='epilogue') return advEpilogue();
+  if(G.phase==='complete') return;
+  if(G.phase==='game'){
+    if(g0st.phase<7){ g0do('next'); }
+    else finishGame(220);
+  }
 }
 function storyHTML(lines,idx,onNext,isEpilogue=false){
   const l=lines[idx],last=idx>=lines.length-1;
@@ -447,7 +721,7 @@ function storyHTML(lines,idx,onNext,isEpilogue=false){
         <div class="npc-avatar">${l.npc.split(' ')[0]}</div>
         <div style="flex:1">
           <div class="npc-name">${l.npc.split(' ').slice(1).join(' ')}</div>
-          <div class="bubble">${glossify(l.text)}</div>
+          <div class="bubble">${tidyInlineJapanese(glossify(l.text))}</div>
         </div>
       </div>
       <div class="story-actions">
@@ -455,39 +729,97 @@ function storyHTML(lines,idx,onNext,isEpilogue=false){
       </div>
     </div>`;
 }
-function render(){
+function render(opts={}){
   updateNav();
   const scr=document.getElementById('screen');
-  if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
-  else if(G.phase==='game') scr.innerHTML=[renderG0,renderG1,renderG2,renderG3,renderG4,renderG5,renderG6,renderG7,renderG8,renderG9,renderG10,renderG11,renderGP][G.chapter]();
-  else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
+  if(G.phase==='story') scr.innerHTML=storyHTML(stories[0],G.line,'advStory()');
+  else if(G.phase==='game') scr.innerHTML=renderG0();
+  else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories['0e'],G.line,'advEpilogue()',true);
   else scr.innerHTML=renderComplete();
+  protectLineBreaksInScreen(scr);
+  if(opts.scroll) scrollToMainTop();
 }
 function advStory(){
   saveHistory();
   const lines=stories[G.chapter];
-  if(G.line<lines.length-1){G.line++;render();}
-  else{G.phase='game';G.line=0;render();}
+  if(G.line<lines.length-1){G.line++;render({scroll:true});}
+  else{G.phase='game';G.line=0;render({scroll:true});}
 }
 function advEpilogue(){
   saveHistory();
-  const lines=stories[G.chapter+'e'];
-  if(G.line<lines.length-1){G.line++;render();}
-  else{G.chapter++;G.line=0;G.phase=G.chapter>=CHAPTERS.length?'complete':'story';render();}
+  const lines=stories['0e'];
+  if(G.line<lines.length-1){G.line++;render({scroll:true});}
+  else{G.phase='complete';render({scroll:true});}
 }
-function finishGame(pts){saveHistory();G.score+=pts;G.phase='epilogue';G.line=0;render();}
+
+function finishGame(pts){saveHistory();G.score+=pts;G.phase='epilogue';G.line=0;render({scroll:true});}
 
 // ─── GAME 0: 序章 ────────────────────────────────
-let g0st={phase:0,sounds:{},moveTried:false,movableOk:false};
+function makeDefaultG0State(){
+  return {phase:0,sounds:{},moveTried:false,movableOk:false,access:{},accessChecked:false,polyRun:false,castTried:false,ctor:{name:'ポチ',hp:80,hunger:50,toy:'ボール'},ctorMade:false};
+}
+let g0st=makeDefaultG0State();
 
 function g0do(act,p){
+  const isChoiceOnly=['sound','access'].includes(act);
+  // ページ移動や結果表示の前には、直前の状態を履歴に残す。
+  // 鳴き声やアクセス修飾子の単なる選択は「前のページ」の対象にしない。
+  if(!isChoiceOnly) saveHistory();
+
   if(act==='next') g0st.phase++;
   else if(act==='sound') g0st.sounds[p.who]=p.s;
   else if(act==='moveTry') g0st.moveTried=true;
   else if(act==='movable'){g0st.movableOk=true;}
+  else if(act==='access'){g0st.access[p.name]=p.mod; g0st.accessChecked=false;}
+  else if(act==='accessCheck'){g0st.accessChecked=true;}
+  else if(act==='polyRun'){g0st.polyRun=true;}
+  else if(act==='castTry'){g0st.castTried=true;}
   document.getElementById('screen').innerHTML=renderG0();
+  protectLineBreaksInScreen(document.getElementById('screen'));
+  updateNav();
+  // 選択肢を押しただけのときは画面を動かさない。
+  // ステップ移動・結果表示のときは、新しく出た内容を読み飛ばさないよう先頭へ移動。
+  if(!isChoiceOnly){
+    if(act==='castTry') scrollToSection('cast-dialogue-start');
+    else if(act==='moveTry') scrollToSection('inheritance-tree-start');
+    else if(act==='accessCheck') scrollToSection('access-test-result');
+    else scrollToMainTop();
+  }
 }
-function retryG0(){g0st={phase:0,sounds:{},moveTried:false,movableOk:false};document.getElementById('screen').innerHTML=renderG0();}
+
+function readCtorValue(id, fallback){
+  const el=document.getElementById(id);
+  if(!el)return fallback;
+  const v=(el.value??'').toString().trim();
+  return v===''?fallback:v;
+}
+function clampNum(v,min,max,fallback){
+  const n=Number(v);
+  if(!Number.isFinite(n))return fallback;
+  return Math.max(min,Math.min(max,Math.round(n)));
+}
+function g0createDog(){
+  saveHistory();
+  g0st.ctor={
+    name:readCtorValue('ctor-name','ポチ'),
+    hp:clampNum(readCtorValue('ctor-hp','80'),1,999,80),
+    hunger:clampNum(readCtorValue('ctor-hunger','50'),0,100,50),
+    toy:readCtorValue('ctor-toy','ボール')
+  };
+  g0st.ctorMade=true;
+  document.getElementById('screen').innerHTML=renderG0();
+  protectLineBreaksInScreen(document.getElementById('screen'));
+  updateNav();
+  scrollToSection('constructor-result');
+}
+
+function retryG0(){
+  g0st=makeDefaultG0State();
+  document.getElementById('screen').innerHTML=renderG0();
+  protectLineBreaksInScreen(document.getElementById('screen'));
+  updateNav();
+  scrollToMainTop();
+}
 
 function g0card(title, rows, borderColor){
   const bc=borderColor||'var(--bd)';
@@ -496,15 +828,370 @@ function g0card(title, rows, borderColor){
     <div style="padding:7px 10px;font-size:12px;line-height:2">${rows.map(r=>`<div>${r}</div>`).join('')}</div>
   </div>`;
 }
+function htmlSafe(v){
+  return String(v??'').replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function constructorArgsText(c){
+  return `"${htmlSafe(c.name)}", ${Number(c.hp)||80}, ${Number(c.hunger)||50}, "${htmlSafe(c.toy)}"`;
+}
+
+
+function characterCard(who,variant){
+  const isCat=who==='cat';
+  const src=isCat?(variant==='think'?CHAR_IMAGES.catThink:CHAR_IMAGES.cat):(variant==='think'?CHAR_IMAGES.rabbitThink:CHAR_IMAGES.rabbit);
+  const name=isCat?'ねこ先生':'うさ美（生徒）';
+  const cls=isCat?'cat':'rabbit';
+  return `<div class="dialog-character"><img src="${src}" alt="${name}"><div class="dialog-name ${cls}">${name}</div></div>`;
+}
+function dialogueLine(who,text,variant){
+  const side=who==='rabbit'?' right':'';
+  return `<div class="dialog-row${side}">${characterCard(who,variant)}<div class="dialog-bubble">${tidyDialogueJapanese(text)}</div></div>`;
+}
+function dialogueScene(lines){
+  return `<div class="dialog-scene">${lines.map(x=>dialogueLine(x.who,x.text,x.variant||'')).join('')}</div>`;
+}
+
+function tidyDialogueJapanese(html){
+  // 会話文は読みやすさ優先。短い用語リンクが文節を分断しやすいため、
+  // 会話内では用語リンク化せず、自然な禁則処理を優先する。
+  let out = html
+    .replace(/([\u3040-\u30ff\u3400-\u9fff\u3005\u3006\u30fc、。！？「」（）])\s+(<(?:strong|code|span)\b[^>]*>)/g,'$1$2')
+    .replace(/(<\/(?:strong|code|span)>)\s+([\u3040-\u30ff\u3400-\u9fff\u3005\u3006\u30fc、。！？「」（）])/g,'$1$2');
+  out = protectKnownPhrasesInHtml(out);
+  out = protectKnownPhrasesInHtml(out);
+  out = smoothJapaneseInlineHtml(out);
+  out = protectKnownPhrasesInHtml(out);
+  out = smoothJapaneseInlineHtml(out);
+  return out;
+}
+
+function smoothJapaneseInlineHtml(html){
+  let out = html.replace(/\u2060/g,'');
+  // 開き括弧だけが行末に残るのを防ぐ。
+  out = out
+    .replace(/([「『（\(])\s*<(strong|code)(\b[^>]*)>/g, '<$2$3>$1')
+    .replace(/([「『（\(])\s*(<span\b[^>]*>)/g, '$2$1');
+
+  // タグ直後の助詞・句読点を、その直前のインライン要素の中へ吸収する。
+  // 例: <strong>属性</strong>、 → <strong>属性、</strong>
+  //     <span>クラス</span>を → <span>クラスを</span>
+  const suffix = '(?:[、。，．｡､！？!?：；;）\\)］\\]｝\\}」』】〉》〕〗〙〛・]|から|まで|だけ|には|では|とは|なら|より|の|を|が|は|に|へ|と|で|や|も)';
+  for(let i=0;i<8;i++){
+    const before = out;
+    out = out.replace(new RegExp('(<(strong|code)\\b[^>]*>[\\s\\S]*?)(<\\/\\2>)(\\s*)('+suffix+')','g'), '$1$5$3');
+    out = out.replace(new RegExp('(<span\\b[^>]*>[\\s\\S]*?)(<\\/span>)(\\s*)('+suffix+')','g'), '$1$4$2');
+    if(out===before) break;
+  }
+
+  // よく出る引用＋メソッド名を一まとまりにする。
+  out = out
+    .replace(/「\s*(鳴く\(\)|食べる\(\)|寝る\(\)|歩く\(\)|走る\(\)|飛ぶ\(\)|泳ぐ\(\)|お手\(\))\s*」/g,'<span class="jp-nobr">「$1」</span>')
+    .replace(/「\s*(鳴く\(\)|食べる\(\)|寝る\(\)|歩く\(\)|走る\(\)|飛ぶ\(\)|泳ぐ\(\)|お手\(\))\s*を/g,'<span class="jp-nobr">「$1を</span>')
+    .replace(/「\s*同じ命令/g,'<span class="jp-nobr">「同じ命令</span>');
+  return out;
+}
+
+function tidyInlineJapanese(html){
+  const termSpan = term => `(<span\\b[^>]*class="[^"]*gloss-term[^"]*"[^>]*>${term}<\\/span>)`;
+  let out = html
+    .replace(/([\u3040-\u30ff\u3400-\u9fff\u3005\u3006\u30fc、。！？「」（）])\s+(<(?:strong|code|span)\b[^>]*>)/g,'$1$2')
+    .replace(/(<\/(?:strong|code|span)>)\s+([\u3040-\u30ff\u3400-\u9fff\u3005\u3006\u30fc、。！？「」（）])/g,'$1$2')
+    .replace(/(<span\b[^>]*class="[^"]*gloss-term[^"]*"[^>]*>[^<]+<\/span>)\s+([\u3040-\u30ff\u3400-\u9fff\u3005\u3006\u30fc、。！？「」（）])/g,'$1$2');
+
+  // 用語リンクの直前だけが次行に送られるのを防ぐ。
+  // 例: 「動物」+「クラス」、「親の」+「メソッド」、「同じ」+「フィールド」など。
+  out = out
+    .replace(new RegExp(`([A-Za-z0-9_ぁ-んァ-ヶ一-龯々ー]{1,14})${termSpan('クラス')}`,'g'), '<span class="jp-nobr">$1$2</span>')
+    .replace(new RegExp(`([A-Za-z0-9_ぁ-んァ-ヶ一-龯々ーの]{1,14})${termSpan('メソッド')}`,'g'), '<span class="jp-nobr">$1$2</span>')
+    .replace(new RegExp(`([A-Za-z0-9_ぁ-んァ-ヶ一-龯々ーの]{1,14})${termSpan('フィールド')}`,'g'), '<span class="jp-nobr">$1$2</span>')
+    .replace(new RegExp(`([A-Za-z0-9_ぁ-んァ-ヶ一-龯々ーの]{1,14})${termSpan('オブジェクト')}`,'g'), '<span class="jp-nobr">$1$2</span>')
+    .replace(new RegExp(`([A-Za-z0-9_ぁ-んァ-ヶ一-龯々ーの]{1,14})${termSpan('インスタンス')}`,'g'), '<span class="jp-nobr">$1$2</span>');
+
+  // メソッド名や型名など、途中で割れると読みにくい短い語をまとめる。
+  out = smoothJapaneseInlineHtml(out);
+  out = protectKnownPhrasesInHtml(out);
+  out = smoothJapaneseInlineHtml(out);
+  return out;
+}
+
+function protectKnownPhrasesInHtml(html){
+  const phrases = [
+    '名前と食べる()', '食べる()、寝る()', '名前・食べる()・寝る()', '「鳴く()を必ず作ってね」', 'Animalで「鳴く()」', '「同じ命令を出したのに', '属性、できること', 'できることはメソッド', '共通部分を', '継承。', '上のクラス', '鳴く()を', 'Animalで「鳴く()」', 'を呼んだときに', '犬・猫・鳥', '同じ命令を', '同じ命令を出したのに', '名前を見るため', '外から参照', '外部から変更', '親のメソッド', '子クラスで', 'という親クラス', '動物クラスに', '名前などの属性', '食べる・寝る',
+    '体力を減らす内部処理()', '現在の空腹度()', '現在の体力()', '名前を見る()',
+    '鳴く()', '食べる()', '寝る()', '歩く()', '走る()', '飛ぶ()', '泳ぐ()', 'お手()', '爪とぎ()',
+    'Animal型一覧', 'Animal型', 'Dog型', 'Cat型', 'Bird型',
+    '動物一覧', '親クラス', '子クラス', '動物クラス', '犬クラス', '猫クラス', '鳥クラス',
+    'Animalクラス', 'Dogクラス', 'Catクラス', 'Birdクラス', 'Vehicleクラス', 'Machineクラス',
+    'Movableクラス', 'Flyableクラス', 'Swimmableクラス',
+    'publicメソッド', 'privateフィールド', 'protectedメソッド', 'インスタンスフィールド',
+    '同じ命令', '犬専用', '猫専用', '鳥専用', '正しい窓口', '共通部分', '共通処理',
+    'アクセス修飾子', 'カプセル化', 'ポリモーフィズム', 'オーバーライド', 'インターフェース',
+    'コンストラクタ', '抽象クラス', '抽象メソッド', '型キャスト', 'ダウンキャスト'
+  ].sort((a,b)=>b.length-a.length);
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re = new RegExp(`(${phrases.map(esc).join('|')})`,'g');
+  return html.split(/(<[^>]+>)/).map((part,i)=>{
+    if(i%2===1)return part;
+    return part.replace(re,'<span class="jp-nobr">$1</span>');
+  }).join('');
+}
+
+function applyJapaneseKinsoku(root=document.getElementById('screen')){
+  // Word Joiner はコピー時に残るため使わない。CSS とタグ吸収で禁則処理する。
+  return;
+}
+
+function protectLineBreaksInScreen(root=document.getElementById('screen')){
+  if(!root)return;
+  const phrases=[
+    '名前と食べる()', '食べる()、寝る()', '名前・食べる()・寝る()', '「鳴く()を必ず作ってね」', 'Animalで「鳴く()」', '「同じ命令を出したのに', '属性、できること', 'できることはメソッド', '共通部分を', '継承。', '上のクラス', '鳴く()を', 'Animalで「鳴く()」', 'を呼んだときに', '犬・猫・鳥', '同じ命令を', '同じ命令を出したのに', '名前を見るため', '外から参照', '外部から変更', '親のメソッド', '子クラスで', 'という親クラス', '動物クラスに', '名前などの属性', '食べる・寝る',
+    '体力を減らす内部処理()', '現在の空腹度()', '現在の体力()', '名前を見る()',
+    '鳴く()', '食べる()', '寝る()', '歩く()', '走る()', '飛ぶ()', '泳ぐ()', 'お手()', '爪とぎ()',
+    'Animal型一覧', 'Animal型', 'Dog型', 'Cat型', 'Bird型', '動物一覧',
+    '親クラス', '子クラス', '動物クラス', '犬クラス', '猫クラス', '鳥クラス',
+    'Animalクラス', 'Dogクラス', 'Catクラス', 'Birdクラス', 'Vehicleクラス', 'Machineクラス',
+    'Movableクラス', 'Flyableクラス', 'Swimmableクラス',
+    'publicメソッド', 'privateフィールド', 'protectedメソッド', 'インスタンスフィールド',
+    '同じ命令', '犬専用', '猫専用', '鳥専用', '正しい窓口', '共通部分', '共通処理',
+    'アクセス修飾子', 'カプセル化', 'ポリモーフィズム', 'オーバーライド', 'インターフェース',
+    'コンストラクタ', '抽象クラス', '抽象メソッド', '型キャスト', 'ダウンキャスト'
+  ].sort((a,b)=>b.length-a.length);
+  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re=new RegExp(`(${phrases.map(esc).join('|')})`,'g');
+  const skip=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','SELECT','OPTION','CODE','PRE']);
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+    acceptNode(node){
+      const parent=node.parentElement;
+      if(!parent || skip.has(parent.tagName) || parent.closest('.jp-nobr,.gloss-term,.code-sample')) return NodeFilter.FILTER_REJECT;
+      return re.test(node.nodeValue) ? (re.lastIndex=0, NodeFilter.FILTER_ACCEPT) : (re.lastIndex=0, NodeFilter.FILTER_REJECT);
+    }
+  });
+  const nodes=[];
+  while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    const frag=document.createDocumentFragment();
+    const parts=node.nodeValue.split(re);
+    parts.forEach(part=>{
+      if(!part)return;
+      if(phrases.includes(part)){
+        const span=document.createElement('span');
+        span.className='jp-nobr';
+        span.textContent=part;
+        frag.appendChild(span);
+      }else{
+        frag.appendChild(document.createTextNode(part));
+      }
+    });
+    node.parentNode.replaceChild(frag,node);
+  });
+  applyJapaneseKinsoku(root);
+}
+
+function soundOf(who,fallback){
+  return (g0st && g0st.sounds && g0st.sounds[who]) ? g0st.sounds[who] : fallback;
+}
+function selectedSoundSummary(){
+  return `犬は「${soundOf('dog','ワン！')}」、猫は「${soundOf('cat','ニャー')}」、鳥は「${soundOf('bird','チュン')}」`;
+}
+function selectedSoundDecisionDialogue(){
+  return dialogueScene([
+    {who:'rabbit',text:`犬は「${soundOf('dog','ワン！')}」、猫は「${soundOf('cat','ニャー')}」、鳥は「${soundOf('bird','チュン')}」にしました。これで全員の鳴き方が決まりましたね。`},
+    {who:'cat',text:'うん。Animalで「鳴く()」という入口だけを用意して、犬・猫・鳥がそれぞれ自分用に中身を書いた。これが<strong>オーバーライド</strong>だよ。次は、この選んだ鳴き声が同じ命令で呼び分けられるところを見るよ。'}
+  ]);
+}
+function selectedSoundMistakeDialogue(){
+  return dialogueScene([
+    {who:'rabbit',variant:'think',text:`今の設定だと、${selectedSoundSummary()}になります。どこか違和感がありますね。`},
+    {who:'cat',text:'そうだね。選んだ内容がそのまま子クラスの「鳴く()」になるから、間違えると実行結果もおかしくなる。正しい鳴き声に直してみよう。'}
+  ]);
+}
+function phaseDialogue(step){
+  const talks=[
+    [
+      {who:'cat',text:'まずは、この国に「犬」「猫」「鳥」を作ってみよう。下のカードを見ると、それぞれに <strong>名前・食べる()・寝る()</strong> があるね。'},
+      {who:'rabbit',text:'はい。犬も猫も鳥も、同じように「名前」があって、「食べる」「寝る」ができます。'},
+      {who:'cat',variant:'think',text:'ここで大事なのは、<strong>クラス</strong>は設計図、<strong>オブジェクト</strong>はその設計図から作られた実体、ということ。'},
+      {who:'rabbit',variant:'think',text:'つまり「動物」という設計図を作って、そこから犬さんや猫さんを生み出す、という考え方ですね。'},
+      {who:'cat',text:'その通り。設計図には「どんな情報を持つか」と「何ができるか」を書く。情報を表すものを<strong>属性</strong>、できることを表すものを<strong>メソッド</strong>と呼ぶよ。'},
+      {who:'rabbit',text:'ではまず、動物クラスに「名前」などの属性と、「食べる」「寝る」などのメソッドが必要かを見ていけばいいんですね。'}
+    ],
+    [
+      {who:'cat',text:'犬・猫・鳥を別々に作ると、同じ内容を何度も書くことになる。下のカードでは、<strong>食べる()</strong> と <strong>寝る()</strong> が全部にコピーされているね。'},
+      {who:'rabbit',text:'たしかに、3種類ならまだいいですが、動物が100種類に増えたら大変です。'},
+      {who:'cat',text:'しかも「食べる」の仕様を変えたいとき、100か所を直すことになる。そこで共通部分を <span class="jp-nobr"><strong>Animal</strong>という親クラス</span>にまとめるんだ。'},
+      {who:'rabbit',variant:'think',text:'犬はAnimalの一種、猫もAnimalの一種、鳥もAnimalの一種……だから共通部分を親に置けるんですね。'},
+      {who:'cat',text:'そう。この仕組みを<strong>継承</strong>と呼ぶよ。上位のクラスの性質や振る舞いを、下位のクラスが引き継ぐ仕組みなんだ。'},
+      {who:'rabbit',text:'Animalを1か所直せば、犬・猫・鳥にも反映される。だから重複を減らせるんですね。'}
+    ],
+    [
+      {who:'cat',text:'共通する <strong>食べる()</strong> と <strong>寝る()</strong> はAnimalに書けた。でも <strong>鳴く()</strong> はどうだろう？'},
+      {who:'rabbit',variant:'think',text:`${selectedSoundSummary()}なので、Animalに1つの鳴き声を書くのは変です。`},
+      {who:'cat',text:'その通り。親クラスで具体的な中身を決められないけれど、「動物なら鳴くことはできてほしい」という場合がある。'},
+      {who:'rabbit',text:'中身は決められないけど、「鳴く()を必ず作ってね」と約束だけしたい、ということですか？'},
+      {who:'cat',text:'そういうときに<strong>抽象クラス</strong>を使う。Animalでは <strong>鳴く()</strong> を抽象メソッドとして用意して、具体的な鳴き方は犬・猫・鳥に任せるんだ。'},
+      {who:'rabbit',text:'では下で、犬・猫・鳥それぞれの <strong>鳴く()</strong> を実装してみます。'}
+    ],
+    [
+      {who:'cat',text:`前のステップで、${selectedSoundSummary()}に決まったね。`},
+      {who:'rabbit',variant:'think',text:`はい。今は、犬は「${soundOf('dog','ワン！')}」、猫は「${soundOf('cat','ニャー')}」、鳥は「${soundOf('bird','チュン')}」と、それぞれ別々に鳴けるようになった状態ですね。`},
+      {who:'cat',text:'うん。ここまでで、動物ごとに <strong>鳴く()</strong> の中身を用意するところまではできた。ここまで準備ができたら、次に<strong>ポリモーフィズム</strong>を見ていくよ。'},
+      {who:'rabbit',text:'同じ命令を出したときに、犬・猫・鳥それぞれの鳴き方がちゃんと出るかを見るんですね。'},
+      {who:'cat',text:'そう。<strong>ポリモーフィズム</strong>は「同じ命令を出したのに、実体ごとに違う処理が動く」仕組みなんだ。まず下で、今はまだ準備段階だと確認してから、ボタンで実行してみよう。'}
+    ],
+    [
+      {who:'cat',text:'次は、犬・車・ロボットを同じレースに出したい。共通点は「動ける」ことだね。'},
+      {who:'rabbit',text:'では「動ける」という親クラスを作って、その下にAnimal、Vehicle、Machineを置けばよさそうに見えます。'},
+      {who:'cat',variant:'think',text:'最初はそれでも動く。でもすぐに問題が出る。たとえば、鳥・飛行機・ドローンは「飛べる」。ペンギン・魚・船は「泳げる」。'},
+      {who:'rabbit',variant:'think',text:'鳥はAnimalでもあり、Flyableでもあります。ペンギンはAnimalでもあり、Swimmableでもありますね。'},
+      {who:'cat',text:'Javaのような言語では、親クラスをいくつも継承できない。だから「種類」と「能力」を同じ継承ツリーに押し込むと破綻するんだ。'},
+      {who:'rabbit',text:'なるほど。AnimalやVehicleは種類の親クラス、MovableやFlyableは能力として別に持たせる。そこで<strong>インターフェース</strong>を使うんですね。'},
+      {who:'cat',text:'そう。インターフェースは「実装を共有する親」ではなく、「この操作ができる」という共通の型を作るためのものだよ。'}
+    ],
+    [
+      {who:'cat',text:'次はデータを守る話だよ。もし外のプログラムが <code>ライオン.空腹度 = -999</code> と直接書けたらどうなるかな？'},
+      {who:'rabbit',variant:'think',text:'ライオンが永遠に満腹になってしまいます。ゲームのルールが壊れますね。'},
+      {who:'cat',text:'だから、名前・体力・空腹度のようなデータは <strong>private</strong> にして、外から直接変更できないようにする。'},
+      {who:'rabbit',text:'でも、空腹度を見たり、食べさせたりはしたいです。全部隠すと使えなくなりませんか？'},
+      {who:'cat',text:'そこで、安全な窓口だけ <strong>public</strong> にする。たとえば <strong>名前を見る()</strong> で参照する、<strong>現在の空腹度()</strong> で状態を見る、<strong>食べる()</strong> で正しい手順で変える、という形だね。'},
+      {who:'rabbit',text:'では <strong>protected</strong> は、どこで使うんですか？ public と private だけでも足りそうに見えます。'},
+      {who:'cat',text:'いい質問だね。protected は「外部には見せたくないけれど、子クラスには使わせたい処理」に使う。たとえば <strong>体力を減らす内部処理()</strong> は、犬の <strong>走る()</strong> や鳥の <strong>飛ぶ()</strong> の中では使いたい。でも外から直接呼ばせたくないよね。'},
+      {who:'rabbit',text:'なるほど。外からは隠す。でも子クラスの中では使える。そこが private との違いなんですね。下でpublic・private・protectedを設定して試します。'}
+    ],
+    [
+      {who:'cat',text:'オブジェクトを <code>new Dog("ポチ")</code> のように作るとき、最初に名前や体力、空腹度を入れたいよね。'},
+      {who:'rabbit',text:'作ったあとで毎回、名前を入れて、体力を入れて、空腹度を入れて……と書くのは面倒です。'},
+      {who:'cat',text:'そこで<strong>コンストラクタ</strong>を使う。インスタンスが生まれた瞬間に、必要な初期値をまとめてセットするための特別な処理だよ。'},
+      {who:'rabbit',variant:'think',text:'つまり、newするときに渡した値で、その犬さんの最初の状態が決まるんですね。'},
+      {who:'cat',text:'そう。下で名前・体力・空腹度・好きな遊びを入れて、実際に <code>new Dog(...)</code> してみよう。'},
+      {who:'rabbit',text:'ポチとタマはどちらもDogですが、初期値を変えれば別々の状態で生まれる、ということですね。'}
+    ],
+    [
+      {who:'cat',text:'最後は、ここまでの道具を1つの動物園システムとしてつなげるよ。用語を別々に覚えるだけではなく、どの困りごとを解決するかで見てみよう。'},
+      {who:'rabbit',text:'まず、犬・猫・鳥に共通する「食べる」「寝る」は、継承でAnimalにまとめました。'},
+      {who:'cat',text:`そして、具体的な鳴き方は動物ごとに違うから、抽象クラスで「鳴く()を実装すること」を約束させた。今回は${selectedSoundSummary()}にしたね。`},
+      {who:'rabbit',text:`そのうえで、Animal型の一覧にまとめて <code>鳴く()</code> を呼ぶと、犬は「${soundOf('dog','ワン！')}」、猫は「${soundOf('cat','ニャー')}」、鳥は「${soundOf('bird','チュン')}」と、実体ごとの処理が動く。これがポリモーフィズムですね。`},
+      {who:'cat',text:'種類を超えた能力にはインターフェース、データの保護にはカプセル化、生まれた瞬間の初期設定にはコンストラクタ、全体で共有する値にはstaticを使う。'},
+      {who:'rabbit',variant:'think',text:'なるほど。全部つながりました。下の実行結果で、動物園システム全体がどう動くか確認します。'}
+    ]
+  ];
+  return dialogueScene(talks[step]||[]);
+}
+
+function phase3RunDialogue(){
+  return dialogueScene([
+    {who:'cat',text:'では、ここから実行してみよう。犬・猫・鳥を <strong>Animal型</strong> の一覧に入れて、全員に同じ <code>a.鳴く()</code> を呼ぶよ。'},
+    {who:'rabbit',variant:'think',text:`見た目は同じ Animal でも、中身に合わせて、犬は「${soundOf('dog','ワン！')}」、猫は「${soundOf('cat','ニャー')}」、鳥は「${soundOf('bird','チュン')}」と鳴くかを確認するんですね。`}
+  ]);
+}
+
+function phase3CastDialogue(){
+  return dialogueScene([
+    {who:'rabbit',variant:'think',text:'Animal型の一覧は便利ですが、犬だけに <strong>お手()</strong> をさせたいときは困りますね。Animalには <strong>お手()</strong> がないので、そのままでは呼べません。'},
+    {who:'cat',text:'そう。中身が犬でも、今は <strong>Animalとして見ている</strong> 状態だから、Animalに書かれているメソッドしか使えないんだ。'},
+    {who:'rabbit',text:'では、一覧の中から犬だけを見つけて、「これはDogとして扱っていい」と確認してから呼ぶ必要があるんですね。'},
+    {who:'cat',text:'その通り。まず <strong>instanceof</strong> で中身がDogか確認する。Dogだったら、<code>Dog d = (Dog)a;</code> と書いて、Animalとして見ていたものをDogとして扱い直す。これが<strong>型キャスト</strong>だよ。'},
+    {who:'rabbit',text:'いきなりDogにするのではなく、犬かどうか確認してから戻すから安全なんですね。'},
+    {who:'cat',variant:'think',text:'うん。普段はAnimalとしてまとめて扱い、犬専用の機能が必要なときだけDogに戻す。この使い分けが大事だよ。'}
+  ]);
+}
+
+
+function phase4Dialogue(){
+  if(!g0st.moveTried && !g0st.movableOk){
+    return dialogueScene([
+      {who:'cat',text:'次は、犬・車・ロボットを同じレースに出したい。共通点は「動ける」ことだね。'},
+      {who:'rabbit',variant:'think',text:'犬はAnimal、車はVehicle、ロボットはMachine……種類は違うけど、みんな動けます。'},
+      {who:'rabbit',text:'では「動ける」という親クラスを作って、その下にAnimal、Vehicle、Machineを置けばよさそうに見えます。'},
+      {who:'cat',text:'うん。まずはその考え方で進めてみよう。最初はうまく見えるけど、あとから能力が増えると困るところが出てくるよ。'},
+      {who:'rabbit',text:'いきなり答えを見るのではなく、まず継承だけで試してみるんですね。'}
+    ]);
+  }
+  if(g0st.moveTried && !g0st.movableOk){
+    return dialogueScene([
+      {who:'cat',text:'継承だけで「動ける」を親にすると、最初はうまく見える。犬・車・ロボットを同じレースに出せるからね。'},
+      {who:'rabbit',text:'Dog / Car / Robot を全部 MovableBase として受け取れるので、race(MovableBase x) が書けます。'},
+      {who:'cat',variant:'think',text:'でも、ここに「飛べる」「泳げる」という能力が追加されたらどうなるかな？'},
+      {who:'rabbit',variant:'think',text:'鳥はAnimalでもありFlyableでもあります。ペンギンはAnimalでもありSwimmableでもありますね。'},
+      {who:'cat',text:'そう。種類の親クラスと、横断的な能力を同じ継承ツリーに押し込むと、親クラスが複数ほしくなって破綻するんだ。'}
+    ]);
+  }
+  return dialogueScene([
+    {who:'cat',text:'ここで、種類と能力を分けて考えよう。Animal / Vehicle / Machine は「何の一種か」を表す親クラス。'},
+    {who:'rabbit',text:'一方で、Movable / Flyable / Swimmable は「何ができるか」を表す能力ですね。'},
+    {who:'cat',text:'その能力を表すために使うのが<strong>インターフェース</strong>だよ。実装を共有する親ではなく、「この操作ができる」という共通の型を作る。'},
+    {who:'rabbit',text:'だから、鳥はAnimalを継承しつつFlyableも持てる。ペンギンはAnimalを継承しつつSwimmableも持てるんですね。'}
+  ]);
+}
+
+
+function g0inheritanceTree(){
+  const node=(title,sub,items,kind)=>`
+    <div class="g0-tree-node ${kind||''}">
+      <div class="g0-node-title">${title}</div>
+      ${sub?`<div class="g0-node-sub">${sub}</div>`:''}
+      ${items&&items.length?`<div class="g0-node-items">${items.map(x=>`<div>${x}</div>`).join('')}</div>`:''}
+    </div>`;
+  const leaf=(title,items,kind)=>node(title,'',items,`leaf ${kind||''}`);
+  return `
+    <div class="g0-tree-wrap" id="inheritance-tree-start">
+      <div class="g0-tree-caption">クラス図：継承だけで「動けるもの」をまとめた場合</div>
+      <div class="g0-tree-note">白抜き三角の矢印は「下のクラスは上のクラスの一種」という <strong>is-a</strong> 関係を表します。</div>
+      <div class="g0-tree">
+        <div class="g0-row top">${node('動ける','<<抽象クラス>>',['+ 動く()'],'movable')}</div>
+        <div class="g0-arrow up">△</div>
+        <div class="g0-branch branch-top"></div>
+        <div class="g0-row mid">
+          <div class="g0-family animal">
+            ${node('Animal','<<抽象クラス>>',['+ 食べる()','+ 寝る()','+ 鳴く()'],'animal')}
+            <div class="g0-arrow">△</div>
+            <div class="g0-mini-branch"></div>
+            <div class="g0-leaves">
+              ${leaf('犬',['+ 鳴く()'],'animal')}
+              ${leaf('猫',['+ 鳴く()'],'animal')}
+              ${leaf('鳥',['+ 鳴く()'],'animal')}
+            </div>
+          </div>
+          <div class="g0-family vehicle">
+            ${node('Vehicle','<<抽象クラス>>',['+ 走る()'],'vehicle')}
+            <div class="g0-arrow">△</div>
+            <div class="g0-mini-branch"></div>
+            <div class="g0-leaves">
+              ${leaf('車',['+ 走る()'],'vehicle')}
+              ${leaf('バイク',['+ 走る()'],'vehicle')}
+              ${leaf('飛行機',['+ 飛ぶ()'],'vehicle')}
+            </div>
+          </div>
+          <div class="g0-family machine">
+            ${node('Machine','<<抽象クラス>>',['+ 作動する()'],'machine')}
+            <div class="g0-arrow">△</div>
+            <div class="g0-mini-branch"></div>
+            <div class="g0-leaves">
+              ${leaf('ロボット',['+ 歩く()'],'machine')}
+              ${leaf('ドローン',['+ 飛ぶ()'],'machine')}
+              ${leaf('掃除機',['+ 吸う()'],'machine')}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g0-tree-tip">この時点では「動ける」を親クラスにすれば整理できそうに見えます。次のステップで、能力が増えたときにこの設計が苦しくなることを確かめます。</div>
+    </div>`;
+}
 
 function renderG0(){
   const {phase,sounds,moveTried,movableOk}=g0st;
 
   // ── フェーズ0：コピペ地獄 ──
   if(phase===0) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 1 / 9</div>
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 1 / 8</div>
     <div class="ch-heading">同じものを3回書いている…</div>
     <p class="game-intro">あなたは創造主。まず「犬」「猫」「鳥」を設計してみた。それぞれの<strong>能力カード</strong>を見てほしい。</p>
+    ${phaseDialogue(0)}
+
+    <div class="dialog-choice-panel">
+      <div class="design-slot good"><div class="design-slot-title">動物<br><span style="font-size:12px">&lt;&lt;クラス&gt;&gt;</span></div></div>
+      <div class="design-slot"><div class="design-slot-title">属性（情報）</div><div class="design-slot-sub">+ 名前 : String<br>+ 年齢 : int</div></div>
+      <div class="design-slot"><div class="design-slot-title">方法（できること）</div><div class="design-slot-sub">+ 食べる() : void<br>+ 寝る() : void</div></div>
+    </div>
     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1rem">
       ${[
         ['🐕 犬',['📛 名前','<span style="color:var(--tng)">🍖 食べる()</span>','<span style="color:var(--tng)">💤 寝る()</span>']],
@@ -524,9 +1211,10 @@ function renderG0(){
       <span>🐕 犬</span><span>→</span><span>🐱 猫</span><span>→</span><span>🐦 鳥</span>
     </div>`;
     return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 2 / 9</div>
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 2 / 8</div>
     <div class="ch-heading">「動物」という共通の親を作る</div>
-    <p class="game-intro">「犬は動物の一種」「猫は動物の一種」——この <strong>is-a 関係</strong>を使って、共通部分を<strong>Animal（動物）</strong>クラスにまとめよう。これが<strong>継承</strong>だ。</p>
+    <p class="game-intro">「犬は動物の一種」「猫は動物の一種」——この <strong>is-a 関係</strong>を使って、共通部分を<span class="jp-nobr"><strong>Animal（動物）</strong>クラス</span>にまとめよう。これが<strong>継承</strong>だ。</p>
+    ${phaseDialogue(1)}
     <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
       <div>
         <div style="font-size:11px;font-weight:700;color:var(--tng);margin-bottom:.4rem">❌ コピペ状態</div>
@@ -557,10 +1245,15 @@ function renderG0(){
       {who:'bird',label:'🐦 鳥', choices:['チュン','ピヨ','カァ']},
     ];
     const allSet=sounds.dog&&sounds.cat&&sounds.bird;
+    const soundButton=(o,c)=>`<button class="btn ${sounds[o.who]===c?'btn-p':''}" onclick="g0do('sound',{who:'${o.who}',s:'${c}'})" style="font-size:13px">${c}</button>`;
+    const soundFeedback=o=>sounds[o.who]
+      ? `<div style="font-size:11px;color:var(--tok);width:100%">✓ 「${sounds[o.who]}」に決定！</div>`
+      : '';
     return `
-      <div class="ch-title">${CHAPTERS[0].name} — STEP 3 / 9</div>
+      <div class="ch-title">${CHAPTERS[0].name} — STEP 3 / 8</div>
       <div class="ch-heading">「鳴く」は親には書けない → 抽象クラス</div>
       <p class="game-intro">「食べる」「寝る」は Animal に書けた。でも<strong>鳴き声</strong>は生き物ごとに違う。親に「鳴く()」と書いても、何て鳴かせればいい？</p>
+      ${phaseDialogue(2)}
       <p style="font-size:13px;color:var(--ts);margin-bottom:.75rem">そこで Animal を<strong>抽象クラス</strong>にして「鳴く()は各自で決めること」と宣言する。これを<strong>抽象メソッド</strong>という。</p>
       <div style="margin-bottom:1rem">
         ${g0card('🐾 Animal（抽象クラス）',[
@@ -576,1279 +1269,384 @@ function renderG0(){
           <span style="font-weight:600;font-size:14px;min-width:52px">${o.label}</span>
           <span style="font-size:12px;color:var(--tm);flex:1">鳴く() →</span>
           <div style="display:flex;gap:5px;flex-wrap:wrap">
-            ${o.choices.map(c=>`<button class="btn ${sounds[o.who]===c?'btn-p':''}" onclick="g0do('sound',{who:'${o.who}',s:'${c}'})" style="font-size:13px">${c}</button>`).join('')}
+            ${o.choices.map(c=>soundButton(o,c)).join('')}
           </div>
-          ${sounds[o.who]?`<div style="font-size:11px;color:var(--tok);width:100%">✓ 「${sounds[o.who]}」に決定！</div>`:''}
+          ${soundFeedback(o)}
         </div>`).join('')}
       ${allSet
-        ?`<div class="fb ok show">✓ 全員が「鳴く()」を自分なりに実装できた！<br>親クラスは「絶対に実装してね」と約束させるだけ——これが抽象クラスの力。</div>
-           <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('next')">次：でも「車」が現れた →</button>`
+        ?`<div class="fb ok show">✓ ${selectedSoundSummary()}として、それぞれの子クラスが自分用の「鳴く()」を実装できました。<br>親の「鳴く()」を子クラスごとに書き直すので、これは<strong>オーバーライド</strong>です。<br>親クラスは「絶対に実装してね」と約束させるだけ——これが抽象クラスの力。</div>
+           ${selectedSoundDecisionDialogue()}
+           <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('next')">次：同じ命令で全員鳴かせる →</button>`
         :`<div style="font-size:12px;color:var(--tm)">3つ全員に鳴き声を選んでください</div>`}`;
   }
 
-  // ── フェーズ3：インターフェース ──
-  if(phase===3) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 4 / 9</div>
-    <div class="ch-heading">犬・車・ロボットをレースさせたい</div>
-    <p class="game-intro">新しい存在が現れた。この3者全員に「動く()」能力を持たせて、<strong>一緒にレース</strong>させたい。</p>
-    <div style="display:flex;gap:8px;margin-bottom:1rem">
-      ${[['🐕 犬','Animal を継承'],['🚗 車','乗り物'],['🤖 ロボット','機械']].map(([e,sub])=>`
-        <div style="flex:1;min-width:0;background:var(--s2);border:1.5px solid var(--bd);border-radius:10px;padding:.65rem;text-align:center">
-          <div style="font-size:18px">${e.split(' ')[0]}</div>
-          <div style="font-size:12px;font-weight:700;margin:.2rem 0">${e.split(' ')[1]}</div>
-          <div style="font-size:10px;color:var(--tm)">${sub}</div>
-        </div>`).join('')}
-    </div>
-    ${!moveTried&&!movableOk?`
-      <p style="font-size:13px;color:var(--ts);margin-bottom:.75rem">「動く()」をどうやって3者に持たせる？</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="g0do('moveTry')" style="font-size:13px">Animal に「動く()」を追加する</button>
-        <button class="btn btn-p" onclick="g0do('movable')" style="font-size:13px">「動ける」インターフェースを作る</button>
-      </div>`:''}
-    ${moveTried&&!movableOk?`
-      <div class="fb ng show">
-        ✗ 「車は動物じゃない！」<br><br>
-        継承は <strong>is-a 関係</strong>（〜は〜の一種）のときだけ使える。<br>
-        「車は動物の一種」は明らかにおかしい。ロボットも同じ。<br>
-        Animal に「動く」を書いても、車とロボットには渡せない。
-      </div>
-      <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('movable')">「動ける」インターフェースを作る →</button>`:''}
-    ${movableOk?`
-      <div style="margin-bottom:.85rem">
-        ${g0card('✋ 動ける（インターフェース）',['<span style="color:var(--tpr)">❓ 動く()　← 約束するだけ。中身は各自で</span>'],'var(--tpr)')}
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:.85rem">
-        ${[
-          ['🐕 犬','動く() → 走る','var(--bok)'],
-          ['🚗 車','動く() → 走行','var(--bok)'],
-          ['🤖 ロボット','動く() → 歩行','var(--bok)'],
-        ].map(([t,r,c])=>g0card(t+' <span style="font-size:10px;color:var(--tpr)">動ける</span>',[`<span style="color:var(--tok)">${r}</span>`],c)).join('')}
-      </div>
-      <div style="background:var(--ok);border:1px solid var(--bok);border-radius:var(--r);padding:.7rem 1rem;font-size:13px;color:var(--tok);margin-bottom:1rem">
-        ✓ <strong>「レース係」は「動ける」ものなら誰でも受け取れる！</strong><br>
-        犬・車・ロボット——種類がバラバラでも<strong>「動ける」という共通の型</strong>を持てる。<br>
-        これがインターフェースの本質：<em>継承関係がなくても「同じ型」を与えられる。</em>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-p" onclick="g0do('next')">次：アクセス修飾子へ →</button>
-        <button class="btn" onclick="retryG0()">最初から ↩</button>
-      </div>`:''}`;
+  // ── フェーズ3：ポリモーフィズム ──
+  if(phase===3){
+    const dogSound=soundOf('dog','ワン！');
+    const catSound=soundOf('cat','ニャー');
+    const birdSound=soundOf('bird','チュン');
+    const animalCards=[
+      ['🐕 犬','Animal として登録',`鳴く() → ${dogSound}`,'お手() を持つ'],
+      ['🐱 猫','Animal として登録',`鳴く() → ${catSound}`,'爪とぎ() を持つ'],
+      ['🐦 鳥','Animal として登録',`鳴く() → ${birdSound}`,'飛ぶ() を持つ'],
+    ];
+    return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 4 / 8</div>
+    <div class="ch-heading">${g0st.polyRun?'同じ命令で全員鳴かせる':'まずは「準備だけ」の状態を確認する'}</div>
+    <p class="game-intro">${g0st.polyRun?'Animal型の一覧に入った犬・猫・鳥へ、同じ <strong>a.鳴く()</strong> を実行します。':'前のステップで決めた鳴き方を、今度は <strong>Animal型</strong> の一覧から同じ命令で呼び出していきます。まずは、その前の「まだ準備だけ」の状態を確認します。'}</p>
+    ${g0st.polyRun?phase3RunDialogue():phaseDialogue(3)}
 
-  // ── フェーズ4：アクセス修飾子 ──
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem">
+      ${animalCards.map(([t,sub,voice,extra])=>g0card(t,[
+        `<span style="color:var(--tm)">${sub}</span>`,
+        `<span style="color:var(--tac)">${voice}</span>`,
+        `<span style="color:var(--tpr)">${extra}</span>`
+      ],'var(--bac)')).join('')}
+    </div>
+
+    ${!g0st.polyRun?`
+      <div class="fb ng show" style="display:block">
+        まだこの時点では「犬・猫・鳥がそれぞれ鳴く()を持っている」だけ。<br>
+        つまり<strong>ポリモーフィズムの準備ができた</strong>だけです。<br>
+        オーバーライド自体は、前のステップで完了しています。
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:1rem">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--tac);margin-bottom:.4rem">現在：オーバーライドまで完了</div>
+          ${g0card('Animal（抽象クラス）',[`鳴く() ← 各自で実装`],'var(--tpr)')}
+          <div class="code-sample">class Dog extends Animal {
+  鳴く() { return "${dogSound}"; }
+}
+class Cat extends Animal {
+  鳴く() { return "${catSound}"; }
+}</div>
+        </div>
+      </div>
+      <div class="lesson-point"><strong>次にやること：</strong>犬・猫・鳥を Animal 型の一覧に入れて、全員に同じ <code>a.鳴く()</code> を実行する。そこではじめてポリモーフィズムを体験できます。</div>
+      <button class="btn btn-p" onclick="g0do('polyRun')">朝にする：全員に「鳴け！」と命令する 🌅</button>
+    `:''}
+
+    ${g0st.polyRun?`
+      <div class="lesson-point"><strong>ここからがポリモーフィズム：</strong>Animal 型の一覧に同じ <code>a.鳴く()</code> を実行すると、実際の中身に合わせて Dog / Cat / Bird の処理が呼ばれます。</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--tac);margin-bottom:.4rem">① 準備：オーバーライド</div>
+          ${g0card('Animal（抽象クラス）',[`鳴く() ← 各自で実装`],'var(--tpr)')}
+          <div class="code-sample">class Dog extends Animal {
+  鳴く() { return "${dogSound}"; }
+}
+class Cat extends Animal {
+  鳴く() { return "${catSound}"; }
+}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--tok);margin-bottom:.4rem">② 実行：ポリモーフィズム</div>
+          ${g0card('Animal[] 動物一覧',[`中身：犬`,`中身：猫`,`中身：鳥`],'var(--bok)')}
+          <div class="code-sample">for (Animal a : 動物一覧) {
+  a.鳴く();
+}</div>
+        </div>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:700;margin-bottom:.65rem;color:var(--tp)">🌅 朝になりました。動物一覧に同じ命令を出します。</div>
+        <div class="code-sample">for (Animal a : 動物一覧) {
+  a.鳴く(); // 同じ1行だけ
+}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:.8rem">
+          ${[
+            ['Animal a = 犬','a.鳴く()',dogSound,'Dog.鳴く() が実行された'],
+            ['Animal a = 猫','a.鳴く()',catSound,'Cat.鳴く() が実行された'],
+            ['Animal a = 鳥','a.鳴く()',birdSound,'Bird.鳴く() が実行された'],
+          ].map(([head,call,res,why])=>g0card(head,[`<span style="color:var(--tm)">${call}</span>`,`<strong style="color:var(--tok)">${res}</strong>`,`<span style="font-size:11px;color:var(--ts)">${why}</span>`],'var(--bok)')).join('')}
+        </div>
+      </div>
+      <div class="fb ok show" style="display:block">
+        ✓ これがポリモーフィズム。変数の見た目は全部 <strong>Animal</strong> なのに、実際には中身の <span class="jp-nobr"><strong>Dog / Cat / Bird</strong>の処理</span>が呼ばれます。新しい動物を追加しても、朝システムは <code>a.鳴く()</code> のままです。
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:700;margin-bottom:.65rem;color:var(--tp)">次の困りごと：犬だけ「お手」させたい</div>
+        <p style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:.75rem">動物一覧は便利。でも、一覧の中身は <strong>Animal型</strong> として見えているので、Animalにない <strong>お手()</strong> はそのまま呼べません。</p>
+        <div class="code-sample">Animal a = 動物一覧[0];
+a.お手(); // ✗ Animalには「お手()」がない</div>
+        ${!g0st.castTried?`<button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('castTry')">犬だけ探して、お手させる →</button>`:''}
+      </div>
+    `:''}
+
+    ${g0st.polyRun&&g0st.castTried?`
+      <div id="cast-dialogue-start"></div>
+      ${phase3CastDialogue()}
+      <div id="cast-section" style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:700;margin-bottom:.65rem;color:var(--tp)">型キャスト：Animalとして見ていたものをDogとして見直す</div>
+        <div class="code-sample">for (Animal a : 動物一覧) {
+  if (a instanceof Dog) {
+    Dog d = (Dog)a;
+    d.お手();
+  }
+}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:.8rem">
+          ${[
+            ['🐕 犬','instanceof Dog → true','Dogに戻す → お手！','var(--bok)'],
+            ['🐱 猫','instanceof Dog → false','Dogにしない。安全。','var(--bac)'],
+            ['🐦 鳥','instanceof Dog → false','Dogにしない。安全。','var(--bac)'],
+          ].map(([t,a,b,c])=>g0card(t,[a,b],c)).join('')}
+        </div>
+      </div>
+      <div class="fb ok show" style="display:block">
+        ✓ 型キャストの存在意義はこれ。普段は <span class="jp-nobr"><strong>Animal</strong>としてまとめて扱う</span>。でも犬専用の機能が必要なときだけ、<strong><span class="jp-nobr">中身を確認してから</span> <span class="jp-nobr">Dogとして扱い直す</span></strong>。
+      </div>
+      <button class="btn btn-p" onclick="g0do('next')">次：種類を超えて動かしたい →</button>
+    `:''}
+    `;
+  }
+
+  // ── フェーズ4：インターフェース ──
   if(phase===4) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 5 / 9</div>
-    <div class="ch-heading">「秘密にしたい情報」をどう守る？</div>
-    <p class="game-intro">クラスのフィールドやメソッドには<strong>アクセス修飾子</strong>を設定できる。「誰がアクセスできるか」を制限する仕組みだ。</p>
-    <div style="margin-bottom:1rem">
-      ${g0card('🐕 犬',[
-        '<span style="color:var(--tok)">＋ 名前　　　→ 誰でも読める（public）</span>',
-        '<span style="color:var(--tpr)"># 体重　　　→ 飼い主クラスまで（protected）</span>',
-        '<span style="color:var(--tng)">－ 持病の記録 → 本人クラスだけ（private）</span>',
-      ],'var(--bd)')}
-    </div>
-    <div class="info-box">
-      <strong>＋ public</strong>：誰でもアクセス可<br>
-      <strong># protected</strong>：自分と子クラスまで<br>
-      <strong>－ private</strong>：自クラスの中だけ<br><br>
-      大事な情報（残高・暗証番号）を private にすれば、外から勝手に書き換えられない。これが<strong>カプセル化</strong>。
-    </div>
-    <button class="btn btn-p" onclick="g0do('next')">次：ポリモーフィズムへ →</button>`;
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 5 / 8</div>
+    <div class="ch-heading">継承だけで「動ける」を表現できる？</div>
+    <p class="game-intro">犬・車・ロボットを同じレースに参加させたい。全員が <strong>動く()</strong> を持っていればよさそうだ。</p>
 
-  // ── フェーズ5：ポリモーフィズム ──
-  if(phase===5) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 6 / 9</div>
-    <div class="ch-heading">同じ命令、違う動き</div>
-    <p class="game-intro">抽象クラスで「鳴く()」を定義したとき、Animal 型の変数に犬・猫・鳥を入れて一括で呼べる——これが<strong>ポリモーフィズム</strong>だ。</p>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:1rem">
-      <div style="font-size:12px;color:var(--tm);margin-bottom:.5rem">全員まとめて「鳴く()」を呼ぶ</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${[['🐕 犬','ワン！'],['🐱 猫','ニャー'],['🐦 鳥','チュン']].map(([e,v])=>`
-          <div style="display:flex;align-items:center;gap:10px;background:var(--s2);border-radius:6px;padding:.45rem .65rem">
-            <span style="font-size:14px">${e}</span>
-            <span style="flex:1;font-size:12px;color:var(--tm)">鳴く() →</span>
-            <span style="font-size:13px;font-weight:700;color:var(--tok)">「${v}」</span>
+    ${moveTried&&!movableOk?g0inheritanceTree():''}
+    ${phase4Dialogue()}
+
+    ${!moveTried&&!movableOk?`
+      <div style="display:flex;gap:8px;margin-bottom:1rem">
+        ${[['🐕 犬','Animal の一種'],['🚗 車','Vehicle の一種'],['🤖 ロボット','Machine の一種']].map(([e,sub])=>`
+          <div style="flex:1;min-width:0;background:var(--s2);border:1.5px solid var(--bd);border-radius:10px;padding:.65rem;text-align:center">
+            <div style="font-size:18px">${e.split(' ')[0]}</div>
+            <div style="font-size:12px;font-weight:700;margin:.2rem 0">${e.split(' ')[1]}</div>
+            <div style="font-size:10px;color:var(--tm)">${sub}</div>
           </div>`).join('')}
       </div>
-    </div>
-    <div class="info-box">
-      呼び出す側は「動物に鳴いて」と言うだけ。<strong>実際に何が鳴くかは知らなくていい。</strong><br>
-      これにより、新しい生き物を追加しても呼び出し側のコードを変えなくて済む。
-    </div>
-    <button class="btn btn-p" onclick="g0do('next')">次：合成 vs 集約へ →</button>`;
+      <div class="lesson-point"><strong>問い：</strong>「動ける」抽象クラスを親にして、その下に Animal / Vehicle / Machine を置けばよいのでは？</div>
+      <p style="font-size:13px;color:var(--ts);margin-bottom:.75rem">この設計でいったん進めて、問題が出るか確認してみましょう。</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-p" onclick="g0do('moveTry')" style="font-size:13px">継承だけで進める →</button>
+      </div>`:''}
 
-  // ── フェーズ6：合成 vs 集約 ──
-  if(phase===6) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 7 / 9</div>
-    <div class="ch-heading">「部品」と「仲間」の違い</div>
-    <p class="game-intro">has-a 関係（〜は〜を持つ）にも2種類ある。<strong>合成</strong>は「部品」、<strong>集約</strong>は「仲間」と考えるとわかりやすい。</p>
-    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--tng);margin-bottom:.4rem">◆ 合成（強い所有）</div>
-        ${g0card('🏦 銀行',['🏢 支店 ◆','↑ 銀行が倒産したら支店も消える'],'var(--tng)')}
-        <div style="font-size:11px;color:var(--ts);margin-top:.4rem;text-align:center">生死を共にする</div>
-      </div>
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--tok);margin-bottom:.4rem">◇ 集約（弱い参照）</div>
-        ${g0card('🏦 銀行',['👤 顧客 ◇','↑ 銀行が倒産しても顧客は別の銀行へ'],'var(--tok)')}
-        <div style="font-size:11px;color:var(--ts);margin-top:.4rem;text-align:center">独立して存在できる</div>
-      </div>
-    </div>
-    <div class="info-box">
-      「所有者が消えたとき、相手も消えるか？」——これが<strong>合成 vs 集約</strong>の判断基準。
-    </div>
-    <button class="btn btn-p" onclick="g0do('next')">次：static へ →</button>`;
-
-  // ── フェーズ7：static ──
-  if(phase===7) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 8 / 9</div>
-    <div class="ch-heading">全員で共有する情報</div>
-    <p class="game-intro">フィールドには「全員で1つ共有するもの」と「1人ずつ持つもの」がある。前者に使うのが <strong>static</strong> だ。</p>
-    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--tpr);margin-bottom:.4rem">static（クラス全体で1つ）</div>
-        ${g0card('💹 金利 1.5%',[
-          '口座A ─┐',
-          '口座B ─┼→ 同じ金利',
-          '口座C ─┘',
-        ],'var(--tpr)')}
-      </div>
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--tac);margin-bottom:.4rem">インスタンス（口座ごとに別々）</div>
-        ${g0card('💰 残高',[
-          '口座A → 30万円',
-          '口座B → 15万円',
-          '口座C → 52万円',
-        ],'var(--tac)')}
-      </div>
-    </div>
-    <div class="info-box">
-      「この値はクラス全体で1つあれば十分か？」——Yesなら static、Noならインスタンスフィールド。
-    </div>
-    <button class="btn btn-p" onclick="g0do('next')">次：コンストラクタへ →</button>`;
-
-  // ── フェーズ8：コンストラクタ ──
-  if(phase===8) return `
-    <div class="ch-title">${CHAPTERS[0].name} — STEP 9 / 9</div>
-    <div class="ch-heading">作る瞬間に決めること</div>
-    <p class="game-intro">オブジェクトを作るとき（new するとき）自動で呼ばれる特別な処理が<strong>コンストラクタ</strong>だ。</p>
-    <div style="margin-bottom:1rem">
-      ${g0card('🐕 犬を new するとき',[
-        '<span style="color:var(--tac)">📥 引数で受け取る　→ 名前（飼い主が決める）</span>',
-        '<span style="color:var(--tok)">🤖 自動でセット　　→ 誕生日（システムが決める）</span>',
-        '<span style="color:var(--tpr)">🌐 不要　　　　　　→ 種（static なので共通）</span>',
-      ],'var(--bd)')}
-    </div>
-    <div class="info-box">
-      コンストラクタを正しく設計すると「名前が空欄の犬」や「誕生日が未来の犬」を作れなくなる。<br>
-      <strong>初期状態の整合性を保証する</strong>のがコンストラクタの役割。
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
-      <button class="btn btn-p" onclick="finishGame(25)">序章クリア！ 第1章へ →</button>
-      <button class="btn" onclick="retryG0()">最初から ↩</button>
-    </div>`;
-}
-
-// ─── GAME 1: アクセス修飾子 ──────────────────────
-const g1m=[
-  {name:'balance: double',    hint:'残高。外部から直接変更されてはダメ',correct:'pri'},
-  {name:'pin: int',           hint:'暗証番号。絶対に外部に漏れてはダメ',correct:'pri'},
-  {name:'accountId: String',  hint:'口座番号。子クラスも使えてよい',    correct:'pro'},
-  {name:'ownerName: String',  hint:'名義人。外部から読めてOK',          correct:'pub'},
-  {name:'getBalance(): double',hint:'残高照会。窓口として公開する',     correct:'pub'},
-  {name:'validatePin(): bool',hint:'PIN検証。クラス内部だけで使う',    correct:'pri'},
-];
-let g1sel=g1m.map(()=>'pub');
-function renderG1(){
-  const rows=g1m.map((m,i)=>`
-    <div class="m-row">
-      <span class="m-name">${m.name}</span>
-      <div class="m-mod-btn">
-        <span class="mod-opt mod-pub ${g1sel[i]==='pub'?'sel':''}" onclick="g1set(${i},'pub')">+pub</span>
-        <span class="mod-opt mod-pri ${g1sel[i]==='pri'?'sel':''}" onclick="g1set(${i},'pri')">−pri</span>
-        <span class="mod-opt mod-pro ${g1sel[i]==='pro'?'sel':''}" onclick="g1set(${i},'pro')">#pro</span>
-      </div>
-    </div>`).join('');
-  return `
-    <div class="ch-title">${CHAPTERS[1].name}</div>
-    <div class="ch-heading">${CHAPTERS[1].sub}</div>
-    <p class="game-intro">各メンバーに適切なアクセス修飾子を設定してください。</p>
-    <div class="info-box">${g1m.map(m=>`・${m.name} — ${m.hint}`).join('<br>')}</div>
-    <div class="uml-class" style="margin-bottom:1rem">
-      <div class="uml-head">BankAccount</div>
-      <div class="uml-sec">${rows}</div>
-    </div>
-    <div class="fb" id="g1fb"></div>
-    <button class="btn btn-p" onclick="g1check()">不正アクセステスト実行 🔍</button>`;
-}
-function g1set(i,mod){g1sel[i]=mod;document.getElementById('screen').innerHTML=renderG1();}
-function g1check(){
-  const correct=g1sel.filter((s,i)=>s===g1m[i].correct).length;
-  const ok=correct===g1m.length,pts=ok?25:Math.max(5,correct*4);
-  const rows=g1m.map((m,i)=>{
-    const acc=g1sel[i]==='pub',sec=m.correct==='pri';
-    const icon=acc?(sec?'🚨 漏洩！':'✅ OK'):'🔒 ブロック';
-    return `<div style="display:flex;font-family:var(--m);font-size:12px;padding:4px 0;gap:8px"><span style="flex:1">${m.name}</span><span style="color:${acc&&sec?'var(--tng)':'var(--tok)'}">${icon}</span></div>`;
-  }).join('');
-  const result=g1m.map((m,i)=>g1sel[i]!==m.correct?`<span style="color:var(--tng)">✗ ${m.name}（正解:${m.correct}）</span>`:`<span style="color:var(--tok)">✓ ${m.name}</span>`).join('<br>');
-  const fb=document.getElementById('g1fb');
-  fb.className='fb '+(ok?'ok':'ng')+' show';
-  fb.innerHTML=`<div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.75rem;font-size:13px">🔍 外部アクセステスト<br>${rows}</div>${ok?'✓ 完璧！':'✗ 不正解あり。'} ${correct}/${g1m.length} 正解<br>${result}<br><br><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${pts})">次へ →</button><button class="btn" onclick="retryG1()">もう一度 ↩</button></div>`;
-  document.querySelector('[onclick="g1check()"]').disabled=true;
-}
-
-// ─── GAME 2: 継承ツリー（SVG） ──────────────────
-const g2correct={dep:'DepositAccount',loan:'LoanAccount',sav:'SavingsAccount',td:'TimeDeposit',ml:'MortgageLoan',cl:'CarLoan'};
-const g2cards=Object.values(g2correct);
-const g2jp={'Account':'口座','DepositAccount':'預金口座','LoanAccount':'ローン口座','SavingsAccount':'普通預金','TimeDeposit':'定期預金','MortgageLoan':'住宅ローン','CarLoan':'カーローン'};
-let g2placed={},g2sel=null,g2done=false;
-
-function g2NodeSVG(cx,y,w,h,label,isFixed,slotId){
-  const isEmpty=!label&&!isFixed;
-  const hl=isEmpty&&g2sel!==null;
-  const stroke=isEmpty?(hl?'var(--fac)':'var(--tm)'):'var(--ts)';
-  const bg=hl?'var(--ac)':'var(--s2)';
-  const tc=isEmpty?(hl?'var(--tac)':'var(--tm)'):'var(--tp)';
-  const tc2=isEmpty?(hl?'var(--tac)':'var(--tm)'):'var(--ts)';
-  const dash=isEmpty?'stroke-dasharray="6 3"':'';
-  const click=slotId?`onclick="g2place('${slotId}')" style="cursor:pointer"`:'';
-  const x=cx-w/2;
-  const jp=label?g2jp[label]:'';
-  const mainY=jp?y+h*0.38:y+h/2+4;
-  const subY=y+h*0.72;
-  return `<g ${click}>
-    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3"
-      style="fill:${bg};stroke:${stroke};stroke-width:2" ${dash}/>
-    <text x="${cx}" y="${mainY}" text-anchor="middle"
-      style="font-size:11px;font-weight:500;fill:${tc}" pointer-events="none">${label||'?'}</text>
-    ${jp?`<text x="${cx}" y="${subY}" text-anchor="middle" style="font-size:9px;fill:${tc2}" pointer-events="none">${jp}</text>`:''}
-  </g>`;
-}
-
-function g2Arrow(childCenters, childTopY, parentCx, parentBottomY, barY){
-  const tri_h=12, tri_w=8;
-  const triBot=parentBottomY+tri_h;
-  const minCx=Math.min(...childCenters), maxCx=Math.max(...childCenters);
-  let s=childCenters.map(cx=>`<line x1="${cx}" y1="${childTopY}" x2="${cx}" y2="${barY}" style="stroke:var(--ts);stroke-width:1.5"/>`).join('');
-  s+=`<line x1="${minCx}" y1="${barY}" x2="${maxCx}" y2="${barY}" style="stroke:var(--ts);stroke-width:1.5"/>`;
-  s+=`<line x1="${parentCx}" y1="${barY}" x2="${parentCx}" y2="${triBot}" style="stroke:var(--ts);stroke-width:1.5"/>`;
-  s+=`<polygon points="${parentCx},${parentBottomY} ${parentCx-tri_w},${triBot} ${parentCx+tri_w},${triBot}" style="fill:var(--s2);stroke:var(--ts);stroke-width:1.5;stroke-linejoin:round"/>`;
-  return s;
-}
-
-function renderG2(){
-  // NODE_H=46 で2行表示
-  const NODE_H=46;
-  const N={
-    account: {cx:300,y:10, w:96, label:'Account',      fixed:true},
-    dep:     {cx:192,y:116,w:140,label:g2placed.dep||'',slot:'dep'},
-    loan:    {cx:408,y:116,w:128,label:g2placed.loan||'',slot:'loan'},
-    sav:     {cx:108,y:220,w:98, label:g2placed.sav||'',slot:'sav'},
-    td:      {cx:228,y:220,w:98, label:g2placed.td||'', slot:'td'},
-    ml:      {cx:360,y:220,w:98, label:g2placed.ml||'', slot:'ml'},
-    cl:      {cx:480,y:220,w:98, label:g2placed.cl||'', slot:'cl'},
-  };
-  // barY = 親bottom と 子top の中間
-  // Account bottom=56, Dep/Loan top=116 → bar=86
-  // Dep/Loan bottom=162, Leaf top=220 → bar=191
-  const arrTop =g2Arrow([N.dep.cx,N.loan.cx],N.dep.y, N.account.cx,N.account.y+NODE_H,86);
-  const arrDep =g2Arrow([N.sav.cx,N.td.cx], N.sav.y, N.dep.cx,   N.dep.y+NODE_H,   191);
-  const arrLoan=g2Arrow([N.ml.cx,N.cl.cx],  N.ml.y,  N.loan.cx,  N.loan.y+NODE_H,  191);
-
-  const nodes=Object.entries(N).map(([k,n])=>g2NodeSVG(n.cx,n.y,n.w,NODE_H,n.label,n.fixed,n.slot||null)).join('');
-
-  const cards=g2cards.map(c=>{
-    const pl=Object.values(g2placed).includes(c);
-    return `<div class="class-card ${pl?'placed':''} ${g2sel===c?'selected':''}" onclick="g2sel_fn('${c}')" style="text-align:center;line-height:1.4">
-      ${c}<br><span style="font-size:10px;font-weight:400;opacity:.65">${g2jp[c]}</span>
-    </div>`;
-  }).join('');
-
-  const fb=g2done
-    ?`<div class="fb ok show">✓ 完成！Account を頂点とした継承ツリーができました。</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(25)">次へ →</button><button class="btn" onclick="retryG2()">もう一度 ↩</button></div>`
-    :`<div class="fb" id="g2fb"></div><button class="btn btn-p" onclick="g2check()">確認する</button>`;
-
-  return `
-    <div class="ch-title">${CHAPTERS[2].name}</div>
-    <div class="ch-heading">${CHAPTERS[2].sub}</div>
-    <p class="game-intro">カードを選んでスロット（?）に配置してください。矢印は子クラス→親クラスの方向（UML標準）。</p>
-    <div class="cards-area">${cards}</div>
-    <div class="tree-wrap">
-      <svg viewBox="0 0 590 276" style="width:100%;min-width:320px;display:block;color:var(--ts)">
-        ${arrTop}${arrDep}${arrLoan}${nodes}
-      </svg>
-    </div>
-    ${fb}`;
-}
-function g2sel_fn(c){g2sel=g2sel===c?null:c;document.getElementById('screen').innerHTML=renderG2();}
-function g2place(id){
-  if(!g2sel||g2done)return;
-  g2placed[id]=g2sel;g2sel=null;
-  document.getElementById('screen').innerHTML=renderG2();
-}
-function g2check(){
-  const allFilled=['dep','loan','sav','td','ml','cl'].every(k=>g2placed[k]);
-  if(!allFilled){
-    const fb=document.getElementById('g2fb');
-    fb.className='fb ng show';fb.textContent='✗ まだ空のスロットがあります';return;
-  }
-  const sort=arr=>[...arr].sort().join(',');
-  // レベル1: dep+loan に DepositAccount と LoanAccount が揃っているか
-  const lv1ok=sort([g2placed.dep,g2placed.loan])===sort(['DepositAccount','LoanAccount']);
-  if(!lv1ok){
-    const fb=document.getElementById('g2fb');
-    fb.className='fb ng show';fb.textContent='✗ Account の直下には DepositAccount と LoanAccount が入ります';return;
-  }
-  // レベル2: 各親スロットの子スロットを確認（dep側→sav/td、loan側→ml/cl）
-  const depIsLeft=g2placed.dep==='DepositAccount';
-  const depChildren=depIsLeft?['sav','td']:['ml','cl'];
-  const loanChildren=depIsLeft?['ml','cl']:['sav','td'];
-  const lv2ok=
-    sort(depChildren.map(s=>g2placed[s]))===sort(['SavingsAccount','TimeDeposit'])&&
-    sort(loanChildren.map(s=>g2placed[s]))===sort(['MortgageLoan','CarLoan']);
-  if(lv2ok){g2done=true;document.getElementById('screen').innerHTML=renderG2();return;}
-  const fb=document.getElementById('g2fb');
-  fb.className='fb ng show';fb.textContent='✗ 葉クラスの親が違います。is-a 関係を確認してください。';
-}
-
-// ─── GAME 3: 合成 vs 集約 ──────────────────────
-let g3bankDead=false,g3bankDead2=false,g3quiz=[null,null,null];
-const g3q=[
-  {q:'ATM と銀行の関係は？\n銀行が廃業すれば ATM も撤去される。',a:'comp'},
-  {q:'銀行口座と顧客の関係は？\n銀行が倒産しても顧客は別の銀行に口座を開ける。',a:'agg'},
-  {q:'注文（Order）と注文明細（OrderItem）の関係は？\n注文が削除されると明細も削除される。',a:'comp'},
-];
-function renderG3(){
-  return `
-    <div class="ch-title">${CHAPTERS[3].name}</div>
-    <div class="ch-heading">${CHAPTERS[3].sub}</div>
-    <p class="game-intro">「倒産ボタン」を押して、合成と集約の違いを確かめてください。</p>
-    <div class="worlds">
-      <div class="world-box">
-        <div class="world-title">合成 ◆ — 生死を共にする</div>
-        <div style="margin-bottom:.5rem">
-          <div class="obj-block ${g3bankDead?'dead':''}" id="banka-obj">🏦 Bank A</div>
-          <div style="display:flex;flex-direction:column;align-items:center">
-            <div class="diamond filled"></div>
-            <div class="compose-line solid"></div>
-          </div>
-          <div class="obj-block ${g3bankDead?'dead':''}" id="branch-obj">🏢 支店</div>
+    ${moveTried&&!movableOk?`
+      <div class="fb ok show">最初はうまく見える。<br><strong>Dog / Car / Robot</strong> は全部 MovableBase 型として受け取れるので、<code>race(MovableBase x)</code> は書ける。</div>
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:700;margin-bottom:.65rem;color:var(--tp)">しかし、次の追加仕様が来た。</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.8rem">
+          ${g0card('🪽 飛べるもの',['鳥','飛行機','ドローン'],'var(--bac)')}
+          ${g0card('🌊 泳げるもの',['ペンギン','魚','船'],'var(--bac)')}
         </div>
-        <div class="rel-label">Bank が消えると支店も消える</div>
-        ${!g3bankDead
-          ?`<button class="btn" style="width:100%;font-size:12px;padding:.5rem" onclick="g3kill1()">Bank A が倒産 🏚️</button>`
-          :`<div style="font-size:12px;color:var(--tng);font-weight:500">Bank A も支店も消えた！</div>`}
+        <div class="code-sample">class Bird extends Animal, FlyableBase   // Javaでは不可
+class Penguin extends Animal, SwimmableBase // Javaでは不可
+class Drone extends Machine, FlyableBase  // Javaでは不可</div>
       </div>
-      <div class="world-box">
-        <div class="world-title">集約 ◇ — 独立して存在できる</div>
-        <div style="margin-bottom:.5rem">
-          <div class="obj-block ${g3bankDead2?'dead':''}" id="bankb-obj">🏦 Bank B</div>
-          <div style="display:flex;flex-direction:column;align-items:center">
-            <div class="diamond empty-d"></div>
-            <div class="compose-line dashed"></div>
-          </div>
-          <div class="obj-block">👤 顧客</div>
-        </div>
-        <div class="rel-label">Bank が消えても顧客は残る</div>
-        ${!g3bankDead2
-          ?`<button class="btn" style="width:100%;font-size:12px;padding:.5rem" onclick="g3kill2()">Bank B が倒産 🏚️</button>`
-          :`<div style="font-size:12px;color:var(--tok);font-weight:500">顧客は生き続けた！</div>`}
+      <div class="fb ng show">✗ 破綻した。<br><br>継承は<strong>種類の階層</strong>を作るには便利だが、<strong>能力</strong>を横断的に付けるには弱い。鳥は Animal でもあり Flyable でもある。ペンギンは Animal でもあり Swimmable でもある。でも Java では親クラスを1つしか継承できない。</div>
+      <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('movable')">能力をインターフェースに分離する →</button>`:''}
+
+    ${movableOk?`
+      <div class="lesson-point"><strong>解決：</strong>「Animal / Vehicle / Machine」は種類の親クラス。「Movable / Flyable / Swimmable」は能力のインターフェースにする。</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem">
+        <div>${g0card('種類：抽象クラス・継承',['Animal → 犬・猫・鳥','Vehicle → 車・船・飛行機','Machine → ロボット・ドローン'],'var(--bok)')}</div>
+        <div>${g0card('能力：インターフェース',['Movable：動ける','Flyable：飛べる','Swimmable：泳げる'],'var(--tpr)')}</div>
       </div>
-    </div>
-    ${g3bankDead&&g3bankDead2?g3q.map((q,i)=>{
-      const ac=g3quiz[i];
-      return `<div class="world-quiz">
-        <div class="wq-q">${q.q.replace(/\n/g,'<br>')}</div>
-        <div class="wq-opts">
-          <div class="wq-opt ${ac?(ac==='comp'?(q.a==='comp'?'ok':'ng'):''):''}" onclick="g3ans(${i},'comp')">◆ 合成</div>
-          <div class="wq-opt ${ac?(ac==='agg'?(q.a==='agg'?'ok':'ng'):''):''}" onclick="g3ans(${i},'agg')">◇ 集約</div>
-        </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem">
+        ${[
+          ['🐦 鳥','extends Animal','implements Movable, Flyable'],
+          ['🐧 ペンギン','extends Animal','implements Movable, Swimmable'],
+          ['🤖 ドローン','extends Machine','implements Movable, Flyable'],
+        ].map(([t,a,b])=>g0card(t,[a,`<span style="color:var(--tpr)">${b}</span>`],'var(--bok)')).join('')}
+      </div>
+      <div class="fb ok show">✓ インターフェースの本質は、実装共有ではなく<strong>共通の型を作ること</strong>。種類が違っても「動けるもの」として同じ関数に渡せます。</div>
+      <button class="btn btn-p" onclick="g0do('next')">次：外から守る →</button>`:''}`;
+
+  // ── フェーズ5：アクセス修飾子 ──
+  if(phase===5){
+    const members=[
+      {name:'名前',kind:'field',correct:'pri',hint:'外から参照したいが、勝手に変更されたくない'},
+      {name:'体力',kind:'field',correct:'pri',hint:'勝手に変更されるとゲームバランスが壊れる'},
+      {name:'空腹度',kind:'field',correct:'pri',hint:'外部から直接書き換えられると困る'},
+      {name:'名前を見る()',kind:'method',correct:'pub',hint:'名前を表示するための安全な窓口'},
+      {name:'食べる()',kind:'method',correct:'pub',hint:'正しい操作として外から呼びたい'},
+      {name:'歩く()',kind:'method',correct:'pub',hint:'正しい操作として外から呼びたい'},
+      {name:'体力を減らす内部処理()',kind:'method',correct:'pro',hint:'子クラスの走る・飛ぶからは使いたいが、外から直接呼ばせたくない'},
+      {name:'現在の体力()',kind:'method',correct:'pub',hint:'見るための窓口'},
+      {name:'現在の空腹度()',kind:'method',correct:'pub',hint:'見るための窓口'},
+    ];
+    members.forEach(m=>{ if(!g0st.access[m.name]) g0st.access[m.name]='pub'; });
+    const allOk=members.every(m=>g0st.access[m.name]===m.correct);
+    const modLabel={pub:'+ public',pri:'− private',pro:'# protected'};
+    const modClass={pub:'mod-pub',pri:'mod-pri',pro:'mod-pro'};
+    const row=m=>`<div class="m-row"><span class="m-name">${m.name}<br><small style="color:var(--tm);font-family:var(--f)">${m.hint}</small></span><div class="m-mod-btn">${['pub','pri','pro'].map(mod=>`<span class="mod-opt ${modClass[mod]} ${g0st.access[m.name]===mod?'sel':''}" onclick="g0do('access',{name:'${m.name}',mod:'${mod}'})">${modLabel[mod]}</span>`).join('')}</div></div>`;
+    const attackLog=()=>{
+      const namePublic=g0st.access['名前']==='pub';
+      const hungerPublic=g0st.access['空腹度']==='pub';
+      const hpPublic=g0st.access['体力']==='pub';
+      const getNamePublic=g0st.access['名前を見る()']==='pub';
+      const getHungerPublic=g0st.access['現在の空腹度()']==='pub';
+      const eatPublic=g0st.access['食べる()']==='pub';
+      const damageMod=g0st.access['体力を減らす内部処理()'];
+      const damagePublic=damageMod==='pub';
+      const damageProtected=damageMod==='pro';
+      const damagePrivate=damageMod==='pri';
+      return `<div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:1rem">
+        <div class="${namePublic?'fb ng show':'fb ok show'}" style="display:block">👾 悪いプログラム：<code>ライオン.名前 = "名無し"</code><br>${namePublic?'💥 書き換え成功。表示名を勝手に変更されました。':'🛡 ブロック成功。外部から名前は直接変更できません。'}</div>
+        <div class="${hungerPublic?'fb ng show':'fb ok show'}" style="display:block">👾 悪いプログラム：<code>ライオン.空腹度 = -999</code><br>${hungerPublic?'💥 書き換え成功。ライオンは永遠に満腹です。':'🛡 ブロック成功。外部から空腹度は変更できません。'}</div>
+        <div class="${hpPublic?'fb ng show':'fb ok show'}" style="display:block">👾 悪いプログラム：<code>ライオン.体力 = 999999</code><br>${hpPublic?'💥 書き換え成功。ゲームバランスが壊れました。':'🛡 ブロック成功。外部から体力は直接変更できません。'}</div>
+        <div class="${damagePublic?'fb ng show':'fb ok show'}" style="display:block">👾 外部プログラム：<code>ライオン.体力を減らす内部処理(999)</code><br>${damagePublic?'💥 直接呼べてしまいました。本来は内部用なので外に公開しすぎです。':'🛡 ブロック成功。内部処理は外部から直接呼べません。'}</div>
+        <div class="${damageProtected?'fb ok show':'fb ng show'}" style="display:block">🐕 子クラスの利用：<code>Dog.走る()</code> の中から <code>体力を減らす内部処理(5)</code><br>${damageProtected?'✅ 子クラスのDogからは使えます。外には隠しつつ、継承先には使わせられます。':damagePrivate?'✗ private だと子クラスからも使えません。犬や鳥ごとに同じ体力処理を書き直すことになります。':'✗ public だと子クラスからは使えますが、外部からも直接呼べてしまいます。'}</div>
+        <div class="${getNamePublic?'fb ok show':'fb ng show'}" style="display:block">👀 正しい利用：<code>ライオン.名前を見る()</code><br>${getNamePublic?'✅ 名前：レオ。見るための窓口は使えます。':'✗ 窓口まで閉じてしまったので、外から名前を表示できません。'}</div>
+        <div class="${getHungerPublic?'fb ok show':'fb ng show'}" style="display:block">👀 正しい利用：<code>ライオン.現在の空腹度()</code><br>${getHungerPublic?'✅ 現在の空腹度：45。見るための窓口は使えます。':'✗ 窓口まで閉じてしまったので、外から状態確認できません。'}</div>
+        <div class="${eatPublic?'fb ok show':'fb ng show'}" style="display:block">🍖 正しい利用：<code>ライオン.食べる("肉")</code><br>${eatPublic?'✅ 空腹度 45 → 20。private な値でも、クラス自身のメソッドなら中から変更できます。':'✗ 食べる窓口を閉じたので、外から正しい操作もできません。'}</div>
       </div>`;
-    }).join(''):''}
-    ${g3quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${g3quiz.filter((a,i)=>a===g3q[i].a).length}/3 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${g3quiz.filter((a,i)=>a===g3q[i].a).length*8+1})">次へ →</button><button class="btn" onclick="retryG3()">もう一度 ↩</button></div>`:''}`;
-}
-function g3kill1(){
-  const bank=document.getElementById('banka-obj');
-  const branch=document.getElementById('branch-obj');
-  if(bank)bank.classList.add('dead');
-  if(branch)branch.classList.add('dead');
-  setTimeout(()=>{g3bankDead=true;document.getElementById('screen').innerHTML=renderG3();},600);
-}
-function g3kill2(){
-  const el=document.getElementById('bankb-obj');
-  if(el)el.classList.add('dead');
-  setTimeout(()=>{g3bankDead2=true;document.getElementById('screen').innerHTML=renderG3();},500);
-}
-function g3ans(i,v){if(g3quiz[i]!==null)return;g3quiz[i]=v;document.getElementById('screen').innerHTML=renderG3();}
-
-// ─── GAME 5: ポリモーフィズム ────────────────────
-const g5accs=[
-  {name:'SavingsAccount',icon:'💰',impl:'balance × 0.1%',result:'¥300 の利息',color:'ok'},
-  {name:'TimeDeposit',   icon:'📅',impl:'balance × 0.5% × term',result:'¥1,500 の利息',color:'ok'},
-  {name:'LoanAccount',   icon:'💳',impl:'balance × 3.0%',result:'¥9,000 の利息費用',color:'wn'},
-];
-const g5q=[
-  {q:'a.calculateInterest() を呼んだとき、実際に実行されるのは？',a:1,opts:['Account クラスのメソッド','各インスタンスの型（サブクラス）のメソッド','エラーが発生する']},
-  {q:'Account[] に SavingsAccount と LoanAccount を混在させられる理由は？',a:0,opts:['どちらも Account を継承しているから（is-a 関係）','同じメソッド名があるから','static フィールドを持つから']},
-  {q:'ポリモーフィズムの主な利点は？',a:0,opts:['型が違っても同じコードで一括処理できる','処理速度が向上する','メモリ使用量が減る']},
-];
-let g5step=-1,g5quiz=[null,null,null];
-
-function renderG5(){
-  const cards=g5accs.map((a,i)=>{
-    const active=g5step===i,done=g5step>i;
-    const bg=done?(a.color==='wn'?'var(--wn)':'var(--ok)'):active?(a.color==='wn'?'var(--wn)':'var(--ac)'):'var(--s2)';
-    const bc=done?(a.color==='wn'?'var(--bwn)':'var(--bok)'):active?(a.color==='wn'?'var(--bwn)':'var(--fac)'):'var(--bd)';
-    return `<div class="poly-card ${active?'active':''} ${done?'done':''}" style="background:${bg};border-color:${bc}">
-      <div class="poly-icon">${a.icon}</div>
-      <div class="poly-class">${a.name}</div>
-      <div class="poly-method">calculateInterest()</div>
-      <div class="poly-impl ${active||done?'show':''}">${a.impl}</div>
-      <div class="poly-result ${active||done?'show':''}" style="color:${a.color==='wn'?'var(--twn)':'var(--tok)'}">${a.result}</div>
-    </div>`;
-  }).join('');
-  const completed=g5step>=g5accs.length;
-  const quiz=completed?g5q.map((q,i)=>{
-    const ans=g5quiz[i];
-    return `<div class="world-quiz">
-      <div class="wq-q">${q.q}</div>
-      <div class="wq-opts">${q.opts.map((o,j)=>{
-        const cl=ans!==null?(ans===j?(q.a===j?'ok':'ng'):''):'';
-        return `<div class="wq-opt ${cl}" onclick="g5ans(${i},${j})">${o}</div>`;
-      }).join('')}</div>
-    </div>`;
-  }).join(''):'';
-  const correct=g5quiz.filter((a,i)=>a===g5q[i].a).length;
-  return `
-    <div class="ch-title">${CHAPTERS[5].name}</div>
-    <div class="ch-heading">${CHAPTERS[5].sub}</div>
-    <p class="game-intro">「一括利息計算」を実行すると、同じ命令 <code>a.calculateInterest()</code> が各クラスの実装を呼び出す。</p>
-    <div class="poly-dispatch">
-      Account[] accounts = {new SavingsAccount(), new TimeDeposit(), new LoanAccount()};<br>
-      <span style="color:var(--tpr)">for</span> (Account a : accounts) {<br>
-      &nbsp;&nbsp;a.<strong>calculateInterest</strong>(); <span style="color:var(--tm)">← 同じ命令</span><br>
-      }
-    </div>
-    <div class="poly-area">${cards}</div>
-    ${!completed?`<button class="btn btn-p" onclick="g5run()" ${g5step>=0?'disabled':''}>一括利息計算を実行 ▶</button>`:''}
-    ${quiz}
-    ${g5quiz.every(a=>a!==null)?`<div class="fb ok show">✓ ${correct}/3 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${correct*8+1})">次へ →</button><button class="btn" onclick="retryG5()">もう一度 ↩</button></div>`:''}`;
-}
-function g5run(){
-  if(g5step>=0)return;
-  g5step=0;
-  document.getElementById('screen').innerHTML=renderG5();
-  function tick(){
-    g5step++;
-    document.getElementById('screen').innerHTML=renderG5();
-    if(g5step<g5accs.length)setTimeout(tick,800);
+    };
+    return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 6 / 8</div>
+    <div class="ch-heading">外から触っていいもの・ダメなもの</div>
+    <p class="game-intro">次は<strong>カプセル化</strong>と<strong>アクセス修飾子</strong>。データを全部むき出しにせず、外部には「使っていい窓口」だけを公開する。</p>
+    ${phaseDialogue(5)}
+    <div class="lesson-point"><strong>考え方：</strong>名前・空腹度・体力は勝手に書き換えられると困るので <strong>private</strong>。外から使う正しい窓口は <strong>public</strong>。外部には見せないが子クラスには使わせたい内部処理は <strong>protected</strong>。</div>
+    <div class="uml-class" style="margin-bottom:1rem"><div class="uml-head">動物</div><div class="uml-sec">${members.map(row).join('')}</div></div>
+    <div class="info-box"><strong>public</strong>：外から使ってよい　/　<strong>private</strong>：自分の中だけ　/　<strong>protected</strong>：自分と子クラスだけ。<br><small>※ フィールドをpublicにすると、基本的には外から読み書きできてしまいます。参照だけさせたい値は、フィールドをprivateにして、見るためのpublicメソッドを用意します。protectedは「子クラスにだけ使わせたい共通処理」の例で使っています。</small></div>
+    ${g0st.accessChecked?`<div id="access-test-result"></div>${attackLog()}`:''}
+    ${g0st.accessChecked
+      ? `<div class="${allOk?'fb ok show':'fb ng show'}">${allOk?'✓ 完璧！':'✗ まだ危険な設定があります。'}<br>直接は変更できない。でも見るための窓口から参照できる。さらに、子クラスだけに使わせたい処理はprotectedにできる。これがアクセス修飾子によるカプセル化です。</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" ${allOk?'':'disabled'} onclick="g0do('next')">次：生まれた瞬間の初期設定 →</button><button class="btn" onclick="g0st.accessChecked=false;document.getElementById('screen').innerHTML=renderG0();">設定し直す ↩</button></div>`
+      : `<button class="btn btn-p" onclick="g0do('accessCheck')">この設定でテストする 🧪</button>`}`;
   }
-  setTimeout(tick,700);
-}
-function g5ans(i,v){if(g5quiz[i]!==null)return;g5quiz[i]=v;document.getElementById('screen').innerHTML=renderG5();}
 
-// ─── GAME 6: 抽象クラス ───────────────────────────
-const g6members=[
-  {name:'accountId: String',          correct:'concrete', hint:'全口座が持つ共通フィールド。値を持てる。'},
-  {name:'open(): void',               correct:'concrete', hint:'口座開設処理は全口座で共通化できる。'},
-  {name:'calculateInterest(): double', correct:'abstract', hint:'預金・ローン・定期で計算方法が異なる。'},
-  {name:'close(): void',              correct:'concrete', hint:'口座閉鎖手続きは共通でよい。'},
-  {name:'getAccountType(): String',   correct:'abstract', hint:'「普通預金」「ローン」は各クラスが返す。'},
-  {name:'validateTransaction(): bool',correct:'abstract', hint:'取引バリデーションはクラスにより異なる。'},
-];
-let g6sel=g6members.map(()=>'concrete'),g6done=false;
+  // ── フェーズ6：コンストラクタ・static ──
+  if(phase===6){
+    const c=g0st.ctor||{name:'ポチ',hp:80,hunger:50,toy:'ボール'};
+    const name=htmlSafe(c.name||'ポチ');
+    const hp=Number.isFinite(Number(c.hp))?Number(c.hp):80;
+    const hunger=Number.isFinite(Number(c.hunger))?Number(c.hunger):50;
+    const toy=htmlSafe(c.toy||'ボール');
+    const count=g0st.ctorMade?1:0;
+    return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 7 / 8</div>
+    <div class="ch-heading">初期値を入れて、インスタンスを生み出す</div>
+    <p class="game-intro"><strong>コンストラクタ</strong>は、<code>new</code> で<strong>オブジェクト</strong>が生まれる瞬間に初期値を入れる仕組み。<strong>static</strong> は、個体ではなくクラス全体で共有する値。</p>
+    ${phaseDialogue(6)}
 
-function renderG6(){
-  const rows=g6members.map((m,i)=>{
-    const isCon=g6sel[i]==='concrete',isAbs=g6sel[i]==='abstract';
-    const badge=isAbs?`<span class="abs-badge">abstract</span>`:'';
-    let mark='';
-    if(g6done)mark=`<span style="font-weight:600;margin-left:4px;color:${g6sel[i]===m.correct?'var(--tok)':'var(--tng)'}">${g6sel[i]===m.correct?'✓':'✗'}</span>`;
-    return `<div class="m-row">
-      <span class="m-name">${m.name}${badge}</span>
-      <div class="m-mod-btn">
-        <span class="mod-opt mod-pub ${isCon?'sel':''}" onclick="${g6done?'':'g6set('+i+',\'concrete\')'}">具体</span>
-        <span class="mod-opt mod-pri ${isAbs?'sel':''}" onclick="${g6done?'':'g6set('+i+',\'abstract\')'}">抽象</span>
-        ${mark}
-      </div>
-    </div>`;
-  }).join('');
-  const correct=g6sel.filter((s,i)=>s===g6members[i].correct).length;
-  const hints=g6done?`<br><br>${g6members.map((m,i)=>`<span style="color:${g6sel[i]===m.correct?'var(--tok)':'var(--tng)'}">${g6sel[i]===m.correct?'✓':'✗'} ${m.name} — ${m.hint}</span>`).join('<br>')}`:'';
-  return `
-    <div class="ch-title">${CHAPTERS[6].name}</div>
-    <div class="ch-heading">${CHAPTERS[6].sub}</div>
-    <p class="game-intro">Account を抽象クラスとして設計する。各メンバーを「具体（実装あり）」か「抽象（サブクラスが実装必須）」に分類してください。</p>
-    <div class="info-box">抽象メソッドはサブクラスがオーバーライドしなければコンパイルエラーになる。全サブクラスで共通の処理は具体メソッドにしてよい。</div>
-    <div class="uml-class" style="margin-bottom:1rem">
-      <div class="uml-head">«abstract» Account</div>
-      <div class="uml-sec">${rows}</div>
-    </div>
-    ${g6done
-      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button><button class="btn" onclick="retryG6()">もう一度 ↩</button></div>`
-      :`<button class="btn btn-p" onclick="g6check()">設計を確認する</button>`}`;
-}
-function g6set(i,v){if(g6done)return;g6sel[i]=v;document.getElementById('screen').innerHTML=renderG6();}
-function g6check(){g6done=true;document.getElementById('screen').innerHTML=renderG6();}
+    <div class="lesson-point"><strong>今回の体験：</strong>名前・体力・空腹度・好きな遊びを指定して、<code>new Dog(...)</code> の結果を作ってみよう。入力した値が、そのまま生まれた犬の初期状態になります。</div>
 
-// ─── GAME 4: static / 金利 ─────────────────────
-let g4rate=1.5,g4bal=[300000,150000,520000],g4quiz=[null,null];
-const g4accs=[{name:'田中 一郎',icon:'💼'},{name:'鈴木 花子',icon:'👜'},{name:'佐藤 健',icon:'🧳'}];
-const g4q=[
-  {q:'interestRate（金利）は static か？',a:'yes'},
-  {q:'balance（残高）は static か？',a:'no'},
-];
-function renderG4(){
-  const cards=g4accs.map((a,i)=>`
-    <div class="acc-card">
-      <div class="acc-icon">${a.icon}</div>
-      <div class="acc-name">${a.name}</div>
-      <div class="acc-field static-f"><span>rate</span><span class="acc-val">${g4rate}%</span></div>
-      <div class="acc-field inst-f"><span>balance</span><span class="acc-val">${(g4bal[i]/10000).toFixed(0)}万円</span></div>
-    </div>`).join('');
-  const allAns=g4quiz.every(a=>a!==null);
-  const quiz=g4q.map((q,i)=>{
-    const ya=g4quiz[i]==='yes',na=g4quiz[i]==='no';
-    return `<div class="world-quiz">
-      <div class="wq-q">${q.q}</div>
-      <div class="wq-opts">
-        <div class="wq-opt ${ya?(g4q[i].a==='yes'?'ok':'ng'):''}" onclick="g4ans(${i},'yes')">static だ</div>
-        <div class="wq-opt ${na?(g4q[i].a==='no'?'ok':'ng'):''}" onclick="g4ans(${i},'no')">static ではない</div>
-      </div>
-    </div>`;
-  }).join('');
-  const correct=g4quiz.filter((a,i)=>a===g4q[i].a).length;
-  return `
-    <div class="ch-title">${CHAPTERS[4].name}</div>
-    <div class="ch-heading">${CHAPTERS[4].sub}</div>
-    <p class="game-intro">ボタンを操作して、static とインスタンスフィールドの違いを確かめてください。</p>
-    <div class="accounts">${cards}</div>
-    <div class="ctrl-box static-ctrl">
-      <div><span class="label">interestRate（static）</span><br><span style="font-size:12px;color:var(--twn)">全口座で共有。日銀が変更すると全員に影響。</span></div>
-      <button class="btn btn-p" style="font-size:13px;white-space:nowrap" onclick="g4upRate()">金利を上げる ▲</button>
-    </div>
-    <div class="ctrl-box inst-ctrl">
-      <span class="label">balance（インスタンス）— 口座ごとに個別に変わる</span>
-      <div class="inst-btns">
-        ${g4accs.map((a,i)=>`<button class="inst-btn" onclick="g4deposit(${i})">💴 ${a.name.split(' ')[0]}に入金</button>`).join('')}
-      </div>
-    </div>
-    ${quiz}
-    ${allAns?`<div class="fb ok show">✓ ${correct}/2 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${correct*10+5})">結果を見る →</button><button class="btn" onclick="retryG4()">もう一度 ↩</button></div>`:''}`;
-}
-function g4upRate(){g4rate=parseFloat((g4rate+0.25).toFixed(2));document.getElementById('screen').innerHTML=renderG4();}
-function g4deposit(i){g4bal[i]+=500000;document.getElementById('screen').innerHTML=renderG4();}
-function g4ans(i,v){if(g4quiz[i]!==null)return;g4quiz[i]=v;document.getElementById('screen').innerHTML=renderG4();}
-
-// ─── GAME 7: コンストラクタ ──────────────────────
-const g7members=[
-  {name:'accountId: String',   correct:'param',   hint:'口座番号は開設時に銀行が発行して渡す。'},
-  {name:'ownerName: String',   correct:'param',   hint:'名義人は申請者が提供する情報。'},
-  {name:'pin: int',            correct:'param',   hint:'暗証番号は顧客が開設時に設定する。'},
-  {name:'balance: double',     correct:'default', hint:'残高は 0 円からスタートが自然。balance = 0'},
-  {name:'createdAt: Date',     correct:'default', hint:'開設日時は new した瞬間の日時でよい。'},
-  {name:'interestRate: double',correct:'none',    hint:'static フィールドはコンストラクタで設定しない。'},
-];
-let g7sel=g7members.map(()=>'param'),g7done=false;
-
-function renderG7(){
-  const params=g7members.filter((_,i)=>g7sel[i]==='param').map(m=>m.name.split(':')[0].trim());
-  const defaults=g7members.filter((_,i)=>g7sel[i]==='default').map(m=>`  this.${m.name.split(':')[0].trim()} = …`);
-  const paramLines=params.map(p=>`  String/int/… ${p}`);
-  const assignLines=params.map(p=>`  this.${p} = ${p};`);
-  const preview=[
-    `BankAccount(`,
-    ...(paramLines.length?paramLines:['  // 引数なし']),
-    `) {`,
-    ...(assignLines.length?assignLines:[]),
-    ...(defaults.length?defaults:[]),
-    `}`,
-  ].join('\n');
-
-  const rows=g7members.map((m,i)=>{
-    const sel=g7sel[i];
-    let mark='';
-    if(g7done)mark=`<span style="font-weight:600;margin-left:4px;color:${sel===m.correct?'var(--tok)':'var(--tng)'}">${sel===m.correct?'✓':'✗'}</span>`;
-    return `<div class="m-row">
-      <span class="m-name">${m.name}</span>
-      <div class="m-mod-btn">
-        <span class="mod-opt mod-pub ${sel==='param'?'sel':''}"   onclick="${g7done?'':'g7set('+i+',\'param\')'}">引数</span>
-        <span class="mod-opt mod-pro ${sel==='default'?'sel':''}" onclick="${g7done?'':'g7set('+i+',\'default\')'}">初期値</span>
-        <span class="mod-opt mod-pri ${sel==='none'?'sel':''}"    onclick="${g7done?'':'g7set('+i+',\'none\')'}">不要</span>
-        ${mark}
-      </div>
-    </div>`;
-  }).join('');
-
-  const correct=g7sel.filter((s,i)=>s===g7members[i].correct).length;
-  const hints=g7done?`<br><br>${g7members.map((m,i)=>`<span style="color:${g7sel[i]===m.correct?'var(--tok)':'var(--tng)'}">${g7sel[i]===m.correct?'✓':'✗'} ${m.name} — ${m.hint}</span>`).join('<br>')}`:'';
-
-  return `
-    <div class="ch-title">${CHAPTERS[7].name}</div>
-    <div class="ch-heading">${CHAPTERS[7].sub}</div>
-    <p class="game-intro">各フィールドをコンストラクタでどう扱うか選んでください。右のプレビューにコンストラクタが組み立てられます。</p>
-    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:1rem;align-items:start">
-      <div class="uml-class" style="min-width:0;overflow:hidden">
-        <div class="uml-head">BankAccount</div>
-        <div class="uml-sec">${rows}</div>
-      </div>
-      <div style="min-width:0;background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:.75rem;font-family:var(--m);font-size:10px;line-height:1.9;white-space:pre;overflow-x:auto">${preview}</div>
-    </div>
-    ${g7done
-      ?`<div class="fb ok show">✓ ${correct}/6 正解！${hints}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${Math.max(5,correct*4)})">結果を見る →</button><button class="btn" onclick="retryG7()">もう一度 ↩</button></div>`
-      :`<button class="btn btn-p" onclick="g7check()">設計を確認する</button>`}`;
-}
-function g7set(i,v){if(g7done)return;g7sel[i]=v;document.getElementById('screen').innerHTML=renderG7();}
-function g7check(){g7done=true;document.getElementById('screen').innerHTML=renderG7();}
-
-// ─── GAME 8: 型キャスト ──────────────────────────
-const g8scenarios=[
-  {ok:true,  code:'Account a = new SavingsAccount();\nSavingsAccount s = (SavingsAccount) a;',     label:'実際の型と同じ型にキャスト'},
-  {ok:false, code:'Account a = new LoanAccount();\nSavingsAccount s = (SavingsAccount) a;',        label:'実際の型と違う型にキャスト'},
-  {ok:true,  code:'Account a = new TimeDeposit();\nif (a instanceof TimeDeposit) {\n  TimeDeposit t = (TimeDeposit) a;\n}',label:'instanceof で確認してからキャスト'},
-  {ok:false, code:'Account a = new SavingsAccount();\nLoanAccount l = (LoanAccount) a;',           label:'実際の型と違う型にキャスト'},
-];
-let g8quiz=[null,null,null,null];
-
-function renderG8(){
-  const items=g8scenarios.map((s,i)=>{
-    const ans=g8quiz[i];
-    const correct=s.ok?'ok':'ng';
-    return `<div class="world-quiz">
-      <div style="font-size:11px;color:var(--tm);margin-bottom:.4rem">${s.label}</div>
-      <pre style="background:var(--s1);border-radius:6px;padding:.6rem .75rem;font-size:11px;line-height:1.8;overflow-x:auto;margin-bottom:.75rem">${s.code}</pre>
-      <div class="wq-opts">
-        <div class="wq-opt ${ans?(ans==='ok'?(s.ok?'ok':'ng'):''):''}" onclick="g8ans(${i},'ok')">✓ 成功</div>
-        <div class="wq-opt ${ans?(ans==='ng'?(!s.ok?'ok':'ng'):''):''}" onclick="g8ans(${i},'ng')">💥 ClassCastException</div>
-      </div>
-    </div>`;
-  }).join('');
-  const allAns=g8quiz.every(a=>a!==null);
-  const correct=g8quiz.filter((a,i)=>a===(g8scenarios[i].ok?'ok':'ng')).length;
-  return `
-    <div class="ch-title">${CHAPTERS[8].name}</div>
-    <div class="ch-heading">${CHAPTERS[8].sub}</div>
-    <p class="game-intro">各コードがキャスト成功か <code>ClassCastException</code> か判定してください。</p>
-    <div class="info-box">実際のオブジェクトの型と違うクラスにキャストすると実行時エラー。<strong>instanceof</strong> で確認してからキャストするのが安全。</div>
-    ${items}
-    ${allAns?`<div class="fb ok show">✓ ${correct}/4 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${correct*6+1})">次へ →</button><button class="btn" onclick="retryG8()">もう一度 ↩</button></div>`:''}`;
-}
-function g8ans(i,v){if(g8quiz[i]!==null)return;g8quiz[i]=v;document.getElementById('screen').innerHTML=renderG8();}
-
-// ─── GAME 9: 例外処理 ────────────────────────────
-const g9frags=[
-  {id:'throw',  code:'if (amount > balance)\n  throw new\n  InsufficientFundsException();', correct:'A'},
-  {id:'op',     code:'balance -= amount;',                                                   correct:'B'},
-  {id:'catch',  code:'notifyUser(\n  "残高不足です"\n);',                                    correct:'C'},
-  {id:'finally',code:'logTransaction();',                                                     correct:'D'},
-];
-const g9slotMeta={
-  A:{label:'A',desc:'try の前（バリデーション・throw）'},
-  B:{label:'B',desc:'try { … } の中（主処理）'},
-  C:{label:'C',desc:'catch (e) { … } の中（エラー処理）'},
-  D:{label:'D',desc:'finally { … } の中（後処理）'},
-};
-let g9placed={},g9sel=null,g9done=false;
-
-function renderG9(){
-  const slotKeys=['A','B','C','D'];
-  const slots=slotKeys.map(k=>{
-    const fragId=g9placed[k];
-    const frag=fragId?g9frags.find(f=>f.id===fragId):null;
-    const hl=g9sel&&!frag;
-    const ok=g9done&&frag&&g9frags.find(f=>f.id===fragId)?.correct===k;
-    const ng=g9done&&frag&&!ok;
-    return `<div onclick="g9place('${k}')" style="cursor:${g9sel&&!frag?'pointer':'default'};border:2px ${frag?'solid':'dashed'} ${ng?'var(--bng)':ok?'var(--bok)':hl?'var(--fac)':'var(--tm)'};border-radius:8px;padding:.5rem .75rem;background:${hl?'var(--ac)':'var(--s2)'};margin-bottom:6px">
-      <div style="font-size:10px;color:var(--tm);margin-bottom:2px">[${k}] ${g9slotMeta[k].desc}</div>
-      ${frag?`<pre style="font-size:10px;line-height:1.7;margin:0;color:${ng?'var(--tng)':ok?'var(--tok)':'var(--tp)'}">${frag.code}</pre>`:`<div style="font-size:12px;color:var(--tm);text-align:center;padding:4px 0">タップして配置</div>`}
-    </div>`;
-  }).join('');
-
-  const cards=g9frags.map(f=>{
-    const placed=Object.values(g9placed).includes(f.id);
-    return `<div class="class-card ${placed?'placed':''} ${g9sel===f.id?'selected':''}" onclick="g9selFrag('${f.id}')" style="font-family:var(--m);font-size:10px;white-space:pre;line-height:1.6;text-align:left">${f.code}</div>`;
-  }).join('');
-
-  const allPlaced=Object.keys(g9placed).length===4;
-  const correct=g9done?slotKeys.filter(k=>g9placed[k]&&g9frags.find(f=>f.id===g9placed[k])?.correct===k).length:0;
-
-  return `
-    <div class="ch-title">${CHAPTERS[9].name}</div>
-    <div class="ch-heading">${CHAPTERS[9].sub}</div>
-    <p class="game-intro">カードを選んでスロット [A]〜[D] に配置し、<code>withdraw()</code> メソッドを完成させてください。</p>
-    <pre class="poly-dispatch" style="font-size:11px;line-height:2">void withdraw(double amount) {
-  [A]
-  try {
-    [B]
-  } catch (InsufficientFundsException e) {
-    [C]
-  } finally {
-    [D]
-  }
-}</pre>
-    <div class="cards-area" style="margin-bottom:.75rem">${cards}</div>
-    ${slots}
-    ${g9done
-      ?`<div class="fb ok show" style="margin-top:.75rem">✓ ${correct}/4 正解！</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem"><button class="btn btn-p" onclick="finishGame(${correct*6+1})">結果を見る →</button><button class="btn" onclick="retryG9()">もう一度 ↩</button></div>`
-      :allPlaced?`<button class="btn btn-p" style="margin-top:.75rem" onclick="g9check()">確認する</button>`:''}`;
-}
-function g9selFrag(id){g9sel=g9sel===id?null:id;document.getElementById('screen').innerHTML=renderG9();}
-function g9place(slot){if(!g9sel||g9done)return;g9placed[slot]=g9sel;g9sel=null;document.getElementById('screen').innerHTML=renderG9();}
-function g9check(){g9done=true;document.getElementById('screen').innerHTML=renderG9();}
-
-// ─── GAME 10: 設計制約パズル ──────────────────────
-const gPpuzzles=[
-  {
-    title:'プレミアム口座の設計',
-    context:'富裕層向け <strong>PremiumAccount</strong> を追加する。SavingsAccount は本番稼働中でテスト 2000 件が依存している。<strong>既存クラスは変更不可。</strong>',
-    decisions:[
-      {id:'d1',q:'① PremiumAccount の継承元',opts:[
-        {v:'A',l:'Account を直接継承'},
-        {v:'B',l:'SavingsAccount を継承'},
-        {v:'C',l:'LoanAccount を継承'},
-      ]},
-      {id:'d2',q:'② AdvisorService との関係',opts:[
-        {v:'A',l:'継承（extends AdvisorService）'},
-        {v:'B',l:'合成（内部で new して保持）'},
-        {v:'C',l:'実装しない'},
-      ]},
-      {id:'d3',q:'③ calculatePremiumRate() の可視性',opts:[
-        {v:'A',l:'+ public'},
-        {v:'B',l:'# protected（サブクラスまで）'},
-        {v:'C',l:'− private（自クラスのみ）'},
-      ]},
-      {id:'d4',q:'④ PremiumAccount の種別',opts:[
-        {v:'A',l:'通常クラス（new できる）'},
-        {v:'B',l:'abstract（直接 new 不可）'},
-      ]},
-      {id:'d5',q:'⑤ 将来のサブクラス化',opts:[
-        {v:'A',l:'final（継承禁止）'},
-        {v:'B',l:'通常（継承可能）'},
-      ]},
-    ],
-    constraints:[
-      {label:'普通預金の残高計算・入出金機能をそのまま引き継げる',      check:s=>s.d1==='B',hintQ:'① 継承元の選択'},
-      {label:'優遇金利をサブクラスも含め外部から呼び出せない',          check:s=>s.d3==='C',hintQ:'③ 可視性の選択'},
-      {label:'AdvisorService を将来 LoanAccount にも導入できる',       check:s=>s.d2==='B',hintQ:'② AdvisorService との関係'},
-      {label:'new PremiumAccount() で直接インスタンスを生成できる',    check:s=>s.d4==='A',hintQ:'④ クラスの種別'},
-      {label:'将来 VIPPremiumAccount を PremiumAccount から継承できる',check:s=>s.d5==='B',hintQ:'⑤ サブクラス化の設定'},
-    ],
-  },
-  {
-    title:'監査ログシステムの設計',
-    context:'全口座の取引を記録する <strong>AuditLog</strong> クラスを追加する。Account・Bank は変更不可。ログは法的証拠になるため堅牢な設計が必要。',
-    decisions:[
-      {id:'d1',q:'① AuditLog の独立性',opts:[
-        {v:'A',l:'Bank が合成で保有（Bank 消滅→ログも消える）'},
-        {v:'B',l:'Bank が集約で参照（Bank 消滅→ログは残る）'},
-        {v:'C',l:'どちらにも属さない独立クラス'},
-      ]},
-      {id:'d2',q:'② Account との結合方式',opts:[
-        {v:'A',l:'Account が AuditLog.record() を直接呼ぶ'},
-        {v:'B',l:'AuditLog が Account の変化を監視（Observer）'},
-      ]},
-      {id:'d3',q:'③ AuditLog.record() の可視性',opts:[
-        {v:'A',l:'+ public'},
-        {v:'B',l:'− private'},
-      ]},
-      {id:'d4',q:'④ インスタンスの数',opts:[
-        {v:'A',l:'口座ごとに1つ（記録が分散）'},
-        {v:'B',l:'システム全体で1つ（全口座を一元管理）'},
-        {v:'C',l:'取引ごとに生成・破棄'},
-      ]},
-      {id:'d5',q:'⑤ 保存先の設計',opts:[
-        {v:'A',l:'インメモリ固定'},
-        {v:'B',l:'抽象化して将来 DB に切り替え可能'},
-      ]},
-    ],
-    constraints:[
-      {label:'銀行倒産後もログが消えず、独立して運用できること',  check:s=>s.d1==='C',hintQ:'① 独立性の選択'},
-      {label:'全口座の取引を1か所で一元管理できること',          check:s=>s.d4==='B',hintQ:'④ インスタンス数の選択'},
-      {label:'Account クラスを一切変更しないこと',               check:s=>s.d2==='B',hintQ:'② Account との結合方式'},
-      {label:'外部の監査ツールから record() を呼び出せること',   check:s=>s.d3==='A',hintQ:'③ 可視性の選択'},
-      {label:'将来インメモリから DB 保存に切り替えられること',    check:s=>s.d5==='B',hintQ:'⑤ 保存先の設計'},
-    ],
-  },
-  {
-    title:'RPG キャラクタークラスの設計（継承）',
-    context:'RPG ゲームの <strong>Warrior・Mage・Healer</strong> を Character クラスから継承して実装したい。Character クラスはゲームエンジンが参照しており変更不可。',
-    decisions:[
-      {id:'d1',q:'① Warrior の高 HP をどう実装するか',opts:[
-        {v:'A',l:'Character.hp フィールドに直接代入する'},
-        {v:'B',l:'super(baseHP + BONUS) でコンストラクタ経由でセット'},
-        {v:'C',l:'Warrior に hpBonus フィールドを追加して HP を二重管理'},
-      ]},
-      {id:'d2',q:'② Mage 専用の castSpell() をどこに置くか',opts:[
-        {v:'A',l:'Character に castSpell() を追加（全クラスが持つ）'},
-        {v:'B',l:'Mage クラスにだけ castSpell() を定義する'},
-        {v:'C',l:'Character を abstract にして全クラスに実装を強制'},
-      ]},
-      {id:'d3',q:'③ 各クラスの attack() の実装方針',opts:[
-        {v:'A',l:'Character.attack() を全員がそのまま使う'},
-        {v:'B',l:'各クラスで attack() をオーバーライドして独自の攻撃'},
-        {v:'C',l:'attack() を abstract にして各クラスに強制実装'},
-      ]},
-      {id:'d4',q:'④ Healer.heal() の公開範囲',opts:[
-        {v:'A',l:'+ public（パーティ全員から呼べる）'},
-        {v:'B',l:'# protected（Healer サブクラスのみ）'},
-        {v:'C',l:'− private（Healer 内部のみ）'},
-      ]},
-      {id:'d5',q:'⑤ パーティの型管理',opts:[
-        {v:'A',l:'Warrior[]・Mage[]・Healer[] を別々に管理'},
-        {v:'B',l:'Character[] でまとめて管理する'},
-        {v:'C',l:'Object[] でまとめて管理する'},
-      ]},
-    ],
-    constraints:[
-      {label:'HP は1つのフィールドで管理し、直接代入もしない',         check:s=>s.d1==='B',  hintQ:'① HP の実装方法'},
-      {label:'Mage だけが castSpell() を持ち、Character を変更しない', check:s=>s.d2==='B',  hintQ:'② castSpell() の配置'},
-      {label:'戦士は剣、魔法使いは魔法など、各クラスが独自の attack() を持つ', check:s=>s.d3==='B', hintQ:'③ attack() の実装'},
-      {label:'パーティ全員に attack() を一斉送信できる',               check:s=>s.d5==='B',  hintQ:'⑤ 型管理の選択'},
-      {label:'パーティメンバーが Healer に heal() を依頼できる',        check:s=>s.d4==='A',  hintQ:'④ heal() の公開範囲'},
-    ],
-  },
-  {
-    title:'EC カートの商品設計（ポリモーフィズム＋カプセル化）',
-    context:'EC サイトのカートに <strong>RegularItem・SaleItem・SubscriptionItem</strong> の3種を追加したい。将来さらに商品タイプが増えても、カートの計算コードを変えたくない。',
-    decisions:[
-      {id:'d1',q:'① 商品クラスの構造',opts:[
-        {v:'A',l:'Item に type フィールドを持たせて種別を管理'},
-        {v:'B',l:'Item を親クラスにして3種を継承で定義'},
-        {v:'C',l:'3種を継承なしの独立クラスとして作る'},
-      ]},
-      {id:'d2',q:'② 価格計算 calcPrice() の置き場所',opts:[
-        {v:'A',l:'カート側で if/else タイプ判別して計算'},
-        {v:'B',l:'各商品クラスで calcPrice() をオーバーライド'},
-        {v:'C',l:'Item に共通の calcPrice() を置いて全商品が使う'},
-      ]},
-      {id:'d3',q:'③ Item.price フィールドの公開範囲',opts:[
-        {v:'A',l:'+ public（外部から直接変更可）'},
-        {v:'B',l:'− private（外部から参照・変更不可）'},
-        {v:'C',l:'# protected（外部からは隠しサブクラスからは参照可）'},
-      ]},
-      {id:'d4',q:'④ SaleItem の discountRate（割引率）管理',opts:[
-        {v:'A',l:'+ public フィールド（外部から自由に変更可）'},
-        {v:'B',l:'− private ＋ setDiscount() でバリデーション付き変更'},
-        {v:'C',l:'定数にしてハードコード（変更不可）'},
-      ]},
-      {id:'d5',q:'⑤ カートの合計金額計算方法',opts:[
-        {v:'A',l:'Item[] をループして item.calcPrice() を呼ぶ'},
-        {v:'B',l:'switch/case で商品タイプを判別して計算'},
-        {v:'C',l:'item.price に直接アクセスして合算'},
-      ]},
-    ],
-    constraints:[
-      {label:'全商品を共通の型として扱い、カートが型を意識しない',     check:s=>s.d1==='B',  hintQ:'① 商品クラスの構造'},
-      {label:'新商品タイプを追加してもカートの計算コードを変えなくてよい', check:s=>s.d5==='A',hintQ:'⑤ カートの計算方法'},
-      {label:'各商品が独自の価格計算ロジックを持つ',                   check:s=>s.d2==='B',  hintQ:'② calcPrice() の置き場所'},
-      {label:'price を外から書き換えられないが、サブクラスの calcPrice() からは参照できる', check:s=>s.d3==='C', hintQ:'③ price の公開範囲'},
-      {label:'割引率の設定で「0〜100% 以外はエラー」にできる',         check:s=>s.d4==='B',  hintQ:'④ discountRate の管理'},
-    ],
-  },
-  {
-    title:'SNS 通知システムの設計（ポリモーフィズム）',
-    context:'SNS の <strong>LikeNotification・CommentNotification・FollowNotification</strong> を設計したい。通知センターは全種の通知をまとめてループ処理する。',
-    decisions:[
-      {id:'d1',q:'① 通知クラスの構造',opts:[
-        {v:'A',l:'Notification に type フィールドで種別管理'},
-        {v:'B',l:'Notification を親に3種を継承で定義'},
-        {v:'C',l:'3種を共通の親なしで独立クラスとして作る'},
-      ]},
-      {id:'d2',q:'② 通知文 display() の実装場所',opts:[
-        {v:'A',l:'通知センター側で if/else 判別してメッセージ生成'},
-        {v:'B',l:'各通知クラスで display() をオーバーライド'},
-        {v:'C',l:'Notification に固定の display() を定義（全通知共通）'},
-      ]},
-      {id:'d3',q:'③ 送信先ユーザー ID の管理',opts:[
-        {v:'A',l:'+ public userId フィールド（直接変更可）'},
-        {v:'B',l:'− private userId ＋ getUserId() メソッド'},
-        {v:'C',l:'static で全通知共通のユーザーを管理'},
-      ]},
-      {id:'d4',q:'④ 既読フラグの管理',opts:[
-        {v:'A',l:'+ public isRead フィールド（外部から直接書き換え可）'},
-        {v:'B',l:'− private isRead ＋ markAsRead() メソッドのみで変更'},
-        {v:'C',l:'既読管理は通知クラスの責務ではない'},
-      ]},
-      {id:'d5',q:'⑤ 通知センターのループ処理方法',opts:[
-        {v:'A',l:'Notification[] でループして display() を呼ぶ'},
-        {v:'B',l:'3種の配列を別々にループ処理する'},
-        {v:'C',l:'Object[] でまとめてループ処理する'},
-      ]},
-    ],
-    constraints:[
-      {label:'全通知を共通の型として一括管理できる',                     check:s=>s.d1==='B',  hintQ:'① 通知クラスの構造'},
-      {label:'新通知タイプを追加してもセンターのコードを変えなくてよい', check:s=>s.d5==='A',  hintQ:'⑤ ループ処理の方法'},
-      {label:'「いいね」「コメント」など通知ごとに異なる文面を持つ',     check:s=>s.d2==='B',  hintQ:'② display() の実装場所'},
-      {label:'送信先ユーザー ID を生成後に書き換えられないこと',         check:s=>s.d3==='B',  hintQ:'③ ユーザー ID の管理'},
-      {label:'既読フラグを外部から直接 false に戻せないこと',           check:s=>s.d4==='B',  hintQ:'④ 既読フラグの管理'},
-    ],
-  },
-  {
-    title:'配車サービスの料金設計（継承＋集約＋protected）',
-    context:'配車アプリで <strong>StandardRide・PremiumRide・SharedRide</strong> の3プランの料金計算を設計したい。ドライバーは乗車とは独立したエンティティとして管理されている。',
-    decisions:[
-      {id:'d1',q:'① 乗車プランクラスの構造',opts:[
-        {v:'A',l:'Ride に planType フィールドで種別管理'},
-        {v:'B',l:'Ride を親に3プランを継承で定義'},
-        {v:'C',l:'3プランを共通の親なしで独立クラスとして作る'},
-      ]},
-      {id:'d2',q:'② Driver との関係',opts:[
-        {v:'A',l:'Ride が Driver を継承する（is-a）'},
-        {v:'B',l:'Ride が Driver を合成で保持（Ride 消滅→ Driver も消える）'},
-        {v:'C',l:'Ride が Driver を集約で参照（Ride 消滅→ Driver は残る）'},
-      ]},
-      {id:'d3',q:'③ 乗車距離 distance の管理',opts:[
-        {v:'A',l:'+ public（外部から直接変更可）'},
-        {v:'B',l:'− private ＋ setDistance() でバリデーション（負の値不可）'},
-        {v:'C',l:'# protected（サブクラスから直接変更可）'},
-      ]},
-      {id:'d4',q:'④ PremiumRide 限定の calcLuxuryFee() の公開範囲',opts:[
-        {v:'A',l:'+ public（誰でも呼べる）'},
-        {v:'B',l:'− private（PremiumRide 内部のみ）'},
-        {v:'C',l:'# protected（PremiumRide と将来のサブクラスまで）'},
-      ]},
-      {id:'d5',q:'⑤ 全プランの一括料金計算方法',opts:[
-        {v:'A',l:'Ride[] でループして calcFare() を呼ぶ'},
-        {v:'B',l:'3プランの配列を別々にループする'},
-        {v:'C',l:'ride.distance に直接アクセスして合算する'},
-      ]},
-    ],
-    constraints:[
-      {label:'新プランを追加してもアプリのコードを変えなくてよい',         check:s=>s.d1==='B',  hintQ:'① プランクラスの構造'},
-      {label:'乗車完了後、同じドライバーを別の乗車に再割り当てできる',    check:s=>s.d2==='C',  hintQ:'② Driver との関係'},
-      {label:'乗車距離にマイナス値を設定できないこと',                   check:s=>s.d3==='B',  hintQ:'③ distance の管理'},
-      {label:'calcLuxuryFee() は外部からは隠しつつ将来の VIPPremiumRide サブクラスからも呼べる', check:s=>s.d4==='C', hintQ:'④ calcLuxuryFee() の公開範囲'},
-      {label:'全プランの料金集計が単純なループで書ける',                  check:s=>s.d5==='A',  hintQ:'⑤ 一括処理の方法'},
-    ],
-  },
-  {
-    title:'決済システムのインターフェース設計',
-    context:'EC サイトの決済に <strong>CreditCard・PayPay・BankTransfer</strong> を追加したい。各支払い方法は完全に独自のロジックを持つ。将来 CreditCard は払い戻し機能も持つ予定で、さらに支払い方法が増える可能性がある。',
-    decisions:[
-      {id:'d1',q:'① 支払い方法の共通の型をどう定義するか',opts:[
-        {v:'A',l:'abstract PaymentBase クラスを継承する'},
-        {v:'B',l:'Payable インターフェースを実装する（implements）'},
-        {v:'C',l:'共通の型は持たせない（各クラス独立）'},
-      ]},
-      {id:'d2',q:'② pay() メソッドの定義方法',opts:[
-        {v:'A',l:'PaymentBase に実装済みの pay() を全クラスが共有する'},
-        {v:'B',l:'Payable にシグネチャだけ定義し、各クラスが独自に実装する'},
-        {v:'C',l:'決済サービス側で支払い方法ごとに処理を書く'},
-      ]},
-      {id:'d3',q:'③ 将来の払い戻し機能の追加方法',opts:[
-        {v:'A',l:'Payable インターフェースに refund() を追加（全クラスに実装を強制）'},
-        {v:'B',l:'Payable を継承した PayableAndRefundable インターフェースを作る'},
-        {v:'C',l:'Refundable インターフェースを別に定義して必要なクラスだけ implements する'},
-      ]},
-      {id:'d4',q:'④ CreditCard 専用の不正検出 detectFraud() の定義場所',opts:[
-        {v:'A',l:'Payable インターフェースに追加（全支払い方法に強制）'},
-        {v:'B',l:'CreditCard クラスに直接メソッドとして定義する'},
-        {v:'C',l:'FraudDetectable インターフェースを別途定義して CreditCard が implements する'},
-      ]},
-      {id:'d5',q:'⑤ 決済サービスが支払いを受け取る型',opts:[
-        {v:'A',l:'CreditCard・PayPay・BankTransfer を直接参照（具体的な型）'},
-        {v:'B',l:'Payable インターフェース型として受け取る'},
-        {v:'C',l:'PaymentBase 抽象クラス型として受け取る'},
-      ]},
-    ],
-    constraints:[
-      {label:'CreditCard が将来 Payable と Refundable を同時に実装できる（多重実装）',            check:s=>s.d1==='B',hintQ:'① 型の定義（abstract クラスは単一継承のみ）'},
-      {label:'各支払い方法が完全に独自の pay() ロジックを持ち、共通実装を押し付けない',           check:s=>s.d2==='B',hintQ:'② pay() の定義（インターフェースはシグネチャのみ）'},
-      {label:'払い戻し不要な BankTransfer に refund() の実装を強制しない',                       check:s=>s.d3==='C',hintQ:'③ 払い戻し機能の追加方法'},
-      {label:'detectFraud() を将来 DebitCard にも共通の型として型安全に再利用できる',             check:s=>s.d4==='C',hintQ:'④ 不正検出の定義場所（インターフェースで型を共有）'},
-      {label:'決済サービスが具体的な支払いクラスを一切知らなくてよい（疎結合）',                  check:s=>s.d5==='B',hintQ:'⑤ 決済サービスの依存型'},
-    ],
-  },
-];
-
-// ─── G10: 依存 ────────────────────────────────
-const g10items=[
-  {code:`class ATM {\n  void dispense(BankNote note) { note.getAmount(); }\n}`,label:'ATM が BankNote をメソッド引数として受け取り、一時的に使う',ans:'A'},
-  {code:`class Bank {\n  private Branch[] branches;\n  Bank() { branches=new Branch[5]; }\n}`,label:'Bank が Branch を生成・所有し、Bank が消えると Branch も消える',ans:'B'},
-  {code:`class Branch {\n  private List&lt;Customer&gt; customers;\n}`,label:'Branch が Customer を参照するが、Customer は独立して存在できる',ans:'C'},
-  {code:`class SavingsAccount extends DepositAccount {}`,label:'SavingsAccount は DepositAccount の一種（is-a 関係）',ans:'D'},
-  {code:`class ReportService {\n  void generate(List&lt;Transaction&gt; txList) { ... }\n}`,label:'ReportService がメソッド引数として Transaction リストを一時的に使う',ans:'A'},
-];
-const g10opts=[
-  {v:'A',l:'依存（点線矢印 →）'},
-  {v:'B',l:'合成（塗り菱形 ◆）'},
-  {v:'C',l:'集約（白抜き菱形 ◇）'},
-  {v:'D',l:'継承（白抜き三角 △）'},
-];
-let g10ans=[null,null,null,null,null];
-
-function g10pick(i,v){g10ans[i]=v;document.getElementById('screen').innerHTML=renderG10();}
-function retryG10(){g10ans=[null,null,null,null,null];document.getElementById('screen').innerHTML=renderG10();}
-function renderG10(){
-  const done=g10ans.every(a=>a!==null);
-  const checked=g10ans.map((a,i)=>a!==null&&a===g10items[i].ans);
-  const score25=done?checked.filter(Boolean).length*5:null;
-
-  const rows=g10items.map((it,i)=>`
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.65rem">
-      <pre style="font-size:11px;background:var(--s2);border-radius:6px;padding:.6rem;overflow-x:auto;margin-bottom:.5rem">${it.code}</pre>
-      <div style="font-size:11px;color:var(--tm);margin-bottom:.4rem">${it.label}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px">
-        ${g10opts.map(o=>{
-          const sel=g10ans[i]===o.v;
-          const show=done&&sel;
-          const ok=g10items[i].ans===o.v;
-          let style='';
-          if(show) style=ok?'background:rgba(70,170,70,.18);border-color:var(--tok)':'background:rgba(200,60,60,.12);border-color:var(--tng)';
-          return `<button class="btn ${sel?'btn-p':''}" onclick="g10pick(${i},'${o.v}')" style="font-size:11px;${style}">${o.l}</button>`;
-        }).join('')}
-      </div>
-      ${done?`<div style="font-size:11px;margin-top:.35rem;color:${checked[i]?'var(--tok)':'var(--tng)'}">${checked[i]?'✓ 正解':'✗ 正解: '+g10opts.find(o=>o.v===g10items[i].ans).l}</div>`:''}
-    </div>`).join('');
-
-  return `
-    <div class="ch-title">${CHAPTERS[10].name} — 関係分類ドリル</div>
-    <div class="ch-heading">UML の関係を見抜け</div>
-    <div class="info-box" style="margin-bottom:.75rem">各コードが表す関係を選んでください。依存は「メソッド引数・ローカル変数として一時的に使う」最も弱い結合です。</div>
-    ${rows}
-    ${!done?`<div style="font-size:12px;color:var(--tm)">全 ${g10items.length} 問を選択してください</div>`
-      :`<div class="fb ${score25>=20?'ok':'ng'} show">${score25>=20?'✓':'✗'} ${score25} / 25 点</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
-          <button class="btn btn-p" onclick="finishGame(${score25})">次へ →</button>
-          <button class="btn" onclick="retryG10()">やり直し ↩</button>
-        </div>`}`;
-}
-
-// ─── G11: 実現 ────────────────────────────────
-const g11scenarios=[
-  {
-    iface:`interface Printable {\n  String format();\n  void print();\n}`,
-    impl:`class Receipt implements Printable {\n  public String format() { ... }\n  public void print() { ... }\n}`,
-    ok:true,
-    explain:'format() と print() を正しいシグネチャで実装している。実現の条件を満たす。'
-  },
-  {
-    iface:`interface Authenticatable {\n  boolean verify(String password);\n  void lockAccount();\n}`,
-    impl:`class PinAuth implements Authenticatable {\n  public boolean verify(String password) { ... }\n  // lockAccount() の実装なし\n}`,
-    ok:false,
-    explain:'lockAccount() が未実装。インターフェースのメソッドはすべて実装する必要がある。'
-  },
-  {
-    iface:`interface Transferable {\n  int calcFee(int amount);\n}`,
-    impl:`class WireTransfer implements Transferable {\n  public String calcFee(int amount) { ... }\n}`,
-    ok:false,
-    explain:'calcFee() の戻り値型が String。インターフェースは int を要求しているため、シグネチャが一致せず実現できていない。'
-  },
-  {
-    iface:`interface Loggable {\n  void log(String msg);\n}`,
-    impl:`class AuditLogger implements Loggable {\n  public void log(String message) { ... }\n}`,
-    ok:true,
-    explain:'引数名の違いはシグネチャに影響しない。戻り値・引数型・メソッド名がすべて一致しているので実現できている。'
-  },
-  {
-    iface:`interface Notifiable {\n  void notify(String channel, String message);\n}`,
-    impl:`class EmailNotifier implements Notifiable {\n  public void notify(String message) { ... }\n}`,
-    ok:false,
-    explain:'notify() の引数が1個（message のみ）。インターフェースは2個（channel, message）を要求しており、シグネチャ不一致。'
-  },
-];
-let g11ans=[null,null,null,null,null];
-
-function g11pick(i,v){g11ans[i]=v;document.getElementById('screen').innerHTML=renderG11();}
-function retryG11(){g11ans=[null,null,null,null,null];document.getElementById('screen').innerHTML=renderG11();}
-function renderG11(){
-  const scenarios=g11scenarios;
-  const done=g11ans.every(a=>a!==null);
-  const checked=g11ans.map((a,i)=>a!==null&&((a==='ok')===scenarios[i].ok));
-  const score25=done?checked.filter(Boolean).length*5:null;
-
-  const rows=scenarios.map((sc,i)=>`
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.65rem">
-      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.5rem;margin-bottom:.5rem">
-        <div style="min-width:0">
-          <div style="font-size:10px;color:var(--tm);margin-bottom:.25rem;letter-spacing:.05em">インターフェース</div>
-          <pre style="font-size:9px;background:var(--s2);border-radius:6px;padding:.5rem;overflow-x:auto;margin:0;word-break:break-all;white-space:pre-wrap">${sc.iface}</pre>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:1rem">
+      <div style="background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:1rem">
+        <div style="font-size:13px;font-weight:700;color:var(--tp);margin-bottom:.75rem">🐕 new Dog() に渡す初期値</div>
+        <label style="display:block;font-size:12px;color:var(--ts);margin-bottom:.45rem">名前
+          <input id="ctor-name" value="${name}" style="width:100%;margin-top:.25rem;border:1px solid var(--bd);border-radius:8px;padding:.55rem .65rem;background:var(--s1);color:var(--tp);font-family:var(--f)">
+        </label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <label style="display:block;font-size:12px;color:var(--ts);margin-bottom:.45rem">体力
+            <input id="ctor-hp" type="number" min="1" max="999" value="${hp}" style="width:100%;margin-top:.25rem;border:1px solid var(--bd);border-radius:8px;padding:.55rem .65rem;background:var(--s1);color:var(--tp);font-family:var(--f)">
+          </label>
+          <label style="display:block;font-size:12px;color:var(--ts);margin-bottom:.45rem">空腹度
+            <input id="ctor-hunger" type="number" min="0" max="100" value="${hunger}" style="width:100%;margin-top:.25rem;border:1px solid var(--bd);border-radius:8px;padding:.55rem .65rem;background:var(--s1);color:var(--tp);font-family:var(--f)">
+          </label>
         </div>
-        <div style="min-width:0">
-          <div style="font-size:10px;color:var(--tm);margin-bottom:.25rem;letter-spacing:.05em">実装クラス</div>
-          <pre style="font-size:9px;background:var(--s2);border-radius:6px;padding:.5rem;overflow-x:auto;margin:0;word-break:break-all;white-space:pre-wrap">${sc.impl}</pre>
+        <label style="display:block;font-size:12px;color:var(--ts);margin-bottom:.75rem">好きな遊び
+          <input id="ctor-toy" value="${toy}" style="width:100%;margin-top:.25rem;border:1px solid var(--bd);border-radius:8px;padding:.55rem .65rem;background:var(--s1);color:var(--tp);font-family:var(--f)">
+        </label>
+        <button class="btn btn-p" onclick="g0createDog()">この初期値で new Dog() する 🐕</button>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--tac);margin-bottom:.4rem">コンストラクタの中で起きること</div>
+        <div class="code-sample">class Dog extends Animal {
+  constructor(name, hp, hunger, toy) {
+    this.name = name;
+    this.hp = hp;
+    this.hunger = hunger;
+    this.favoriteToy = toy;
+    Dog.count++;
+  }
+}
+
+const dog = new Dog(${constructorArgsText(c)});</div>
+      </div>
+    </div>
+
+    ${g0st.ctorMade?`
+      <div id="constructor-result" style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:700;color:var(--tp);margin-bottom:.65rem">生成結果：生まれた瞬間から値が入っている</div>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+          ${g0card(`🐕 Dogインスタンス：${name}`,[
+            `<span style="color:var(--tok)">名前 = ${name}</span>`,
+            `<span style="color:var(--tok)">体力 = ${hp}</span>`,
+            `<span style="color:var(--tok)">空腹度 = ${hunger}</span>`,
+            `<span style="color:var(--tok)">好きな遊び = ${toy}</span>`
+          ],'var(--bok)')}
+          ${g0card('Dog クラス全体',[`<span style="color:var(--twn)">static 生成数 = ${count}</span>`,`<span style="color:var(--twn)">static 種族名 = 犬</span>`],'var(--bwn)')}
         </div>
-      </div>
-      <div style="display:flex;gap:6px;margin-bottom:.35rem">
-        <button class="btn ${g11ans[i]==='ok'?'btn-p':''}" onclick="g11pick(${i},'ok')" style="font-size:11px">✓ 実現できている</button>
-        <button class="btn ${g11ans[i]==='ng'?'btn-p':''}" onclick="g11pick(${i},'ng')" style="font-size:11px">✗ 実現できていない</button>
-      </div>
-      ${done?`<div style="font-size:11px;color:${checked[i]?'var(--tok)':'var(--tng)'};padding:.4rem .6rem;border-radius:6px;background:${checked[i]?'rgba(70,170,70,.1)':'rgba(200,60,60,.1)'}">${checked[i]?'✓ 正解':'✗ 不正解'} — ${sc.explain}</div>`:''}
-    </div>`).join('');
+        <div class="fb ok show" style="display:block;margin-top:1rem;margin-bottom:0">✓ 入力した値が、<code>constructor</code> の引数として渡され、インスタンスのフィールドに初期値としてセットされました。<br>一方で <code>Dog.count</code> は個体ごとではなく、Dogクラス全体で共有される <strong>static</strong> な値です。</div>
+      </div>`:`
+      <div id="constructor-result" class="info-box">まだ <code>new Dog()</code> していません。左の入力欄に初期値を入れて、犬インスタンスを生成してみましょう。</div>`}
 
-  return `
-    <div class="ch-title">${CHAPTERS[11].name} — 実現判定ドリル</div>
-    <div class="ch-heading">これは実現できているか？</div>
-    <div class="info-box" style="margin-bottom:.75rem">インターフェースのメソッドを<strong>すべて・正確なシグネチャで</strong>実装しているか判定してください。</div>
-    ${rows}
-    ${!done?`<div style="font-size:12px;color:var(--tm)">全 ${scenarios.length} 問を選択してください</div>`
-      :`<div class="fb ${score25>=20?'ok':'ng'} show">${score25>=20?'✓':'✗'} ${score25} / 25 点</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem">
-          <button class="btn btn-p" onclick="finishGame(${score25})">次へ →</button>
-          <button class="btn" onclick="retryG11()">やり直し ↩</button>
-        </div>`}`;
-}
-
-// ─── 実践編 ───────────────────────────────────
-let gPst={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
-
-function gPpick(id,v){
-  gPst.sel[id]=v;
-  gPst.sub=false;
-  gPst.hint=null;
-  document.getElementById('screen').innerHTML=renderGP();
-}
-
-function gPsubmit(){
-  gPst.sub=true;
-  gPst.tries++;
-  gPst.hint=null;
-  document.getElementById('screen').innerHTML=renderGP();
-}
-
-function gPshowHint(){
-  if(gPst.hints<=0)return;
-  const pz=gPpuzzles[gPst.p];
-  const failing=pz.constraints.filter(c=>!c.check(gPst.sel));
-  if(!failing.length)return;
-  const c=failing[0];
-  gPst.hints--;
-  gPst.hint=`💡 「${c.label}」を満たすには、<strong>${c.hintQ}</strong> を見直してください。`;
-  document.getElementById('screen').innerHTML=renderGP();
-}
-
-function gPnext(){
-  gPst.p++;
-  gPst.sel={};
-  gPst.sub=false;
-  gPst.hints=2;
-  gPst.tries=0;
-  gPst.hint=null;
-  document.getElementById('screen').innerHTML=renderGP();
-}
-
-function retryGP(){
-  gPst={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
-  document.getElementById('screen').innerHTML=renderGP();
-}
-
-function renderGP(){
-  const pz=gPpuzzles[gPst.p];
-  const {sel,sub,hints,tries,hint}=gPst;
-  const allSet=pz.decisions.every(d=>sel[d.id]);
-  const cons=pz.constraints.map(c=>({...c,ok:c.check(sel)}));
-  const allOk=allSet&&cons.every(c=>c.ok);
-  const showRes=sub&&allSet;
-
-  const conPanel=cons.map(c=>{
-    const state=!showRes?'pending':c.ok?'ok':'ng';
-    return `<div style="display:flex;align-items:center;gap:.5rem;padding:.3rem .6rem;border-radius:6px;background:${state==='pending'?'var(--s2)':state==='ok'?'rgba(70,170,70,.12)':'rgba(200,60,60,.12)'}">
-      <span style="font-weight:700;color:${state==='pending'?'var(--tm)':state==='ok'?'var(--tok)':'var(--tng)'};min-width:16px;text-align:center">${state==='pending'?'◦':state==='ok'?'✓':'✗'}</span>
-      <span style="font-size:12px;color:${state==='pending'?'var(--tm)':state==='ok'?'var(--tok)':'var(--tng)'}">${c.label}</span>
-    </div>`;
-  }).join('');
-
-  const decPanel=pz.decisions.map(d=>`
-    <div style="margin-bottom:.65rem">
-      <div style="font-size:11px;color:var(--tm);margin-bottom:.3rem">${d.q}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px">
-        ${d.opts.map(o=>`<button class="btn ${sel[d.id]===o.v?'btn-p':''}" onclick="gPpick('${d.id}','${o.v}')" style="font-size:11px">${o.l}</button>`).join('')}
-      </div>
-    </div>`).join('');
-
-  let actions='';
-  if(!sub&&allSet){
-    actions=`<button class="btn btn-p" onclick="gPsubmit()">設計を確定する</button>`;
-  } else if(showRes&&!allOk){
-    const failN=cons.filter(c=>!c.ok).length;
-    actions=`<div class="fb ng show">✗ ${failN}件の制約を満たせていません。</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem">
-      <button class="btn btn-p" onclick="gPsubmit()">再確定する</button>
-      ${hints>0?`<button class="btn" onclick="gPshowHint()">ヒント（残り${hints}）</button>`:`<span style="font-size:11px;color:var(--tm);align-self:center">ヒント使い切り</span>`}
-    </div>`;
-  } else if(showRes&&allOk&&gPst.p<gPpuzzles.length-1){
-    actions=`<div class="fb ok show">✓ クリア！（${tries}回目で正解）</div>
-    <button class="btn btn-p" style="margin-top:.5rem" onclick="gPnext()">次の問題へ →</button>`;
-  } else if(showRes&&allOk&&gPst.p===gPpuzzles.length-1){
-    actions=`<div class="fb ok show">✓ 全問クリア！（${tries}回目で正解）</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem">
-      <button class="btn btn-p" onclick="finishGame(25)">結果を見る →</button>
-      <button class="btn" onclick="retryGP()">最初から ↩</button>
-    </div>`;
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem">
+      <div>${g0card('インスタンスごとの値',[`名前 = ${g0st.ctorMade?name:'ポチ'}`,`体力 = ${g0st.ctorMade?hp:80}`,`空腹度 = ${g0st.ctorMade?hunger:50}`],'var(--bok)')}</div>
+      <div>${g0card('クラス全体で1つの値',['<span style="color:var(--twn)">static 種族名 = 犬</span>',`<span style="color:var(--twn)">static 生成数 = ${count}</span>`],'var(--bwn)')}</div>
+    </div>
+    <div class="lesson-point"><strong>判断軸：</strong>名前・体力・空腹度は個体ごとに違うのでインスタンスフィールド。生成数・共通設定はクラス全体で1つあればよいので static。</div>
+    <button class="btn btn-p" onclick="g0do('next')">最後：動物園システムを完成させる →</button>`;
   }
 
-  return `
-    <div class="ch-title">${CHAPTERS[12].name} — 問題 ${gPst.p+1}/${gPpuzzles.length}</div>
-    <div class="ch-heading">${pz.title}</div>
-    <div class="info-box" style="margin-bottom:.75rem">${pz.context}</div>
-    <div style="margin-bottom:.75rem">
-      <div style="font-size:10px;color:var(--tm);margin-bottom:.4rem;letter-spacing:.05em">制約 — すべて満たす設計を選んでください</div>
-      <div style="display:flex;flex-direction:column;gap:4px">${conPanel}</div>
+  // ── フェーズ7：ボス戦 ──
+  if(phase===7){
+    const dogSound=soundOf('dog','ワン！');
+    const catSound=soundOf('cat','ニャー');
+    const birdSound=soundOf('bird','チュン');
+    return `
+    <div class="ch-title">${CHAPTERS[0].name} — STEP 8 / 8</div>
+    <div class="ch-heading">ボス戦：動物園システムを完成させろ</div>
+    <p class="game-intro">ここまでの道具を、1つのシステムとして動かします。個別用語ではなく、全部がつながっていることを確認しよう。</p>
+    ${phaseDialogue(7)}
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem">
+      ${g0card('① 抽象クラス + 継承',['Animal','犬 / 猫 / 鳥'],'var(--tpr)')}
+      ${g0card('② オーバーライド + 多態性',['全員に 鳴け！',`${dogSound} / ${catSound} / ${birdSound}`],'var(--bok)')}
+      ${g0card('③ インターフェース',['鳥 implements Flyable','犬 implements Movable'],'var(--bac)')}
+      ${g0card('④ カプセル化',['空腹度は private','食べる()でだけ変更'],'var(--bng)')}
+      ${g0card('⑤ コンストラクタ',['new Dog("ポチ")','初期値をセット'],'var(--bok)')}
+      ${g0card('⑥ static',['動物総数','クラス全体で共有'],'var(--bwn)')}
     </div>
-    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.75rem;margin-bottom:.75rem">
-      <div style="font-size:10px;color:var(--tm);margin-bottom:.6rem;letter-spacing:.05em">設計の選択</div>
-      ${decPanel}
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <div style="font-size:13px;font-weight:700;margin-bottom:.65rem;color:var(--tp)">🎬 実行結果</div>
+      <div class="code-sample">朝になりました
+🐕 ポチ：${dogSound}
+🐱 ミケ：${catSound}
+🐦 ピヨ：${birdSound}
+
+犬だけ探す → instanceof Dog → お手！
+悪いプログラム：ポチ.空腹度 = -999 → privateなのでブロック
+new Dog("コロ") → 動物総数 +1</div>
     </div>
-    ${hint?`<div class="info-box" style="margin-bottom:.75rem">${hint}</div>`:''}
-    ${actions}`;
+    <div class="summary-grid">
+      ${[
+        ['継承','共通部分を親にまとめる'],['抽象クラス','未完成の親で実装を強制'],['ポリモーフィズム','親型で呼んでも実体の処理が動く'],['型キャスト','まとめた後で犬専用機能を使う'],['インターフェース','種類を超えた能力の型を作る'],['カプセル化','直接改ざんを防ぐ'],['コンストラクタ','生まれた瞬間の初期設定'],['static','全体で1つの値を共有']
+      ].map(([a,b])=>`<div class="sum-card"><strong>✓ ${a}</strong><p>${b}</p></div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(25)">序章クリア！ 完了へ →</button><button class="btn" onclick="retryG0()">最初から ↩</button></div>`;
+  }
+
 }
 
-// ─── COMPLETE ─────────────────────────────────
+
 function renderComplete(){
-  updateNav();document.getElementById('prog').style.width='100%';
-  const max=325,pct=Math.round(G.score/max*100);
-  const msg=pct>=80?'銀行システムの設計を完璧に理解した！':pct>=50?'もう少し。もう一度挑戦してみよう。':'基礎を復習してからもう一度！';
-  const sums=[
-    {t:'クラスとオブジェクト',b:'クラスは設計図、オブジェクトはその実体。フィールドはデータ（残高・名義人）、メソッドは処理（入金・引き出し）。関連するデータと処理をひとまとめにするのが OOP の出発点。'},
-    {t:'アクセス修飾子',b:'public/private/protected で情報を隠す。残高や暗証番号は private にして getBalance() などの窓口だけを公開する。'},
-    {t:'継承',b:'is-a 関係でクラスを整理する。SavingsAccount は Account の一種だから、共通処理を親クラスに書いて再利用できる。'},
-    {t:'合成 vs 集約',b:'合成は所有者が消えると子も消える（強い has-a）。集約は独立して存在できる（弱い has-a）。'},
-    {t:'static',b:'static フィールドはクラス自体に属し全インスタンスで共有。金利はクラス全体で一つ、残高は口座ごとに別々。'},
-    {t:'ポリモーフィズム',b:'同じ命令を送っても、実際のオブジェクト型に応じた実装が呼ばれる。Account[] に混在させて一括処理できる。'},
-    {t:'抽象クラス',b:'インスタンス化できないクラス。abstract メソッドでサブクラスに実装を強制し、設計の契約書となる。'},
-    {t:'コンストラクタ',b:'new でインスタンスを作るときに自動で呼ばれるメソッド。引数で受け取る値・デフォルト値・static の3種を正しく使い分けて初期化する。'},
-    {t:'型キャスト',b:'親クラス型の変数を子クラス型に変換するダウンキャスト。instanceof で型を確認してからキャストすると ClassCastException を防げる。'},
-    {t:'例外処理',b:'throw で例外を投げ、try で主処理を囲み、catch でエラーを受け取り、finally で後処理を確実に実行する。'},
-    {t:'依存',b:'あるクラスが別のクラスをメソッド引数・ローカル変数として一時的に使う最も弱い関係。フィールドに持たないため疎結合を保てる。UML では点線矢印 →。'},
-    {t:'実現',b:'クラスがインターフェースを implements すること。すべてのメソッドを正確なシグネチャで実装する必要がある。UML では点線＋白抜き三角 ▷。'},
-    {t:'設計制約パズル',b:'継承・合成・アクセス修飾子の選択が複数の制約に同時に影響する。「全制約を満たす組み合わせ」を論理的に探す実践力が身につく。'},
-  ];
-  return `<div class="complete">
-    <h2>🏦 銀行システム完成！</h2>
-    <div class="big-score">${G.score}<span style="font-size:20px;color:var(--tm)"> / ${max}</span></div>
-    <p style="color:var(--ts);margin-bottom:1.5rem">正解率 ${pct}% — ${msg}</p>
-    <div class="summary-grid">${sums.map((s,i)=>`<div class="sum-card"><strong>${CHAPTERS[i].name}: ${s.t}</strong><p>${s.b}</p></div>`).join('')}</div>
-    <button class="btn btn-p" onclick="restart()">最初からやり直す</button>
-  </div>`;
+  return `
+    <div class="complete">
+      <h2>🎉 OOPクエスト 序章クリア！</h2>
+      <p style="color:var(--ts);line-height:1.8;font-size:14px">動物園システムを通して、オブジェクト指向の基本を体験しました。</p>
+      <div class="big-score">${G.score}</div>
+      <div style="color:var(--tm);font-size:12px;margin-bottom:1rem">SCORE</div>
+      <div class="summary-grid">
+        <div class="sum-card"><strong>継承</strong><p>共通処理を親クラスにまとめる。</p></div>
+        <div class="sum-card"><strong>抽象クラス</strong><p>子クラスに実装を約束させる。</p></div>
+        <div class="sum-card"><strong>ポリモーフィズム</strong><p>親型で同じ命令を出し、実体ごとに違う処理を走らせる。</p></div>
+        <div class="sum-card"><strong>型キャスト</strong><p>必要な時だけ具体的な型として扱い直す。</p></div>
+        <div class="sum-card"><strong>インターフェース</strong><p>種類を超えて「できること」の共通型を作る。</p></div>
+        <div class="sum-card"><strong>カプセル化</strong><p>データを隠し、メソッドを窓口にする。</p></div>
+        <div class="sum-card"><strong>コンストラクタ</strong><p>誕生時に正しい初期状態を作る。</p></div>
+        <div class="sum-card"><strong>static</strong><p>全体で1つだけ共有する値を持つ。</p></div>
+      </div>
+      <button class="btn btn-p" onclick="G.phase='story';G.line=0;G.score=0;retryG0();render();">もう一度プレイ</button>
+    </div>`;
 }
-function retryG8(){g8quiz=[null,null,null,null];document.getElementById('screen').innerHTML=renderG8();}
-function retryG9(){g9placed={};g9sel=null;g9done=false;document.getElementById('screen').innerHTML=renderG9();}
-function retryG1(){g1sel=g1m.map(()=>'pub');document.getElementById('screen').innerHTML=renderG1();}
-function retryG2(){g2placed={};g2sel=null;g2done=false;document.getElementById('screen').innerHTML=renderG2();}
-function retryG3(){g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];document.getElementById('screen').innerHTML=renderG3();}
-function retryG4(){g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];document.getElementById('screen').innerHTML=renderG4();}
-function retryG5(){g5step=-1;g5quiz=[null,null,null];document.getElementById('screen').innerHTML=renderG5();}
-function retryG6(){g6sel=g6members.map(()=>'concrete');g6done=false;document.getElementById('screen').innerHTML=renderG6();}
-function retryG7(){g7sel=g7members.map(()=>'param');g7done=false;document.getElementById('screen').innerHTML=renderG7();}
 
-function restart(){
-  history.length=0;
-  Object.assign(G,{chapter:0,phase:'story',line:0,score:0});
-  g0st={phase:0,sounds:{},moveTried:false,movableOk:false};
-  g1sel=g1m.map(()=>'pub');
-  g2placed={};g2sel=null;g2done=false;
-  g3bankDead=false;g3bankDead2=false;g3quiz=[null,null,null];
-  g4rate=1.5;g4bal=[300000,150000,520000];g4quiz=[null,null];
-  g5step=-1;g5quiz=[null,null,null];
-  g6sel=g6members.map(()=>'concrete');g6done=false;
-  g7sel=g7members.map(()=>'param');g7done=false;
-  g8quiz=[null,null,null,null];
-  g9placed={};g9sel=null;g9done=false;
-  g10ans=[null,null,null,null,null];
-  g11ans=[null,null,null,null,null];
-  gPst={p:0,sel:{},sub:false,hints:2,tries:0,hint:null};
-  closeGloss();
-  render();
-}
 render();
 </script>
 </body>
