@@ -132,10 +132,9 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .g0-tree-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .g0-tree-caption{font-size:12px;font-weight:700;color:var(--tp);margin-bottom:.35rem}
 .g0-tree-note{font-size:12px;color:var(--ts);line-height:1.6;margin-bottom:.75rem}
-.g0-tree{min-width:650px;text-align:center;padding:.25rem 0 .5rem}
-.g0-row{display:flex;justify-content:center;gap:16px;align-items:flex-start}
-.g0-row.mid{justify-content:space-between}
-.g0-family{width:31%;display:flex;flex-direction:column;align-items:center;position:relative}
+.g0-tree{text-align:center;padding:.25rem 0 .5rem}
+.g0-tier-label{font-size:11px;font-weight:700;color:var(--ts);margin-bottom:.4rem}
+.g0-tier-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;align-items:flex-start}
 .g0-tree-node{background:var(--s2);border:2px solid var(--bds);border-radius:8px;overflow:hidden;min-width:120px;box-shadow:0 1px 0 rgba(0,0,0,.04)}
 .g0-tree-node.movable{border-color:var(--tpr)}
 .g0-tree-node.animal{border-color:var(--bok)}
@@ -149,18 +148,14 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .g0-tree-node.machine .g0-node-title{background:var(--wn);color:var(--twn)}
 .g0-node-sub{font-size:10px;color:var(--tm);padding:3px 8px 0;font-family:var(--m)}
 .g0-node-items{font-family:var(--m);font-size:10px;line-height:1.55;color:var(--ts);padding:4px 8px 6px;text-align:left}
-.g0-arrow{font-size:18px;color:var(--ts);line-height:1;margin:.25rem 0 .1rem}
-.g0-arrow.up{margin:.25rem 0 0}
-.g0-branch{height:16px;border-top:2px solid var(--ts);border-left:2px solid var(--ts);border-right:2px solid var(--ts);width:68%;margin:0 auto -1px}
-.g0-mini-branch{height:12px;border-top:2px solid var(--ts);border-left:2px solid var(--ts);border-right:2px solid var(--ts);width:72%;margin:0 auto -1px}
-.g0-leaves{display:flex;gap:6px;justify-content:center;align-items:flex-start;width:100%}
+.g0-arrow{font-size:22px;color:var(--ts);line-height:1;margin:.1rem 0}
+.g0-leaf-group{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.03)}
+.g0-leaf-group-label{font-size:10px;font-weight:700;color:var(--tm)}
+.g0-leaves{display:flex;gap:6px;justify-content:center;align-items:flex-start}
 .g0-tree-tip{background:var(--wn);border:1px solid var(--bwn);border-radius:8px;padding:.65rem .8rem;font-size:12px;color:var(--twn);line-height:1.7;margin-top:.75rem}
 @media(max-width:500px){
   .g0-tree-wrap{padding:.85rem}
-  .g0-tree{min-width:0}
-  .g0-row.mid{flex-direction:column;gap:18px}
-  .g0-family{width:100%;max-width:280px}
-  .g0-branch.branch-top{width:2px;height:18px;border:none;border-left:2px solid var(--ts);margin:0 auto}
+  .g0-tier-row{gap:10px}
   .g0-tree-node{min-width:96px}
   .g0-tree-node.leaf{min-width:66px;font-size:10px}
   .g0-node-items{font-size:9px}
@@ -1191,45 +1186,44 @@ function g0inheritanceTree(){
       ${items&&items.length?`<div class="g0-node-items">${items.map(x=>`<div>${x}</div>`).join('')}</div>`:''}
     </div>`;
   const leaf=(title,items,kind)=>node(title,'',items,`leaf ${kind||''}`);
+  const leafGroup=(label,leavesHtml)=>`<div class="g0-leaf-group"><div class="g0-leaf-group-label">${label}</div><div class="g0-leaves">${leavesHtml}</div></div>`;
   return `
     <div class="g0-tree-wrap" id="inheritance-tree-start">
       <div class="g0-tree-caption">クラス図：継承だけで「動けるもの」をまとめた場合</div>
-      <div class="g0-tree-note">白抜き三角の矢印は「下のクラスは上のクラスの一種」という <strong>is-a</strong> 関係を表します。Animal・Vehicle・Machineはどれも「動ける」を継承し、<span class="jp-nobr">動く()</span>を自分の言葉で実装します。</div>
+      <div class="g0-tree-note">白抜き三角の矢印は「下のクラスは上のクラスの一種」という <strong>is-a</strong> 関係を表します。上から「① 最上位」「② 種類」「③ 具体的な実装」の3階層のピラミッドです。</div>
       <div class="g0-tree">
-        <div class="g0-row top">${node('動ける','<<抽象クラス>>',['+ 動く()'],'movable')}</div>
-        <div class="g0-row mid">
-          <div class="g0-family animal">
-            <div class="g0-arrow up">△</div>
+        <div class="g0-tier">
+          <div class="g0-tier-label">① 最上位：あらゆる「動けるもの」の親</div>
+          <div class="g0-tier-row">${node('動ける','<<抽象クラス>>',['+ 動く()'],'movable')}</div>
+        </div>
+        <div class="g0-arrow up">△</div>
+        <div class="g0-tier">
+          <div class="g0-tier-label">② 「動ける」を継承した3つの種類</div>
+          <div class="g0-tier-row">
             ${node('Animal','<<抽象クラス>>',['+ 食べる()','+ 寝る()','+ 鳴く()'],'animal')}
-            <div class="g0-arrow">△</div>
-            <div class="g0-mini-branch"></div>
-            <div class="g0-leaves">
-              ${leaf('犬',['動く() → 鳴く'],'animal')}
-              ${leaf('猫',['動く() → 鳴く'],'animal')}
-              ${leaf('鳥',['動く() → 鳴く'],'animal')}
-            </div>
-          </div>
-          <div class="g0-family vehicle">
-            <div class="g0-arrow up">△</div>
             ${node('Vehicle','<<抽象クラス>>',[],'vehicle')}
-            <div class="g0-arrow">△</div>
-            <div class="g0-mini-branch"></div>
-            <div class="g0-leaves">
-              ${leaf('車',['動く() → 走る'],'vehicle')}
-              ${leaf('バイク',['動く() → 走る'],'vehicle')}
-              ${leaf('飛行機',['動く() → 飛ぶ'],'vehicle')}
-            </div>
-          </div>
-          <div class="g0-family machine">
-            <div class="g0-arrow up">△</div>
             ${node('Machine','<<抽象クラス>>',[],'machine')}
-            <div class="g0-arrow">△</div>
-            <div class="g0-mini-branch"></div>
-            <div class="g0-leaves">
-              ${leaf('ロボット',['動く() → 歩く'],'machine')}
-              ${leaf('ドローン',['動く() → 飛ぶ'],'machine')}
-              ${leaf('掃除機',['動く() → 吸う'],'machine')}
-            </div>
+          </div>
+        </div>
+        <div class="g0-arrow up">△</div>
+        <div class="g0-tier">
+          <div class="g0-tier-label">③ 各種類を継承した具体的な実装（動く()を自分の言葉でオーバーライド）</div>
+          <div class="g0-tier-row">
+            ${leafGroup('Animalの仲間', [
+              leaf('犬',['鳴く()'],'animal'),
+              leaf('猫',['鳴く()'],'animal'),
+              leaf('鳥',['鳴く()'],'animal'),
+            ].join(''))}
+            ${leafGroup('Vehicleの仲間', [
+              leaf('車',['動く() → 走る'],'vehicle'),
+              leaf('バイク',['動く() → 走る'],'vehicle'),
+              leaf('飛行機',['動く() → 飛ぶ'],'vehicle'),
+            ].join(''))}
+            ${leafGroup('Machineの仲間', [
+              leaf('ロボット',['動く() → 歩く'],'machine'),
+              leaf('ドローン',['動く() → 飛ぶ'],'machine'),
+              leaf('掃除機',['動く() → 吸う'],'machine'),
+            ].join(''))}
           </div>
         </div>
       </div>
