@@ -153,7 +153,16 @@ body{font-family:var(--f);background:var(--s0);color:var(--tp);min-height:100vh;
 .g0-mini-branch{height:12px;border-top:2px solid var(--ts);border-left:2px solid var(--ts);border-right:2px solid var(--ts);width:72%;margin:0 auto -1px}
 .g0-leaves{display:flex;gap:6px;justify-content:center;align-items:flex-start;width:100%}
 .g0-tree-tip{background:var(--wn);border:1px solid var(--bwn);border-radius:8px;padding:.65rem .8rem;font-size:12px;color:var(--twn);line-height:1.7;margin-top:.75rem}
-@media(max-width:500px){.g0-tree{min-width:760px}.g0-tree-wrap{padding:.85rem}.g0-family{width:32%}.g0-tree-node{min-width:118px}.g0-tree-node.leaf{min-width:78px}}
+@media(max-width:500px){
+  .g0-tree-wrap{padding:.85rem}
+  .g0-tree{min-width:0}
+  .g0-row.mid{flex-direction:column;gap:18px}
+  .g0-family{width:100%;max-width:280px}
+  .g0-branch.branch-top{width:2px;height:18px;border:none;border-left:2px solid var(--ts);margin:0 auto}
+  .g0-tree-node{min-width:96px}
+  .g0-tree-node.leaf{min-width:66px;font-size:10px}
+  .g0-node-items{font-size:9px}
+}
 
 /* ── 抽象クラス ── */
 .abs-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px;font-style:italic;background:var(--pr);color:var(--tpr)}
