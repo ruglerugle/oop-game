@@ -1067,12 +1067,12 @@ function selectedSoundMistakeDialogue(){
 function phaseDialogue(step){
   const talks=[
     [
-      {who:'cat',text:'まずは、この国に「犬」「猫」「鳥」を作ってみよう。下のカードを見ると、それぞれに <strong>名前・食べる()・寝る()</strong> があるね。'},
-      {who:'rabbit',text:'はい。犬も猫も鳥も、同じように「名前」があって、「食べる」「寝る」ができます。'},
+      {who:'cat',text:'まずは、この国に「犬」「猫」「鳥」を作ってみよう。それぞれ<strong>犬クラス</strong>・<strong>猫クラス</strong>・<strong>鳥クラス</strong>という別々の設計図を用意した。下のカードを見ると、それぞれに <strong>名前・食べる()・寝る()</strong> があるね。'},
+      {who:'rabbit',text:'はい。犬クラスも猫クラスも鳥クラスも、同じように「名前」があって、「食べる」「寝る」ができます。'},
       {who:'cat',variant:'think',text:'ここで大事なのは、<strong>クラス</strong>は設計図、<strong>オブジェクト</strong>はその設計図から作られた実体、ということ。'},
-      {who:'rabbit',variant:'think',text:'つまり「動物」という設計図を作って、そこから犬さんや猫さんを生み出す、という考え方ですね。'},
+      {who:'rabbit',variant:'think',text:'つまり「犬」という設計図から犬さんを、「猫」という設計図から猫さんを生み出す、という考え方ですね。'},
       {who:'cat',text:'その通り。設計図には「どんな情報を持つか」と「何ができるか」を書く。情報を表すものを<strong>属性</strong>、できることを表すものを<strong>メソッド</strong>と呼ぶよ。'},
-      {who:'rabbit',text:'ではまず、動物クラスに「名前」などの属性と、「食べる」「寝る」などのメソッドが必要かを見ていけばいいんですね。'}
+      {who:'rabbit',text:'では犬クラス・猫クラス・鳥クラスそれぞれに「名前」などの属性と、「食べる」「寝る」などのメソッドが必要かを見ていけばいいんですね。'}
     ],
     [
       {who:'cat',text:'犬・猫・鳥を別々に作ると、同じ内容を何度も書くことになる。下のカードでは、<strong>食べる()</strong> と <strong>寝る()</strong> が全部にコピーされているね。'},
@@ -1247,7 +1247,7 @@ function renderG0(){
     ${phaseDialogue(0)}
 
     <div class="dialog-choice-panel">
-      <div class="design-slot good"><div class="design-slot-title">動物<br><span style="font-size:12px">&lt;&lt;クラス&gt;&gt;</span></div></div>
+      <div class="design-slot good"><div class="design-slot-title">犬<br><span style="font-size:12px">&lt;&lt;クラス&gt;&gt;</span></div></div>
       <div class="design-slot"><div class="design-slot-title">属性（情報）</div><div class="design-slot-sub">+ 名前 : String<br>+ 年齢 : int</div></div>
       <div class="design-slot"><div class="design-slot-title">方法（できること）</div><div class="design-slot-sub">+ 食べる() : void<br>+ 寝る() : void</div></div>
     </div>
