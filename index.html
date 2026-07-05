@@ -1381,26 +1381,6 @@ class Cat extends Animal {
     ${g0st.polyRun?`
       <div class="lesson-point"><strong>ここからがポリモーフィズム：</strong>Animal 型の一覧に同じ <code>a.鳴く()</code> を実行すると、実際の中身に合わせて Dog / Cat / Bird の処理が呼ばれます。</div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem">
-        <div>
-          <div style="font-size:11px;font-weight:700;color:var(--tac);margin-bottom:.4rem">① 準備：オーバーライド</div>
-          ${g0card('Animal（抽象クラス）',[`鳴く() ← 各自で実装`],'var(--tpr)')}
-          <div class="code-sample">class Dog extends Animal {
-  鳴く() { return "${dogSound}"; }
-}
-class Cat extends Animal {
-  鳴く() { return "${catSound}"; }
-}</div>
-        </div>
-        <div>
-          <div style="font-size:11px;font-weight:700;color:var(--tok);margin-bottom:.4rem">② 実行：ポリモーフィズム</div>
-          ${g0card('Animal[] 動物一覧',[`中身：犬`,`中身：猫`,`中身：鳥`],'var(--bok)')}
-          <div class="code-sample">for (Animal a : 動物一覧) {
-  a.鳴く();
-}</div>
-        </div>
-      </div>
-
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:1rem;margin-bottom:1rem">
         <div style="font-size:13px;font-weight:700;margin-bottom:.65rem;color:var(--tp)">🌅 朝になりました。動物一覧に同じ命令を出します。</div>
         <div class="code-sample">for (Animal a : 動物一覧) {
