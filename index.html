@@ -407,7 +407,7 @@ code{
   overflow-wrap: normal;
 }
 
-/* サイドナビ収納：アイコンだけ残す */
+/* サイドナビ収納：アイコンだけ残す（タブレット幅） */
 .app-shell.side-collapsed .game-layout{grid-template-columns:64px minmax(0,1fr)}
 .app-shell.side-collapsed .side-panel{width:64px}
 .app-shell.side-collapsed .side-head{justify-content:center;padding:8px 6px}
@@ -420,12 +420,13 @@ code{
 .app-shell.side-collapsed .gloss-box{display:none}
 .app-shell.side-collapsed .paw{font-size:22px}
 .app-shell.side-collapsed .side-step.active{outline-offset:-4px}
+.side-backdrop{display:none}
 @media(max-width:900px){
-  .app-shell{padding:8px;gap:8px}
+  .app-shell{padding:8px;gap:8px;max-width:100vw;overflow-x:hidden}
   .game-header{height:auto;grid-template-columns:1fr;gap:10px}
   .brand-title{font-size:24px}
   .header-actions{flex-wrap:wrap;gap:8px}
-  .game-layout{grid-template-columns:64px minmax(0,1fr);gap:8px}
+  .game-layout{grid-template-columns:64px minmax(0,1fr);gap:8px;min-width:0}
   .app-shell:not(.side-collapsed) .game-layout{grid-template-columns:220px minmax(0,1fr)}
   .side-panel{display:block;order:0;position:sticky;top:8px}
   .side-head{padding:10px 12px}
@@ -433,12 +434,30 @@ code{
   .side-step{min-height:58px;padding:8px;grid-template-columns:24px 1fr 20px}
   .paw{font-size:17px}.step-main{font-size:13px}.step-sub{font-size:11px}
   .side-actions,.gloss-box{display:none}
-  .main-area{min-height:auto;padding:12px 10px}
+  .main-area{min-height:auto;padding:12px 10px;max-width:100%}
   .game-footer{grid-template-columns:1fr;gap:8px}.footer-actions{grid-template-columns:1fr 1fr;width:100%}.footer-prev,.footer-next{width:100%}
 }
-@media(max-width:560px){
+/* スマホ幅：サイドナビは完全に隠し、開くときだけ画面に重なるドロワーとして表示する */
+@media(max-width:700px){
+  .game-layout{grid-template-columns:1fr;gap:0}
+  .app-shell.side-collapsed .game-layout,
   .app-shell:not(.side-collapsed) .game-layout{grid-template-columns:1fr}
-  .app-shell:not(.side-collapsed) .side-panel{position:relative;top:auto}
+  .side-panel{
+    position:fixed;top:0;left:0;order:0;
+    width:min(82vw,300px);height:100vh;height:100dvh;
+    border-radius:0;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:10px 0 30px rgba(0,0,0,.45);
+    overflow-y:auto;
+    z-index:80;
+  }
+  .app-shell.side-collapsed .side-panel{width:min(82vw,300px);transform:translateX(-100%)}
+  .app-shell:not(.side-collapsed) .side-panel{transform:translateX(0)}
+  .side-backdrop{
+    display:none;position:fixed;inset:0;background:rgba(6,12,18,.55);z-index:70;
+  }
+  .app-shell:not(.side-collapsed) .side-backdrop{display:block}
 }
 
 </style>
@@ -463,6 +482,7 @@ code{
     </div>
   </header>
   <div class="game-layout">
+    <div class="side-backdrop" id="side-backdrop" onclick="toggleSidebar()"></div>
     <aside class="side-panel" id="side-panel">
       <div class="side-head"><button class="side-toggle" onclick="toggleSidebar()" title="ナビを開閉">☰</button><span class="side-head-text">序章のステップ</span></div>
       <div class="step-list" id="ch-nav"></div>
