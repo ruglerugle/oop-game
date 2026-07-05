@@ -1244,11 +1244,6 @@ function renderG0(){
     <p class="game-intro">あなたは創造主。まず「犬」「猫」「鳥」を設計してみた。それぞれの<strong>能力カード</strong>を見てほしい。</p>
     ${phaseDialogue(0)}
 
-    <div class="dialog-choice-panel">
-      <div class="design-slot good"><div class="design-slot-title">犬<br><span style="font-size:12px">&lt;&lt;クラス&gt;&gt;</span></div></div>
-      <div class="design-slot"><div class="design-slot-title">属性（情報）</div><div class="design-slot-sub">+ 名前 : String<br>+ 年齢 : int</div></div>
-      <div class="design-slot"><div class="design-slot-title">方法（できること）</div><div class="design-slot-sub">+ 食べる() : void<br>+ 寝る() : void</div></div>
-    </div>
     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1rem">
       ${[
         ['🐕 犬',['📛 名前','<span style="color:var(--tng)">🍖 食べる()</span>','<span style="color:var(--tng)">💤 寝る()</span>']],
