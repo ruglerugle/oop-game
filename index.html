@@ -1194,40 +1194,41 @@ function g0inheritanceTree(){
   return `
     <div class="g0-tree-wrap" id="inheritance-tree-start">
       <div class="g0-tree-caption">クラス図：継承だけで「動けるもの」をまとめた場合</div>
-      <div class="g0-tree-note">白抜き三角の矢印は「下のクラスは上のクラスの一種」という <strong>is-a</strong> 関係を表します。</div>
+      <div class="g0-tree-note">白抜き三角の矢印は「下のクラスは上のクラスの一種」という <strong>is-a</strong> 関係を表します。Animal・Vehicle・Machineはどれも「動ける」を継承し、<span class="jp-nobr">動く()</span>を自分の言葉で実装します。</div>
       <div class="g0-tree">
         <div class="g0-row top">${node('動ける','<<抽象クラス>>',['+ 動く()'],'movable')}</div>
-        <div class="g0-arrow up">△</div>
-        <div class="g0-branch branch-top"></div>
         <div class="g0-row mid">
           <div class="g0-family animal">
+            <div class="g0-arrow up">△</div>
             ${node('Animal','<<抽象クラス>>',['+ 食べる()','+ 寝る()','+ 鳴く()'],'animal')}
             <div class="g0-arrow">△</div>
             <div class="g0-mini-branch"></div>
             <div class="g0-leaves">
-              ${leaf('犬',['+ 鳴く()'],'animal')}
-              ${leaf('猫',['+ 鳴く()'],'animal')}
-              ${leaf('鳥',['+ 鳴く()'],'animal')}
+              ${leaf('犬',['動く() → 鳴く'],'animal')}
+              ${leaf('猫',['動く() → 鳴く'],'animal')}
+              ${leaf('鳥',['動く() → 鳴く'],'animal')}
             </div>
           </div>
           <div class="g0-family vehicle">
-            ${node('Vehicle','<<抽象クラス>>',['+ 走る()'],'vehicle')}
+            <div class="g0-arrow up">△</div>
+            ${node('Vehicle','<<抽象クラス>>',[],'vehicle')}
             <div class="g0-arrow">△</div>
             <div class="g0-mini-branch"></div>
             <div class="g0-leaves">
-              ${leaf('車',['+ 走る()'],'vehicle')}
-              ${leaf('バイク',['+ 走る()'],'vehicle')}
-              ${leaf('飛行機',['+ 飛ぶ()'],'vehicle')}
+              ${leaf('車',['動く() → 走る'],'vehicle')}
+              ${leaf('バイク',['動く() → 走る'],'vehicle')}
+              ${leaf('飛行機',['動く() → 飛ぶ'],'vehicle')}
             </div>
           </div>
           <div class="g0-family machine">
-            ${node('Machine','<<抽象クラス>>',['+ 作動する()'],'machine')}
+            <div class="g0-arrow up">△</div>
+            ${node('Machine','<<抽象クラス>>',[],'machine')}
             <div class="g0-arrow">△</div>
             <div class="g0-mini-branch"></div>
             <div class="g0-leaves">
-              ${leaf('ロボット',['+ 歩く()'],'machine')}
-              ${leaf('ドローン',['+ 飛ぶ()'],'machine')}
-              ${leaf('掃除機',['+ 吸う()'],'machine')}
+              ${leaf('ロボット',['動く() → 歩く'],'machine')}
+              ${leaf('ドローン',['動く() → 飛ぶ'],'machine')}
+              ${leaf('掃除機',['動く() → 吸う'],'machine')}
             </div>
           </div>
         </div>
