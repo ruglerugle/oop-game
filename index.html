@@ -1317,8 +1317,8 @@ function renderG0(){
       <p style="font-size:13px;color:var(--ts);margin-bottom:.6rem">各生き物の「鳴く()」を実装してください：</p>
       ${opts.map(o=>`
         <div style="background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:.55rem .75rem;margin-bottom:.45rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span style="font-weight:600;font-size:14px;min-width:52px">${o.label}</span>
-          <span style="font-size:12px;color:var(--tm);flex:1">鳴く() →</span>
+          <span class="jp-nobr" style="font-weight:600;font-size:14px;min-width:52px;white-space:nowrap">${o.label}</span>
+          <span class="jp-nobr" style="font-size:12px;color:var(--tm);flex:1;white-space:nowrap">鳴く() →</span>
           <div style="display:flex;gap:5px;flex-wrap:wrap">
             ${o.choices.map(c=>soundButton(o,c)).join('')}
           </div>
