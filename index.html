@@ -1091,11 +1091,9 @@ function phaseDialogue(step){
       {who:'rabbit',text:'では下で、犬・猫・鳥それぞれの <strong>鳴く()</strong> を実装してみます。'}
     ],
     [
-      {who:'cat',text:`前のステップで、${selectedSoundSummary()}に決まったね。`},
-      {who:'rabbit',variant:'think',text:`はい。今は、犬は「${soundOf('dog','ワン！')}」、猫は「${soundOf('cat','ニャー')}」、鳥は「${soundOf('bird','チュン')}」と、それぞれ別々に鳴けるようになった状態ですね。`},
-      {who:'cat',text:'うん。ここまでで、動物ごとに <strong>鳴く()</strong> の中身を用意するところまではできた。ここまで準備ができたら、次に<strong>ポリモーフィズム</strong>を見ていくよ。'},
+      {who:'cat',text:`前のステップで、${selectedSoundSummary()}に決まり、動物ごとに <strong>鳴く()</strong> の中身を用意できたね。次はいよいよ<strong>ポリモーフィズム</strong>を見ていくよ。`},
       {who:'rabbit',text:'同じ命令を出したときに、犬・猫・鳥それぞれの鳴き方がちゃんと出るかを見るんですね。'},
-      {who:'cat',text:'そう。<strong>ポリモーフィズム</strong>は「同じ命令を出したのに、実体ごとに違う処理が動く」仕組みなんだ。まず下で、今はまだ準備段階だと確認してから、ボタンで実行してみよう。'}
+      {who:'cat',text:'そう。<strong>ポリモーフィズム</strong>は「同じ命令なのに、実体ごとに違う処理が動く」仕組みなんだ。まず下で準備段階を確認してから、ボタンで実行してみよう。'}
     ],
     [
       {who:'cat',text:'次は、犬・車・ロボットを同じレースに出したい。共通点は「動ける」ことだね。'},
