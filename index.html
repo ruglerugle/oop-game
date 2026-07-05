@@ -923,11 +923,11 @@ function smoothJapaneseInlineHtml(html){
   // 閉じ括弧は、対応する開き括弧を上ですでに要素の中へ入れているため、
   // 揃えて要素の中へ吸収する（「クラス」のように括弧ごと強調・クリック対象にする）。
   const bracketClose = '(?:[）\\)］\\]｝\\}」』】〉》〕〗〙〛])';
-  // 通常の句読点は<strong>/<code>の中に入れても見た目上の意味は変わらないため吸収する。
+  // 通常の句読点も、強調やクリック可能な用語の色・下線が句読点にまで
+  // 掛かって見えるのは不自然なため、タグの外側に残したまま改行だけ防ぐ。
   const punct = '(?:[、。，．｡､！？!?：；;・])';
   // 助詞は、タグの外側に残したまま改行だけ防ぐ。強調(<strong>)やクリック可能な
   // 用語(<span class="gloss-term">)の範囲に助詞まで巻き込まないよう、要素の中へは吸収しない。
-  // クリック可能な用語の直後の句読点も、押せる範囲に含めたくないので同様に外側へ。
   // 例: <span>クラス</span>を → <span class="jp-nobr"><span>クラス</span>を</span>
   // ※ 「の・を・が」など1文字の助詞は「できる」「もし」等、別の単語の先頭とも
   //   区別が付かず、無理にまとめると単語の途中で改行される副作用があるため対象外にする。
@@ -935,9 +935,9 @@ function smoothJapaneseInlineHtml(html){
   const wrapOutside = (m,already,tag,ws,suf) => already ? m : `<span class="jp-nobr">${tag}${suf}</span>`;
   for(let i=0;i<8;i++){
     const before = out;
-    out = out.replace(new RegExp('(<(strong|code)\\b[^>]*>[\\s\\S]*?)(<\\/\\2>)(\\s*)('+bracketClose+'|'+punct+')','g'), '$1$5$3');
+    out = out.replace(new RegExp('(<(strong|code)\\b[^>]*>[\\s\\S]*?)(<\\/\\2>)(\\s*)('+bracketClose+')','g'), '$1$5$3');
     out = out.replace(new RegExp('(<span\\b[^>]*>[\\s\\S]*?)(<\\/span>)(\\s*)('+bracketClose+')','g'), '$1$4$2');
-    out = out.replace(new RegExp('(<span class="jp-nobr">)?(<(?:strong|code)\\b[^>]*>[\\s\\S]*?<\\/(?:strong|code)>)(\\s*)('+particle+')','g'), wrapOutside);
+    out = out.replace(new RegExp('(<span class="jp-nobr">)?(<(?:strong|code)\\b[^>]*>[\\s\\S]*?<\\/(?:strong|code)>)(\\s*)('+particle+'|'+punct+')','g'), wrapOutside);
     out = out.replace(new RegExp('(<span class="jp-nobr">)?(<span\\b(?![^>]*jp-nobr)[^>]*>[\\s\\S]*?<\\/span>)(\\s*)('+particle+'|'+punct+')','g'), wrapOutside);
     if(out===before) break;
   }
