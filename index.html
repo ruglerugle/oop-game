@@ -593,6 +593,17 @@ const stories={
     {npc:'🌍 ナレーター',text:'これで「オブジェクト指向の基本」は一通り体験済みです。次は銀行・EC・ゲームなど、別の世界にも同じ考え方を応用できます。'},
   ],
 };
+
+const BOSS_QUESTIONS=[
+  {concept:'継承',q:'犬・猫・鳥に共通する「食べる()」「寝る()」を1つの親クラスにまとめ、子クラスに引き継がせる仕組みを何という？',choices:['継承','カプセル化','static','コンストラクタ'],correct:0,why:'共通部分を親クラスにまとめ、子クラスが受け継ぐ仕組みが継承です。'},
+  {concept:'抽象クラス',q:'Animalの「鳴く()」のように、中身を書かずに「必ず子クラスで実装すること」とだけ約束するメソッドを持つクラスを何という？',choices:['インターフェース','抽象クラス','static クラス','子クラス'],correct:1,why:'実装を子クラスに強制しつつ、自身は直接インスタンス化しないクラスが抽象クラスです。'},
+  {concept:'ポリモーフィズム',q:'Animal型の変数に犬や猫を入れて同じ a.鳴く() を呼んでも、実際には犬なら「ワン」、猫なら「ニャー」と実行される仕組みを何という？',choices:['型キャスト','オーバーライド','ポリモーフィズム','アクセス修飾子'],correct:2,why:'見た目は同じ命令でも、実体ごとに違う処理が動くのがポリモーフィズムです。'},
+  {concept:'型キャスト',q:'Animal型としてまとめて扱っていたものを、必要な時だけ具体的な犬クラス型として扱い直す操作を何という？',choices:['型キャスト','static','カプセル化','コンストラクタ'],correct:0,why:'親型でまとめた後、必要な場面だけ子クラス型に戻す操作が型キャストです。'},
+  {concept:'インターフェース',q:'継承関係のない犬とロボットに、「動ける」という共通の型だけを持たせたい時に使う仕組みを何という？',choices:['抽象クラス','インターフェース','継承','カプセル化'],correct:1,why:'種類が違っても「同じ操作ができる」契約を与えるのがインターフェースです。'},
+  {concept:'カプセル化',q:'空腹度などのデータを外部から直接書き換えられないようにし、正しい窓口（メソッド）だけを公開する考え方を何という？',choices:['ポリモーフィズム','インターフェース','カプセル化','static'],correct:2,why:'データを隠し、メソッド経由でだけ触れるようにする考え方がカプセル化です。'},
+  {concept:'コンストラクタ',q:'new Dog("ポチ") のように、インスタンスが生まれる瞬間に名前などの初期値をセットする特別な処理を何という？',choices:['コンストラクタ','抽象メソッド','オーバーライド','型キャスト'],correct:0,why:'生まれた瞬間に初期状態を整える処理がコンストラクタです。'},
+  {concept:'static',q:'インスタンスごとではなく、クラス全体で1つだけ共有される「動物の総数」のような値に使うキーワードは？',choices:['private','protected','static','public'],correct:2,why:'インスタンスごとに持つのではなく、クラス全体で共有する値にはstaticを使います。'},
+];
 // ─── HISTORY / BACK ──────────────────────────
 function clonePlain(v){ return JSON.parse(JSON.stringify(v)); }
 function saveHistory(){
@@ -811,12 +822,12 @@ function finishGame(pts){saveHistory();G.score+=pts;G.phase='epilogue';G.line=0;
 
 // ─── GAME 0: 序章 ────────────────────────────────
 function makeDefaultG0State(){
-  return {phase:0,sounds:{},moveTried:false,movableOk:false,access:{},accessChecked:false,polyRun:false,castTried:false,ctor:{name:'ポチ',hp:80,hunger:50,toy:'ボール'},ctorMade:false};
+  return {phase:0,sounds:{},moveTried:false,movableOk:false,access:{},accessChecked:false,polyRun:false,castTried:false,ctor:{name:'ポチ',hp:80,hunger:50,toy:'ボール'},ctorMade:false,bossQ:0,bossPicked:null,bossResults:[]};
 }
 let g0st=makeDefaultG0State();
 
 function g0do(act,p){
-  const isChoiceOnly=['sound','access'].includes(act);
+  const isChoiceOnly=['sound','access','bossPick'].includes(act);
   // ページ移動や結果表示の前には、直前の状態を履歴に残す。
   // 鳴き声やアクセス修飾子の単なる選択は「前のページ」の対象にしない。
   if(!isChoiceOnly) saveHistory();
@@ -829,6 +840,13 @@ function g0do(act,p){
   else if(act==='accessCheck'){g0st.accessChecked=true;}
   else if(act==='polyRun'){g0st.polyRun=true;}
   else if(act==='castTry'){g0st.castTried=true;}
+  else if(act==='bossPick'){ if(g0st.bossPicked===null) g0st.bossPicked=p.choice; }
+  else if(act==='bossNext'){
+    const q=BOSS_QUESTIONS[g0st.bossQ];
+    g0st.bossResults.push(g0st.bossPicked===q.correct);
+    g0st.bossQ++;
+    g0st.bossPicked=null;
+  }
   document.getElementById('screen').innerHTML=renderG0();
   protectLineBreaksInScreen(document.getElementById('screen'));
   updateNav();
@@ -838,6 +856,7 @@ function g0do(act,p){
     if(act==='castTry') scrollToSection('cast-dialogue-start');
     else if(act==='moveTry') scrollToSection('inheritance-tree-start');
     else if(act==='accessCheck') scrollToSection('access-test-result');
+    else if(act==='bossNext') scrollToSection('boss-battle-start');
     else scrollToMainTop();
   }
 }
@@ -1630,6 +1649,37 @@ const dog = new Dog(${constructorArgsText(c)});</div>
     const dogSound=soundOf('dog','ワン！');
     const catSound=soundOf('cat','ニャー');
     const birdSound=soundOf('bird','チュン');
+    const bq=g0st.bossQ, total=BOSS_QUESTIONS.length;
+    const battleDone=bq>=total;
+    const correctCount=g0st.bossResults.filter(Boolean).length;
+    const hpPct=Math.max(0,Math.round((total-correctCount)/total*100));
+    const battleSection=battleDone?`
+      <div class="fb ${correctCount===total?'ok':correctCount>=Math.ceil(total*0.6)?'ok':'ng'} show" style="text-align:center">
+        ${correctCount===total?'🏆 パーフェクト！ボス「オブジェクト崩れ」を完全に撃破した！':correctCount>=Math.ceil(total*0.6)?'⚔️ ボスを撃破した！':'💦 ダメージが足りず、ボスは半分逃げていった…'}<br>
+        ${total}問中 <strong>${correctCount}問正解</strong>
+      </div>`:(function(){
+      const q=BOSS_QUESTIONS[bq];
+      const picked=g0st.bossPicked;
+      return `
+      <div style="font-size:13px;font-weight:900;color:var(--tp);margin-bottom:.6rem">問題 ${bq+1} / ${total}　【${q.concept}】</div>
+      <p style="font-size:14px;color:var(--tp);line-height:1.7;margin-bottom:.85rem">${q.q}</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${q.choices.map((c,i)=>{
+          let extra='';
+          if(picked!==null){
+            if(i===q.correct) extra='background:var(--ok);border-color:var(--bok);color:var(--tok)';
+            else if(i===picked) extra='background:var(--ng);border-color:var(--bng);color:var(--tng)';
+          }
+          return `<button class="btn" ${picked!==null?'disabled':''} onclick="g0do('bossPick',{choice:${i}})" style="text-align:left;padding:.7rem 1rem;border:1px solid var(--bd);${extra}">${c}</button>`;
+        }).join('')}
+      </div>
+      ${picked!==null?`
+        <div class="fb ${picked===q.correct?'ok':'ng'} show" style="margin-top:.85rem">
+          ${picked===q.correct?'✓ 正解！':'✗ 残念、正解は「'+q.choices[q.correct]+'」'}<br>${q.why}
+        </div>
+        <button class="btn btn-p" style="margin-top:.75rem" onclick="g0do('bossNext')">${bq+1>=total?'とどめだ！結果を見る →':'次の問題へ →'}</button>
+      `:''}`;
+    })();
     return `
     <div class="ch-title">${CHAPTERS[0].name} — STEP 8 / 8</div>
     <div class="ch-heading">ボス戦：動物園システムを完成させろ</div>
@@ -1654,12 +1704,22 @@ const dog = new Dog(${constructorArgsText(c)});</div>
 悪いプログラム：ポチ.空腹度 = -999 → privateなのでブロック
 new Dog("コロ") → 動物総数 +1</div>
     </div>
+    <div id="boss-battle-start" style="background:var(--s0);border:2px solid var(--tpr);border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+        <div style="font-size:14px;font-weight:900;color:var(--tp)">👹 混乱のボス「オブジェクト崩れ」</div>
+        <div style="font-size:11px;color:var(--tm);font-weight:700">HP ${hpPct}%</div>
+      </div>
+      <div style="height:14px;background:rgba(0,0,0,.12);border-radius:999px;overflow:hidden;margin-bottom:1rem">
+        <div style="height:100%;width:${hpPct}%;background:linear-gradient(90deg,#ff8a65,#e53935);transition:width .4s"></div>
+      </div>
+      ${battleSection}
+    </div>
     <div class="summary-grid">
       ${[
         ['継承','共通部分を親にまとめる'],['抽象クラス','未完成の親で実装を強制'],['ポリモーフィズム','親型で呼んでも実体の処理が動く'],['型キャスト','まとめた後で犬専用機能を使う'],['インターフェース','種類を超えた能力の型を作る'],['カプセル化','直接改ざんを防ぐ'],['コンストラクタ','生まれた瞬間の初期設定'],['static','全体で1つの値を共有']
       ].map(([a,b])=>`<div class="sum-card"><strong>✓ ${a}</strong><p>${b}</p></div>`).join('')}
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(25)">序章クリア！ 完了へ →</button><button class="btn" onclick="retryG0()">最初から ↩</button></div>`;
+    ${battleDone?`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${20+correctCount*10})">序章クリア！ 完了へ →</button><button class="btn" onclick="retryG0()">最初から ↩</button></div>`:''}`;
   }
 
 }
