@@ -821,8 +821,16 @@ function advEpilogue(){
 function finishGame(pts){saveHistory();G.score+=pts;G.phase='epilogue';G.line=0;render({scroll:true});}
 
 // ─── GAME 0: 序章 ────────────────────────────────
+function shuffledIndexes(n){
+  const arr=Array.from({length:n},(_,i)=>i);
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
 function makeDefaultG0State(){
-  return {phase:0,sounds:{},moveTried:false,movableOk:false,access:{},accessChecked:false,polyRun:false,castTried:false,ctor:{name:'ポチ',hp:80,hunger:50,toy:'ボール'},ctorMade:false,bossQ:0,bossPicked:null,bossResults:[]};
+  return {phase:0,sounds:{},moveTried:false,movableOk:false,access:{},accessChecked:false,polyRun:false,castTried:false,ctor:{name:'ポチ',hp:80,hunger:50,toy:'ボール'},ctorMade:false,bossQ:0,bossPicked:null,bossResults:[],bossOrder:shuffledIndexes(BOSS_QUESTIONS.length)};
 }
 let g0st=makeDefaultG0State();
 
@@ -842,7 +850,7 @@ function g0do(act,p){
   else if(act==='castTry'){g0st.castTried=true;}
   else if(act==='bossPick'){ if(g0st.bossPicked===null) g0st.bossPicked=p.choice; }
   else if(act==='bossNext'){
-    const q=BOSS_QUESTIONS[g0st.bossQ];
+    const q=BOSS_QUESTIONS[g0st.bossOrder[g0st.bossQ]];
     g0st.bossResults.push(g0st.bossPicked===q.correct);
     g0st.bossQ++;
     g0st.bossPicked=null;
@@ -1658,10 +1666,10 @@ const dog = new Dog(${constructorArgsText(c)});</div>
         ${correctCount===total?'🏆 パーフェクト！ボス「オブジェクト崩れ」を完全に撃破した！':correctCount>=Math.ceil(total*0.6)?'⚔️ ボスを撃破した！':'💦 ダメージが足りず、ボスは半分逃げていった…'}<br>
         ${total}問中 <strong>${correctCount}問正解</strong>
       </div>`:(function(){
-      const q=BOSS_QUESTIONS[bq];
+      const q=BOSS_QUESTIONS[g0st.bossOrder[bq]];
       const picked=g0st.bossPicked;
       return `
-      <div style="font-size:13px;font-weight:900;color:var(--tp);margin-bottom:.6rem">問題 ${bq+1} / ${total}　【${q.concept}】</div>
+      <div style="font-size:13px;font-weight:900;color:var(--tp);margin-bottom:.6rem">問題 ${bq+1} / ${total}</div>
       <p style="font-size:14px;color:var(--tp);line-height:1.7;margin-bottom:.85rem">${q.q}</p>
       <div style="display:flex;flex-direction:column;gap:8px">
         ${q.choices.map((c,i)=>{
