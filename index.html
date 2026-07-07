@@ -507,7 +507,7 @@ code{
       <div class="brand-sub">君だけのオブジェクト指向RPG〜</div>
     </div>
     <div>
-      <div class="chapter-title"><span>序章：動物たちの国を作ろう</span><span class="step-num" id="head-step">STEP 1 / 8</span></div>
+      <div class="chapter-title"><span id="head-chapter-title">序章：動物たちの国を作ろう</span><span class="step-num" id="head-step">STEP 1 / 8</span></div>
       <div class="head-progress"><div class="head-progress-fill" id="prog"></div></div>
     </div>
     <div class="header-actions">
@@ -547,7 +547,10 @@ code{
 const G={chapter:0,phase:'story',line:0,score:0};
 const history=[];
 
-const CHAPTERS=[{name:'序章',sub:'OOP体験版：動物園を完成させよう'}];
+const CHAPTERS=[
+  {name:'序章',sub:'OOP体験版：動物園を完成させよう'},
+  {name:'第1章',sub:'UML入門：設計図を正しく読み書きしよう'},
+];
 
 const GLOSSARY=[
   {term:'クラス',def:'オブジェクトの設計図。動物クラスのように、データと動作をまとめたもの。'},
@@ -593,6 +596,10 @@ const stories={
     {npc:'🌍 ナレーター',text:'動物園システムが完成しました。重複を減らし、同じ命令で動物を動かし、必要な時だけ具体的な型に戻し、外部からの改ざんも防げるようになりました。'},
     {npc:'🌍 ナレーター',text:'これで「オブジェクト指向の基本」は一通り体験済みです。次は銀行・EC・ゲームなど、別の世界にも同じ考え方を応用できます。'},
   ],
+  1:[
+    {npc:'🌍 ナレーター',text:'序章では、動物園システムを作りながらオブジェクト指向の考え方を体験しました。'},
+    {npc:'🌍 ナレーター',text:'ここからは、そのクラス設計を「誰が見ても伝わる図」に描き起こす方法——UMLを学んでいきます。'},
+  ],
 };
 
 const BOSS_QUESTIONS=[
@@ -613,7 +620,8 @@ function saveHistory(){
     phase:G.phase,
     line:G.line,
     score:G.score,
-    g0st: typeof g0st!=='undefined' ? clonePlain(g0st) : null
+    g0st: typeof g0st!=='undefined' ? clonePlain(g0st) : null,
+    g1st: typeof g1st!=='undefined' ? clonePlain(g1st) : null
   });
 }
 function goBack(){
@@ -621,6 +629,7 @@ function goBack(){
   const prev=history.pop();
   G.chapter=prev.chapter;G.phase=prev.phase;G.line=prev.line;G.score=prev.score;
   if(prev.g0st && typeof g0st!=='undefined') g0st=clonePlain(prev.g0st);
+  if(prev.g1st && typeof g1st!=='undefined') g1st=clonePlain(prev.g1st);
   render({scroll:true});
 }
 
@@ -704,13 +713,8 @@ function jumpTo(ch){
   G.chapter=ch;G.phase='story';G.line=0;
   render({scroll:true});
 }
-function currentStep(){
-  if(G.phase==='game') return Math.min(8,(g0st?.phase??0)+1);
-  if(G.phase==='epilogue'||G.phase==='complete') return 8;
-  return 1;
-}
-function updateNav(){
-  const steps=[
+const STEP_TITLES={
+  0:[
     ['同じものを3回書いている','（クラスと重複）'],
     ['動物という共通の親','（継承）'],
     ['鳴くは親には書けない','（抽象クラス・オーバーライド）'],
@@ -719,19 +723,47 @@ function updateNav(){
     ['外から守る','（アクセス修飾子とカプセル化）'],
     ['初期設定と共有値','（コンストラクタ・static）'],
     ['動物園システム完成','（まとめ）']
-  ];
+  ],
+  1:[
+    ['UMLとは何か','（設計図の共通言語）'],
+    ['クラス図の基本','（名前・属性・メソッド）'],
+    ['アクセス修飾子の記号','（+ / − / #）'],
+    ['継承とインターフェースの矢印','（実線／点線の三角矢印）'],
+    ['関連・集約・コンポジション','（線と菱形の違い）'],
+    ['多重度','（1, 0..*, 1..* など）'],
+    ['まとめ：UMLを読み解く','（確認クイズ）']
+  ]
+};
+const CHAPTER_HEADER_TITLE={
+  0:'序章：動物たちの国を作ろう',
+  1:'第1章：UMLで設計図を描こう'
+};
+function currentG1State(){ return typeof g1st!=='undefined'?g1st:null; }
+function currentStep(){
+  const total=STEP_TITLES[G.chapter].length;
+  if(G.phase==='game'){
+    const st=G.chapter===0?g0st:currentG1State();
+    return Math.min(total,(st?.phase??0)+1);
+  }
+  if(G.phase==='epilogue'||G.phase==='complete') return total;
+  return 1;
+}
+function updateNav(){
+  const steps=STEP_TITLES[G.chapter];
+  const total=steps.length;
   const step=currentStep();
   const nav=document.getElementById('ch-nav');
   if(nav){
     nav.innerHTML=steps.map((it,i)=>{
       const n=i+1; const cl=n<step?'done':n===step?'active':'upcoming';
       const mark=n<step?'<span class="check">●</span>':n===step?'':'<span class="lock">○</span>';
-      return `<div class="side-step ${cl}" role="button" tabindex="0" onclick="jumpToStep(${n})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();jumpToStep(${n})}" title="${n} / 8 ${it[0]} ${it[1]}へ移動"><div class="paw">🐾</div><div><div class="step-main">${n} / 8</div><div class="step-sub">${it[0]}<br>${it[1]}</div></div><div>${mark}</div></div>`;
+      return `<div class="side-step ${cl}" role="button" tabindex="0" onclick="jumpToStep(${n})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();jumpToStep(${n})}" title="${n} / ${total} ${it[0]} ${it[1]}へ移動"><div class="paw">🐾</div><div><div class="step-main">${n} / ${total}</div><div class="step-sub">${it[0]}<br>${it[1]}</div></div><div>${mark}</div></div>`;
     }).join('');
   }
-  const pct=(step/8)*100;
+  const pct=(step/total)*100;
   const prog=document.getElementById('prog'); if(prog) prog.style.width=pct+'%';
-  const hs=document.getElementById('head-step'); if(hs) hs.textContent=`STEP ${step} / 8`;
+  const hs=document.getElementById('head-step'); if(hs) hs.textContent=`STEP ${step} / ${total}`;
+  const ht=document.getElementById('head-chapter-title'); if(ht) ht.textContent=CHAPTER_HEADER_TITLE[G.chapter]||CHAPTERS[G.chapter].name;
   const sc=document.getElementById('score-now'); if(sc) sc.textContent=G.score;
   const disabled=history.length===0;
   ['back-btn','footer-prev-btn','side-back-btn'].forEach(id=>{
@@ -761,12 +793,13 @@ function toggleGlossary(){
   g.innerHTML=`<div class="gloss-title">用語集</div><div class="gloss-note">${words}</div>`;
 }
 function jumpToStep(step){
-  const n=Math.max(1,Math.min(8,Number(step)||1));
+  const total=STEP_TITLES[G.chapter].length;
+  const n=Math.max(1,Math.min(total,Number(step)||1));
   saveHistory();
-  G.chapter=0;
   G.phase='game';
   G.line=0;
-  g0st.phase=n-1;
+  if(G.chapter===0) g0st.phase=n-1;
+  else g1st.phase=n-1;
   render({scroll:true});
 }
 function footerNext(){
@@ -774,8 +807,14 @@ function footerNext(){
   if(G.phase==='epilogue') return advEpilogue();
   if(G.phase==='complete') return;
   if(G.phase==='game'){
-    if(g0st.phase<7){ g0do('next'); }
-    else finishGame(220);
+    const total=STEP_TITLES[G.chapter].length;
+    if(G.chapter===0){
+      if(g0st.phase<total-1){ g0do('next'); }
+      else finishGame(220);
+    }else{
+      if(g1st.phase<total-1){ g1do('next'); }
+      else finishGame(0);
+    }
   }
 }
 function storyHTML(lines,idx,onNext,isEpilogue=false){
@@ -799,9 +838,9 @@ function storyHTML(lines,idx,onNext,isEpilogue=false){
 function render(opts={}){
   updateNav();
   const scr=document.getElementById('screen');
-  if(G.phase==='story') scr.innerHTML=storyHTML(stories[0],G.line,'advStory()');
-  else if(G.phase==='game') scr.innerHTML=renderG0();
-  else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories['0e'],G.line,'advEpilogue()',true);
+  if(G.phase==='story') scr.innerHTML=storyHTML(stories[G.chapter],G.line,'advStory()');
+  else if(G.phase==='game') scr.innerHTML=(G.chapter===0?renderG0():renderG1());
+  else if(G.phase==='epilogue') scr.innerHTML=storyHTML(stories[G.chapter+'e'],G.line,'advEpilogue()',true);
   else scr.innerHTML=renderComplete();
   protectLineBreaksInScreen(scr);
   if(opts.scroll) scrollToMainTop();
@@ -814,8 +853,9 @@ function advStory(){
 }
 function advEpilogue(){
   saveHistory();
-  const lines=stories['0e'];
+  const lines=stories[G.chapter+'e'];
   if(G.line<lines.length-1){G.line++;render({scroll:true});}
+  else if(G.chapter<CHAPTERS.length-1){G.chapter++;G.phase='story';G.line=0;render({scroll:true});}
   else{G.phase='complete';render({scroll:true});}
 }
 
@@ -1731,6 +1771,72 @@ new Dog("コロ") → 動物総数 +1</div>
     ${battleDone?`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${20+correctCount*10})">序章クリア！ 完了へ →</button><button class="btn" onclick="retryG0()">最初から ↩</button></div>`:''}`;
   }
 
+}
+
+// ─── GAME 1: 第1章 UML入門 ────────────────────────────────
+function makeDefaultG1State(){
+  return {phase:0};
+}
+let g1st=makeDefaultG1State();
+function g1do(act,p){
+  saveHistory();
+  if(act==='next') g1st.phase++;
+  document.getElementById('screen').innerHTML=renderG1();
+  protectLineBreaksInScreen(document.getElementById('screen'));
+  updateNav();
+  scrollToMainTop();
+}
+function retryG1(){
+  g1st=makeDefaultG1State();
+  document.getElementById('screen').innerHTML=renderG1();
+  protectLineBreaksInScreen(document.getElementById('screen'));
+  updateNav();
+  scrollToMainTop();
+}
+function phaseDialogueC1(step){
+  const talks=[
+    [
+      {who:'cat',text:'UMLは Unified Modeling Language の略——「統一モデリング言語」。プログラミング言語が違っても、同じルールでクラスの設計図を描ける共通言語なんだ。'},
+      {who:'rabbit',text:'日本語と英語のように話す人が違っても、同じ図なら誰でも読めるということですね。'},
+      {who:'cat',text:'そう。中でもよく使うのが、クラス同士の構造を描く「クラス図」。まずは1つのクラスをUMLでどう描くか見てみよう。'},
+    ],
+    [
+      {who:'cat',text:'クラス図は3段のボックスで描く。1段目がクラス名、2段目が属性（フィールド）、3段目がメソッドだ。'},
+      {who:'rabbit',text:'序章で見た「Animal」のクラス図みたいですね。'},
+      {who:'cat',text:'そう、実はあれもUMLの書き方だったんだ。ボックスの中の記号——例えば属性の前についている「+」や「-」——が何を意味するかは、次のステップで見ていこう。'},
+    ],
+  ];
+  return dialogueScene(talks[step]||[]);
+}
+function renderG1(){
+  const phase=g1st.phase;
+  const total=STEP_TITLES[1].length;
+
+  if(phase===0) return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 1 / ${total}</div>
+    <div class="ch-heading">UMLとは何か</div>
+    <p class="game-intro">序章で作った動物園システムを、誰が見ても伝わる「図」に描き起こす方法を学びます。</p>
+    ${phaseDialogueC1(0)}
+    <button class="btn btn-p" onclick="g1do('next')">次へ：クラス図の書き方 →</button>`;
+
+  if(phase===1) return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 2 / ${total}</div>
+    <div class="ch-heading">クラス図の基本</div>
+    <p class="game-intro">クラス図は「クラス名」「属性」「メソッド」を3段のボックスで表します。</p>
+    ${phaseDialogueC1(1)}
+    <div class="uml-class" style="max-width:260px;margin:0 auto 1rem">
+      <div class="uml-head">Dog</div>
+      <div class="uml-sec" style="padding:8px 14px;font-family:var(--m);font-size:13px">+ name : String<br>- hp : int</div>
+      <div class="uml-sec" style="padding:8px 14px;font-family:var(--m);font-size:13px">+ eat() : void<br>+ bark() : void</div>
+    </div>
+    <button class="btn btn-p" onclick="g1do('next')">次へ：記号の意味 →</button>`;
+
+  const idx=Math.min(phase,total-1);
+  return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP ${idx+1} / ${total}</div>
+    <div class="ch-heading">${STEP_TITLES[1][idx][0]}</div>
+    <div class="info-box">🚧 このステップは準備中です。次回のアップデートをお待ちください。</div>
+    <button class="btn" onclick="jumpToStep(2)">← STEP 2 に戻る</button>`;
 }
 
 
