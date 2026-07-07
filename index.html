@@ -538,7 +538,7 @@ code{
     <main class="main-area" id="main-area" tabindex="-1"><div id="screen"></div></main>
   </div>
   <footer class="game-footer">
-    <div class="footer-tip">💡 ポイント：継承は「is-a（〜は〜の一種）」の関係を表す。上のクラスの性質や振る舞いを下のクラスが受け継ぐよ！</div>
+    <div class="footer-tip" id="footer-tip-text">💡 ポイント：継承は「is-a（〜は〜の一種）」の関係を表す。上のクラスの性質や振る舞いを下のクラスが受け継ぐよ！</div>
     <div class="footer-actions">
       <button class="footer-prev" id="footer-prev-btn" onclick="goBack()">◀ 前のページへ戻る</button>
       <button class="footer-next" onclick="footerNext()">次のステップへ ▶</button>
@@ -743,6 +743,27 @@ const STEP_TITLES={
     ['まとめ：UMLを読み解く','（確認クイズ）']
   ]
 };
+const FOOTER_TIPS={
+  0:[
+    '💡 ポイント：同じ属性・メソッドを持つクラスを何度も書くと、仕様変更のたびに全部を直す必要が出てくるよ！',
+    '💡 ポイント：継承は「is-a（〜は〜の一種）」の関係を表す。上のクラスの性質や振る舞いを下のクラスが受け継ぐよ！',
+    '💡 ポイント：抽象クラスは、中身を書かずに「必ず実装すること」を子クラスに約束させる仕組みだよ！',
+    '💡 ポイント：ポリモーフィズムは、同じ命令を出しても実体ごとに違う処理が動く仕組みだよ！',
+    '💡 ポイント：インターフェースは、継承関係がなくても「同じ操作ができる」という共通の型を与える契約だよ！',
+    '💡 ポイント：カプセル化は、データを外部から直接触れないように隠し、メソッドだけを窓口にする考え方だよ！',
+    '💡 ポイント：コンストラクタは生まれた瞬間の初期設定、staticはクラス全体で1つだけ共有する値だよ！',
+    '💡 ポイント：ここまで学んだ考え方はすべて、1つの動物園システムの中でつながっているよ！'
+  ],
+  1:[
+    '💡 ポイント：UMLはプログラミング言語が違っても使える、クラス設計を描くための共通のルールだよ！',
+    '💡 ポイント：クラス図は「クラス名」「属性」「メソッド」を3段のボックスで表すよ！',
+    '💡 ポイント：+はpublic（誰でも使える）、-はprivate（自分だけ）、#はprotected（自分と子クラスだけ）だよ！',
+    '💡 ポイント：白抜き三角の実線矢印は継承、点線矢印はインターフェースの実装を表すよ！',
+    '💡 ポイント：白抜き菱形は集約、塗りつぶし菱形はコンポジション（強い所有関係）を表すよ！',
+    '💡 ポイント：多重度は「1」「0..*」「1..*」のように、関連する相手の数を表すよ！',
+    '💡 ポイント：クラス図が読めれば、コードを書く前に設計を誰とでも共有できるよ！'
+  ]
+};
 const CHAPTER_HEADER_TITLE={
   0:'序章：動物たちの国を作ろう',
   1:'第1章：UMLで設計図を描こう'
@@ -782,6 +803,11 @@ function updateNav(){
   const prog=document.getElementById('prog'); if(prog) prog.style.width=pct+'%';
   const hs=document.getElementById('head-step'); if(hs) hs.textContent=`STEP ${step} / ${total}`;
   const ht=document.getElementById('head-chapter-title'); if(ht) ht.textContent=CHAPTER_HEADER_TITLE[G.chapter]||CHAPTERS[G.chapter].name;
+  const ft=document.getElementById('footer-tip-text');
+  if(ft){
+    const tips=FOOTER_TIPS[G.chapter]||[];
+    ft.textContent=tips[Math.min(step,total)-1]||tips[tips.length-1]||'';
+  }
   const sc=document.getElementById('score-now'); if(sc) sc.textContent=G.score;
   const disabled=history.length===0;
   ['back-btn','footer-prev-btn','side-back-btn'].forEach(id=>{
