@@ -453,7 +453,14 @@ code{
 .app-shell.side-collapsed .side-step>div:nth-child(2),
 .app-shell.side-collapsed .side-step>div:nth-child(3),
 .app-shell.side-collapsed .side-actions,
+.app-shell.side-collapsed .chapter-nav,
 .app-shell.side-collapsed .gloss-box{display:none}
+.chapter-nav{display:flex;flex-direction:column;padding:8px;gap:4px;border-bottom:1px solid var(--side-line)}
+.chapter-tab{padding:8px 10px;border-radius:7px;font-size:13px;font-weight:900;color:#cbd6de;cursor:pointer;user-select:none}
+.chapter-tab:hover{background:rgba(255,255,255,.08)}
+.chapter-tab.active{background:rgba(9,22,31,.52);outline:2px solid #d7b219;outline-offset:-2px;color:#fff}
+.chapter-tab.done{color:#9fd6b8}
+.chapter-tab.locked{opacity:.5;cursor:default}
 .app-shell.side-collapsed .paw{font-size:22px}
 .app-shell.side-collapsed .side-step.active{outline-offset:-4px}
 .side-backdrop{display:none}
@@ -520,7 +527,8 @@ code{
   <div class="game-layout">
     <div class="side-backdrop" id="side-backdrop" onclick="toggleSidebar()"></div>
     <aside class="side-panel" id="side-panel">
-      <div class="side-head"><button class="side-toggle" onclick="toggleSidebar()" title="ナビを開閉">☰</button><span class="side-head-text">序章のステップ</span></div>
+      <div class="side-head"><button class="side-toggle" onclick="toggleSidebar()" title="ナビを開閉">☰</button><span class="side-head-text" id="side-head-label">序章のステップ</span></div>
+      <div class="chapter-nav" id="chapter-nav"></div>
       <div class="step-list" id="ch-nav"></div>
       <div class="side-actions"><button class="side-back" id="side-back-btn" onclick="goBack()">← 前のページに戻る</button></div>
       <div class="gloss-box" id="side-gloss">
@@ -544,7 +552,7 @@ code{
   <p id="gloss-def"></p>
 </div>
 <script>
-const G={chapter:0,phase:'story',line:0,score:0};
+const G={chapter:0,phase:'story',line:0,score:0,maxChapter:0};
 const history=[];
 
 const CHAPTERS=[
@@ -594,7 +602,7 @@ const stories={
   ],
   '0e':[
     {npc:'🌍 ナレーター',text:'動物園システムが完成しました。重複を減らし、同じ命令で動物を動かし、必要な時だけ具体的な型に戻し、外部からの改ざんも防げるようになりました。'},
-    {npc:'🌍 ナレーター',text:'これで「オブジェクト指向の基本」は一通り体験済みです。次は銀行・EC・ゲームなど、別の世界にも同じ考え方を応用できます。'},
+    {npc:'🌍 ナレーター',text:'これで「オブジェクト指向の基本」は一通り体験済みです。次は、この設計を誰が見ても伝わる「図」として描き起こす方法——UMLを学んでいきましょう。'},
   ],
   1:[
     {npc:'🌍 ナレーター',text:'序章では、動物園システムを作りながらオブジェクト指向の考え方を体験しました。'},
@@ -620,6 +628,7 @@ function saveHistory(){
     phase:G.phase,
     line:G.line,
     score:G.score,
+    maxChapter:G.maxChapter,
     g0st: typeof g0st!=='undefined' ? clonePlain(g0st) : null,
     g1st: typeof g1st!=='undefined' ? clonePlain(g1st) : null
   });
@@ -627,7 +636,7 @@ function saveHistory(){
 function goBack(){
   if(history.length===0)return;
   const prev=history.pop();
-  G.chapter=prev.chapter;G.phase=prev.phase;G.line=prev.line;G.score=prev.score;
+  G.chapter=prev.chapter;G.phase=prev.phase;G.line=prev.line;G.score=prev.score;G.maxChapter=prev.maxChapter??G.maxChapter;
   if(prev.g0st && typeof g0st!=='undefined') g0st=clonePlain(prev.g0st);
   if(prev.g1st && typeof g1st!=='undefined') g1st=clonePlain(prev.g1st);
   render({scroll:true});
@@ -709,6 +718,7 @@ function scrollToSection(id,behavior='smooth'){
 
 // ─── NAV & RENDER ────────────────────────────
 function jumpTo(ch){
+  if(ch>G.maxChapter)return;
   saveHistory();
   G.chapter=ch;G.phase='story';G.line=0;
   render({scroll:true});
@@ -752,6 +762,15 @@ function updateNav(){
   const steps=STEP_TITLES[G.chapter];
   const total=steps.length;
   const step=currentStep();
+  const chNav=document.getElementById('chapter-nav');
+  if(chNav){
+    chNav.innerHTML=CHAPTERS.map((c,i)=>{
+      const locked=i>G.maxChapter;
+      const cls=i===G.chapter?'chapter-tab active':locked?'chapter-tab locked':'chapter-tab done';
+      return `<div class="${cls}" role="button" tabindex="0" ${locked?'':`onclick="jumpTo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();jumpTo(${i})}"`} title="${c.name}">${locked?'🔒 ':''}${c.name}</div>`;
+    }).join('');
+  }
+  const shl=document.getElementById('side-head-label'); if(shl) shl.textContent=`${CHAPTERS[G.chapter].name}のステップ`;
   const nav=document.getElementById('ch-nav');
   if(nav){
     nav.innerHTML=steps.map((it,i)=>{
@@ -855,7 +874,7 @@ function advEpilogue(){
   saveHistory();
   const lines=stories[G.chapter+'e'];
   if(G.line<lines.length-1){G.line++;render({scroll:true});}
-  else if(G.chapter<CHAPTERS.length-1){G.chapter++;G.phase='story';G.line=0;render({scroll:true});}
+  else if(G.chapter<CHAPTERS.length-1){G.chapter++;G.maxChapter=Math.max(G.maxChapter,G.chapter);G.phase='story';G.line=0;render({scroll:true});}
   else{G.phase='complete';render({scroll:true});}
 }
 
