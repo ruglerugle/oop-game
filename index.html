@@ -607,6 +607,10 @@ const stories={
     {npc:'🌍 ナレーター',text:'序章では、動物園システムを作りながらオブジェクト指向の考え方を体験しました。'},
     {npc:'🌍 ナレーター',text:'ここからは、そのクラス設計を「誰が見ても伝わる図」に描き起こす方法——UMLを学んでいきます。'},
   ],
+  '1e':[
+    {npc:'🌍 ナレーター',text:'クラス名・属性・メソッドの3段ボックス、アクセス修飾子の記号、継承とインターフェースの矢印、集約とコンポジション、多重度——クラス図の基本をひと通り読み解けるようになりました。'},
+    {npc:'🌍 ナレーター',text:'これで、頭の中にある設計を誰とでも共有できる「図」として描き起こせるようになりました。お疲れさまでした！'},
+  ],
 };
 
 const BOSS_QUESTIONS=[
@@ -1818,20 +1822,43 @@ new Dog("コロ") → 動物総数 +1</div>
 }
 
 // ─── GAME 1: 第1章 UML入門 ────────────────────────────────
+const UML_QUESTIONS=[
+  {q:'UMLの正式名称は？',choices:['Unified Modeling Language','Universal Model Language','United Markup Language','Unit Modeling Logic'],correct:0,why:'UMLはUnified Modeling Language（統一モデリング言語）の略です。'},
+  {q:'クラス図の3段ボックスで、2段目に書くものは？',choices:['メソッド','属性（フィールド）','クラス名','コメント'],correct:1,why:'1段目がクラス名、2段目が属性、3段目がメソッドです。'},
+  {q:'アクセス修飾子「-」が表すものは？',choices:['public','private','protected','static'],correct:1,why:'「-」はprivate（自分のクラスの中だけ使える）を表します。'},
+  {q:'継承とインターフェースの実装をUMLの矢印で見分ける方法は？',choices:['矢印の色','線が実線か点線か','矢印の太さ','矢印の向き'],correct:1,why:'どちらも白抜き三角矢印ですが、継承は実線、インターフェースの実装は点線で描きます。'},
+  {q:'塗りつぶした菱形（◆）が表す関係は？',choices:['関連','集約','コンポジション','継承'],correct:2,why:'塗りつぶした菱形は、全体が消えると部品も一緒に消える強い所有関係＝コンポジションです。'},
+  {q:'Zoo「1」── Animal「0..*」という多重度が意味することは？',choices:['動物園は動物を0匹以上何匹でも持てる','動物園は動物を必ず1匹も持たない','動物は動物園に属さなくてよい','動物は複数の動物園に同時に属する'],correct:0,why:'Animal側の「0..*」は、動物園が動物を0匹以上いくつでも持てることを表します。'},
+];
 function makeDefaultG1State(){
-  return {phase:0};
+  return {phase:0,uqQ:0,uqPicked:null,uqResults:[],uqOrder:shuffledIndexes(UML_QUESTIONS.length)};
 }
 let g1st=makeDefaultG1State();
 function g1do(act,p){
-  saveHistory();
+  const isChoiceOnly=['uqPick'].includes(act);
+  if(!isChoiceOnly) saveHistory();
   if(act==='next') g1st.phase++;
+  else if(act==='uqPick'){ if(g1st.uqPicked===null) g1st.uqPicked=p.choice; }
+  else if(act==='uqNext'){
+    const q=UML_QUESTIONS[g1st.uqOrder[g1st.uqQ]];
+    g1st.uqResults.push(g1st.uqPicked===q.correct);
+    g1st.uqQ++;
+    g1st.uqPicked=null;
+  }
+  document.getElementById('screen').innerHTML=renderG1();
+  protectLineBreaksInScreen(document.getElementById('screen'));
+  updateNav();
+  if(!isChoiceOnly) scrollToMainTop();
+}
+function retryG1(){
+  g1st=makeDefaultG1State();
   document.getElementById('screen').innerHTML=renderG1();
   protectLineBreaksInScreen(document.getElementById('screen'));
   updateNav();
   scrollToMainTop();
 }
-function retryG1(){
-  g1st=makeDefaultG1State();
+function retryUqQuiz(){
+  g1st.uqQ=0; g1st.uqPicked=null; g1st.uqResults=[]; g1st.uqOrder=shuffledIndexes(UML_QUESTIONS.length);
   document.getElementById('screen').innerHTML=renderG1();
   protectLineBreaksInScreen(document.getElementById('screen'));
   updateNav();
@@ -1848,6 +1875,38 @@ function phaseDialogueC1(step){
       {who:'cat',text:'クラス図は3段のボックスで描く。1段目がクラス名、2段目が属性（フィールド）、3段目がメソッドだ。'},
       {who:'rabbit',text:'序章で見た「Animal」のクラス図みたいですね。'},
       {who:'cat',text:'そう、実はあれもUMLの書き方だったんだ。ボックスの中の記号——例えば属性の前についている「+」や「-」——が何を意味するかは、次のステップで見ていこう。'},
+    ],
+    [
+      {who:'cat',text:'属性やメソッドの前についている記号は、外からどこまで触れるかを表す<strong>アクセス修飾子</strong>だ。'},
+      {who:'rabbit',text:'序章で出てきたpublicやprivateのことですか？'},
+      {who:'cat',text:'そう。UMLでは「+」がpublic、「-」がprivate、「#」がprotectedを表す記号として決まっているんだ。'},
+      {who:'rabbit',text:'さっきのDogクラスだと、nameは「+」だから誰でも見られて、hpは「-」だから外から触れない、ということですね。'},
+      {who:'cat',text:'その通り。記号を見るだけで、そのメンバーがどこまで公開されているか一目で分かるのがUMLの良さだよ。'},
+    ],
+    [
+      {who:'cat',text:'クラス同士の関係も矢印で表す。継承は、白抜きの三角矢印を子クラスから親クラスに向けて実線で引く。'},
+      {who:'rabbit',text:'序章のクラス図で見た△の矢印ですね。'},
+      {who:'cat',text:'そう。インターフェースの実装も同じ白抜き三角矢印だけど、線が点線になる。'},
+      {who:'rabbit',text:'実線か点線かで、継承かインターフェースの実装かを見分けるんですね。'},
+      {who:'cat',text:'その通り。どちらも「子は親（または実装対象）の一種」という<strong>is-a</strong>関係を表すのは同じだよ。'},
+    ],
+    [
+      {who:'cat',text:'継承以外にも、クラス同士が「持っている」関係を表す線がある。'},
+      {who:'rabbit',text:'動物園がAnimalを持っている、みたいなことですか？'},
+      {who:'cat',text:'そう。ただの線は<strong>関連</strong>。白抜きの菱形がついていると<strong>集約</strong>——弱いつながりで、部品だけ取り出しても壊れない関係。塗りつぶした菱形は<strong>コンポジション</strong>——強い所有関係で、全体が消えると部品も一緒に消える。'},
+      {who:'rabbit',text:'動物園と動物なら集約、動物と心臓ならコンポジションみたいなイメージですね。'},
+      {who:'cat',text:'いいたとえだね。「なくても平気か」「一緒に消えるべきか」で見分けるといいよ。'},
+    ],
+    [
+      {who:'cat',text:'関連の線には、両端に「いくつ対応するか」を表す数字——<strong>多重度</strong>を書く。'},
+      {who:'rabbit',text:'動物園に動物が何匹いるか、みたいなことですか？'},
+      {who:'cat',text:'そう。「1」ならちょうど1つ、「0..*」なら0個以上いくつでも、「1..*」なら1個以上を表す。'},
+      {who:'rabbit',text:'動物園（1）と動物（0..*）なら、動物園は動物を何匹持っていてもいい、ということですね。'},
+      {who:'cat',text:'その通り。逆に動物側から見ると、動物は必ずどこかの動物園（1）に属している、と書けるんだ。'},
+    ],
+    [
+      {who:'cat',text:'これでクラス図の基本記号は一通り学んだね。最後に、ちゃんと読み解けるか確認してみよう。'},
+      {who:'rabbit',text:'はい、挑戦してみます！'},
     ],
   ];
   return dialogueScene(talks[step]||[]);
@@ -1875,20 +1934,153 @@ function renderG1(){
     </div>
     <button class="btn btn-p" onclick="g1do('next')">次へ：記号の意味 →</button>`;
 
+  if(phase===2) return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 3 / ${total}</div>
+    <div class="ch-heading">アクセス修飾子の記号</div>
+    <p class="game-intro">属性やメソッドの前の記号は、外からどこまで触れるかを表します。</p>
+    ${phaseDialogueC1(2)}
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:10px 14px">
+        <span style="font-family:var(--m);font-weight:900;font-size:18px;width:20px">+</span>
+        <span style="font-weight:900">public</span>
+        <span style="font-size:13px;color:var(--ts);margin-left:auto">どこからでも使える</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:10px 14px">
+        <span style="font-family:var(--m);font-weight:900;font-size:18px;width:20px">-</span>
+        <span style="font-weight:900">private</span>
+        <span style="font-size:13px;color:var(--ts);margin-left:auto">自分のクラスの中だけ</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:10px 14px">
+        <span style="font-family:var(--m);font-weight:900;font-size:18px;width:20px">#</span>
+        <span style="font-weight:900">protected</span>
+        <span style="font-size:13px;color:var(--ts);margin-left:auto">自分と子クラスだけ</span>
+      </div>
+    </div>
+    <div class="uml-class" style="max-width:260px;margin:0 auto 1rem">
+      <div class="uml-head">Dog</div>
+      <div class="uml-sec" style="padding:8px 14px;font-family:var(--m);font-size:13px"><span style="color:var(--tok)">+</span> name : String<br><span style="color:var(--tng)">-</span> hp : int</div>
+      <div class="uml-sec" style="padding:8px 14px;font-family:var(--m);font-size:13px"><span style="color:var(--tok)">+</span> eat() : void<br><span style="color:var(--tok)">+</span> bark() : void</div>
+    </div>
+    <button class="btn btn-p" onclick="g1do('next')">次へ：継承とインターフェースの矢印 →</button>`;
+
+  if(phase===3) return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 4 / ${total}</div>
+    <div class="ch-heading">継承とインターフェースの矢印</div>
+    <p class="game-intro">クラス同士のis-a関係は、白抜きの三角矢印で表します。</p>
+    ${phaseDialogueC1(3)}
+    <div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;text-align:center">
+      <div>
+        <div class="uml-class" style="width:140px;margin:0 auto"><div class="uml-head">Animal</div></div>
+        <div style="font-size:22px;color:var(--ts);line-height:1.4">△<br>│</div>
+        <div class="uml-class" style="width:140px;margin:0 auto"><div class="uml-head">Dog</div></div>
+        <div style="font-size:12px;color:var(--ts);margin-top:6px;font-weight:900">継承（実線）</div>
+      </div>
+      <div>
+        <div class="uml-class" style="width:140px;margin:0 auto"><div class="uml-head">«interface»<br>Movable</div></div>
+        <div style="font-size:22px;color:var(--ts);line-height:1.4">△<br>┊</div>
+        <div class="uml-class" style="width:140px;margin:0 auto"><div class="uml-head">Dog</div></div>
+        <div style="font-size:12px;color:var(--ts);margin-top:6px;font-weight:900">実装（点線）</div>
+      </div>
+    </div>
+    <button class="btn btn-p" onclick="g1do('next')">次へ：関連・集約・コンポジション →</button>`;
+
+  if(phase===4) return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 5 / ${total}</div>
+    <div class="ch-heading">関連・集約・コンポジション</div>
+    <p class="game-intro">クラス同士が「持っている」関係は、線と菱形の種類で描き分けます。</p>
+    ${phaseDialogueC1(4)}
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap">
+        <div class="uml-class" style="width:90px"><div class="uml-head" style="padding:6px;font-size:12px">Zoo</div></div>
+        <span style="font-size:18px;color:var(--ts);font-family:var(--m)">──</span>
+        <div class="uml-class" style="width:90px"><div class="uml-head" style="padding:6px;font-size:12px">Animal</div></div>
+        <span style="font-size:12px;color:var(--ts);font-weight:900">関連（ただの線）</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap">
+        <div class="uml-class" style="width:90px"><div class="uml-head" style="padding:6px;font-size:12px">Zoo</div></div>
+        <span style="font-size:18px;color:var(--ts);font-family:var(--m)">◇──</span>
+        <div class="uml-class" style="width:90px"><div class="uml-head" style="padding:6px;font-size:12px">Animal</div></div>
+        <span style="font-size:12px;color:var(--ts);font-weight:900">集約（白抜き菱形）</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap">
+        <div class="uml-class" style="width:90px"><div class="uml-head" style="padding:6px;font-size:12px">Animal</div></div>
+        <span style="font-size:18px;color:var(--ts);font-family:var(--m)">◆──</span>
+        <div class="uml-class" style="width:90px"><div class="uml-head" style="padding:6px;font-size:12px">Heart</div></div>
+        <span style="font-size:12px;color:var(--ts);font-weight:900">コンポジション（塗りつぶし菱形）</span>
+      </div>
+    </div>
+    <button class="btn btn-p" onclick="g1do('next')">次へ：多重度 →</button>`;
+
+  if(phase===5) return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 6 / ${total}</div>
+    <div class="ch-heading">多重度</div>
+    <p class="game-intro">関連の両端には「いくつ対応するか」を表す多重度を書きます。</p>
+    ${phaseDialogueC1(5)}
+    <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:1rem">
+      <div class="uml-class" style="width:110px"><div class="uml-head" style="padding:6px;font-size:13px">Zoo</div></div>
+      <div style="text-align:center;font-family:var(--m);font-size:14px;color:var(--tp);font-weight:900">1 ─── 0..*</div>
+      <div class="uml-class" style="width:110px"><div class="uml-head" style="padding:6px;font-size:13px">Animal</div></div>
+    </div>
+    <div class="lesson-point">Zoo側の「1」：1匹の動物は必ず1つの動物園に属する。Animal側の「0..*」：1つの動物園は動物を0匹以上何匹でも持てる。</div>
+    <button class="btn btn-p" onclick="g1do('next')">次へ：まとめクイズ →</button>`;
+
+  if(phase===6){
+    const totalQ=UML_QUESTIONS.length;
+    const uq=g1st.uqQ;
+    const quizDone=uq>=totalQ;
+    const correctCount=g1st.uqResults.filter(Boolean).length;
+    const quizSection=quizDone?`
+      <div class="fb ${correctCount>=Math.ceil(totalQ*0.6)?'ok':'ng'} show" style="text-align:center">
+        ${correctCount===totalQ?'🏆 全問正解！UMLの基本はばっちりだね！':correctCount>=Math.ceil(totalQ*0.6)?'✓ よくできました！':'もう一度復習してみよう。'}<br>
+        ${totalQ}問中 <strong>${correctCount}問正解</strong>
+      </div>`:(function(){
+      const q=UML_QUESTIONS[g1st.uqOrder[uq]];
+      const picked=g1st.uqPicked;
+      return `
+      <div style="font-size:13px;font-weight:900;color:var(--tp);margin-bottom:.6rem">問題 ${uq+1} / ${totalQ}</div>
+      <p style="font-size:14px;color:var(--tp);line-height:1.7;margin-bottom:.85rem">${q.q}</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${q.choices.map((c,i)=>{
+          let extra='';
+          if(picked!==null){
+            if(i===q.correct) extra='background:var(--ok);border-color:var(--bok);color:var(--tok)';
+            else if(i===picked) extra='background:var(--ng);border-color:var(--bng);color:var(--tng)';
+          }
+          return `<button class="btn" ${picked!==null?'disabled':''} onclick="g1do('uqPick',{choice:${i}})" style="text-align:left;padding:.7rem 1rem;border:1px solid var(--bd);${extra}">${c}</button>`;
+        }).join('')}
+      </div>
+      ${picked!==null?`
+        <div class="fb ${picked===q.correct?'ok':'ng'} show" style="margin-top:.85rem">
+          ${picked===q.correct?'✓ 正解！':'✗ 残念、正解は「'+q.choices[q.correct]+'」'}<br>${q.why}
+        </div>
+        <button class="btn btn-p" style="margin-top:.75rem" onclick="g1do('uqNext')">${uq+1>=totalQ?'結果を見る →':'次の問題へ →'}</button>
+      `:''}`;
+    })();
+    return `
+    <div class="ch-title">${CHAPTERS[1].name} — STEP 7 / ${total}</div>
+    <div class="ch-heading">まとめ：UMLを読み解く</div>
+    <p class="game-intro">クラス図の基本記号を、確認クイズでおさらいしましょう。</p>
+    ${phaseDialogueC1(6)}
+    <div style="background:var(--s0);border:2px solid var(--tac);border-radius:12px;padding:1rem;margin-bottom:1rem">
+      ${quizSection}
+    </div>
+    ${quizDone?`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${10+correctCount*10})">第1章クリア！ 完了へ →</button><button class="btn" onclick="retryUqQuiz()">もう一度 ↩</button></div>`:''}`;
+  }
+
   const idx=Math.min(phase,total-1);
   return `
     <div class="ch-title">${CHAPTERS[1].name} — STEP ${idx+1} / ${total}</div>
     <div class="ch-heading">${STEP_TITLES[1][idx][0]}</div>
     <div class="info-box">🚧 このステップは準備中です。次回のアップデートをお待ちください。</div>
-    <button class="btn" onclick="jumpToStep(2)">← STEP 2 に戻る</button>`;
+    <button class="btn" onclick="jumpToStep(6)">← STEP 6 に戻る</button>`;
 }
 
 
 function renderComplete(){
   return `
     <div class="complete">
-      <h2>🎉 OOPクエスト 序章クリア！</h2>
-      <p style="color:var(--ts);line-height:1.8;font-size:14px">動物園システムを通して、オブジェクト指向の基本を体験しました。</p>
+      <h2>🎉 OOPクエスト クリア！</h2>
+      <p style="color:var(--ts);line-height:1.8;font-size:14px">動物園システムを通してオブジェクト指向の基本を体験し、UMLでクラス図を読み書きできるようになりました。</p>
       <div class="big-score">${G.score}</div>
       <div style="color:var(--tm);font-size:12px;margin-bottom:1rem">SCORE</div>
       <div class="summary-grid">
