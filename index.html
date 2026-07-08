@@ -1829,18 +1829,44 @@ const UML_QUESTIONS=[
   {q:'継承とインターフェースの実装をUMLの矢印で見分ける方法は？',choices:['矢印の色','線が実線か点線か','矢印の太さ','矢印の向き'],correct:1,why:'どちらも白抜き三角矢印ですが、継承は実線、インターフェースの実装は点線で描きます。'},
   {q:'塗りつぶした菱形（◆）が表す関係は？',choices:['関連','集約','コンポジション','継承'],correct:2,why:'塗りつぶした菱形は、全体が消えると部品も一緒に消える強い所有関係＝コンポジションです。'},
   {q:'Zoo「1」── Animal「0..*」という多重度が意味することは？',choices:['動物園は動物を0匹以上何匹でも持てる','動物園は動物を必ず1匹も持たない','動物は動物園に属さなくてよい','動物は複数の動物園に同時に属する'],correct:0,why:'Animal側の「0..*」は、動物園が動物を0匹以上いくつでも持てることを表します。'},
-  {q:'Zoo と、そこで飼育される Animal の関係を表す線は？',choices:['継承（実線の白抜き三角）','インターフェースの実装（点線の白抜き三角）','集約（白抜き菱形）','コンポジション（塗りつぶし菱形）'],correct:2,why:'動物は動物園が閉園しても他の動物園に移せる弱いつながりなので、集約（白抜き菱形）で表します。'},
-  {q:'インターフェース「動ける」と、それを実装する犬（Dog）の関係を表す矢印は？',choices:['継承（実線の白抜き三角）','インターフェースの実装（点線の白抜き三角）','集約（白抜き菱形）','コンポジション（塗りつぶし菱形）'],correct:1,why:'序章の結論では、「動ける」はAnimal/Vehicle/Machineが継承する抽象クラスではなく、Dogなどの具体クラスがimplementsするインターフェースにしました。だから点線の白抜き三角矢印（実装）で表します。'},
-  {q:'肉食動物と、その仲間であるライオン・トラの関係を表す矢印は？',choices:['継承（実線の白抜き三角）','インターフェースの実装（点線の白抜き三角）','集約（白抜き菱形）','コンポジション（塗りつぶし菱形）'],correct:0,why:'ライオンやトラは肉食動物の一種（is-a）なので、継承で表します。'},
-  {q:'草食動物と、その仲間であるシマウマ・キリンの関係を表す矢印は？',choices:['継承（実線の白抜き三角）','インターフェースの実装（点線の白抜き三角）','集約（白抜き菱形）','コンポジション（塗りつぶし菱形）'],correct:0,why:'シマウマやキリンは草食動物の一種（is-a）なので、継承で表します。'},
-  {q:'インターフェース「走れる」と シマウマ の関係を表す矢印は？',choices:['継承（実線の白抜き三角）','インターフェースの実装（点線の白抜き三角）','集約（白抜き菱形）','コンポジション（塗りつぶし菱形）'],correct:1,why:'「走れる」はインターフェースなので、実装する場合は点線の白抜き三角矢印で表します。'},
 ];
+const DIAGRAM_LINKS=[
+  {a:'Zoo',b:'Animal',type:'aggregation',why:'動物園が閉園しても動物は他の動物園に移せる弱いつながりなので集約です。'},
+  {a:'«interface» 動ける',b:'Animal',type:'realize',why:'Animalは「動ける」インターフェースを実装するので、点線の実装矢印です。'},
+  {a:'Animal',b:'肉食動物・草食動物',type:'extends',why:'肉食動物・草食動物はAnimalの一種（is-a）なので継承です。'},
+  {a:'肉食動物',b:'ライオン・トラ',type:'extends',why:'ライオンやトラは肉食動物の一種なので継承です。'},
+  {a:'草食動物',b:'シマウマ・キリン',type:'extends',why:'シマウマやキリンは草食動物の一種なので継承です。'},
+  {a:'«interface» 走れる',b:'シマウマ',type:'realize',why:'シマウマは「走れる」インターフェースを実装するので、点線の実装矢印です。'},
+];
+const DIAG_TYPE_SYMBOL={extends:'◁──',realize:'◁┄┄',aggregation:'◇──',composition:'◆──'};
+const DIAG_TYPE_LABEL={extends:'継承',realize:'インターフェースの実装',aggregation:'集約',composition:'コンポジション'};
+function diagCard(idx,link,picked){
+  const resolved=picked!=null;
+  const isCorrect=resolved&&picked===link.type;
+  return `
+    <div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <div class="uml-class" style="width:120px"><div class="uml-head" style="padding:6px;font-size:12px">${link.a}</div></div>
+        <span style="font-family:var(--m);font-size:16px;font-weight:900;color:${resolved?(isCorrect?'var(--tok)':'var(--tng)'):'var(--ts)'}">${resolved?DIAG_TYPE_SYMBOL[picked]:'┄┄?┄┄'}</span>
+        <div class="uml-class" style="width:120px"><div class="uml-head" style="padding:6px;font-size:12px">${link.b}</div></div>
+      </div>
+      ${!resolved?`
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+          ${['extends','realize','aggregation','composition'].map(t=>`<button class="btn" style="font-size:12px;padding:6px 10px" onclick="g1do('diagPick',{idx:${idx},type:'${t}'})">${DIAG_TYPE_LABEL[t]}</button>`).join('')}
+        </div>
+      `:`
+        <div class="fb ${isCorrect?'ok':'ng'} show" style="font-size:12px;text-align:center">
+          ${isCorrect?'✓ 正解！':'✗ 正解は「'+DIAG_TYPE_LABEL[link.type]+'」'}　${link.why}
+        </div>
+      `}
+    </div>`;
+}
 function makeDefaultG1State(){
-  return {phase:0,uqQ:0,uqPicked:null,uqResults:[],uqOrder:shuffledIndexes(UML_QUESTIONS.length)};
+  return {phase:0,uqQ:0,uqPicked:null,uqResults:[],uqOrder:shuffledIndexes(UML_QUESTIONS.length),diagAnswers:{}};
 }
 let g1st=makeDefaultG1State();
 function g1do(act,p){
-  const isChoiceOnly=['uqPick'].includes(act);
+  const isChoiceOnly=['uqPick','diagPick'].includes(act);
   if(!isChoiceOnly) saveHistory();
   if(act==='next') g1st.phase++;
   else if(act==='uqPick'){ if(g1st.uqPicked===null) g1st.uqPicked=p.choice; }
@@ -1850,6 +1876,7 @@ function g1do(act,p){
     g1st.uqQ++;
     g1st.uqPicked=null;
   }
+  else if(act==='diagPick'){ if(g1st.diagAnswers[p.idx]===undefined) g1st.diagAnswers[p.idx]=p.type; }
   document.getElementById('screen').innerHTML=renderG1();
   protectLineBreaksInScreen(document.getElementById('screen'));
   updateNav();
@@ -1863,7 +1890,7 @@ function retryG1(){
   scrollToMainTop();
 }
 function retryUqQuiz(){
-  g1st.uqQ=0; g1st.uqPicked=null; g1st.uqResults=[]; g1st.uqOrder=shuffledIndexes(UML_QUESTIONS.length);
+  g1st.uqQ=0; g1st.uqPicked=null; g1st.uqResults=[]; g1st.uqOrder=shuffledIndexes(UML_QUESTIONS.length); g1st.diagAnswers={};
   document.getElementById('screen').innerHTML=renderG1();
   protectLineBreaksInScreen(document.getElementById('screen'));
   updateNav();
@@ -2040,14 +2067,29 @@ function renderG1(){
 
   if(phase===6){
     const totalQ=UML_QUESTIONS.length;
+    const totalD=DIAGRAM_LINKS.length;
+    const diagAnsweredCount=Object.keys(g1st.diagAnswers).length;
+    const diagDone=diagAnsweredCount>=totalD;
+    const diagCorrect=DIAGRAM_LINKS.filter((l,i)=>g1st.diagAnswers[i]===l.type).length;
+
     const uq=g1st.uqQ;
     const quizDone=uq>=totalQ;
-    const correctCount=g1st.uqResults.filter(Boolean).length;
-    const quizSection=quizDone?`
-      <div class="fb ${correctCount>=Math.ceil(totalQ*0.6)?'ok':'ng'} show" style="text-align:center">
-        ${correctCount===totalQ?'🏆 全問正解！UMLの基本はばっちりだね！':correctCount>=Math.ceil(totalQ*0.6)?'✓ よくできました！':'もう一度復習してみよう。'}<br>
-        ${totalQ}問中 <strong>${correctCount}問正解</strong>
-      </div>`:(function(){
+    const quizCorrect=g1st.uqResults.filter(Boolean).length;
+
+    const allDone=diagDone&&quizDone;
+    const totalAll=totalD+totalQ;
+    const correctAll=diagCorrect+quizCorrect;
+
+    const diagramSection=`
+      <div style="font-size:13px;font-weight:900;color:var(--tp);margin-bottom:.6rem">① 図を完成させよう：それぞれの正しい線を選んでください</div>
+      ${DIAGRAM_LINKS.map((link,i)=>diagCard(i,link,g1st.diagAnswers[i])).join('')}
+    `;
+
+    function renderUqSection(){
+      if(quizDone) return `
+      <div class="fb ${quizCorrect>=Math.ceil(totalQ*0.6)?'ok':'ng'} show" style="text-align:center">
+        ${totalQ}問中 <strong>${quizCorrect}問正解</strong>
+      </div>`;
       const q=UML_QUESTIONS[g1st.uqOrder[uq]];
       const picked=g1st.uqPicked;
       return `
@@ -2069,16 +2111,27 @@ function renderG1(){
         </div>
         <button class="btn btn-p" style="margin-top:.75rem" onclick="g1do('uqNext')">${uq+1>=totalQ?'結果を見る →':'次の問題へ →'}</button>
       `:''}`;
-    })();
+    }
+    const quizSection=!diagDone?'':renderUqSection();
+
+    const finalSection=allDone?`
+      <div class="fb ${correctAll>=Math.ceil(totalAll*0.6)?'ok':'ng'} show" style="text-align:center;margin-top:1rem">
+        ${correctAll===totalAll?'🏆 全問正解！UMLの基本はばっちりだね！':correctAll>=Math.ceil(totalAll*0.6)?'✓ よくできました！':'もう一度復習してみよう。'}<br>
+        ${totalAll}問中 <strong>${correctAll}問正解</strong>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem"><button class="btn btn-p" onclick="finishGame(${10+correctAll*10})">第1章クリア！ 完了へ →</button><button class="btn" onclick="retryUqQuiz()">もう一度 ↩</button></div>
+    `:'';
+
     return `
     <div class="ch-title">${CHAPTERS[1].name} — STEP 7 / ${total}</div>
     <div class="ch-heading">まとめ：UMLを読み解く</div>
-    <p class="game-intro">クラス図の基本記号を、確認クイズでおさらいしましょう。</p>
+    <p class="game-intro">クラス図の基本記号を、図の完成と確認クイズでおさらいしましょう。</p>
     ${phaseDialogueC1(6)}
     <div style="background:var(--s0);border:2px solid var(--tac);border-radius:12px;padding:1rem;margin-bottom:1rem">
-      ${quizSection}
+      ${diagramSection}
+      ${diagDone?`<div style="font-size:13px;font-weight:900;color:var(--tp);margin:1rem 0 .6rem">② 最終確認クイズ</div>${quizSection}`:''}
     </div>
-    ${quizDone?`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" onclick="finishGame(${10+correctCount*10})">第1章クリア！ 完了へ →</button><button class="btn" onclick="retryUqQuiz()">もう一度 ↩</button></div>`:''}`;
+    ${finalSection}`;
   }
 
   const idx=Math.min(phase,total-1);
