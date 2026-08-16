@@ -3,7 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OOPクエスト 序章：動物園チュートリアル</title>
+<title>OOPクエスト ― ゲームで学ぶオブジェクト指向入門（動物園チュートリアル）</title>
+<meta name="description" content="クラス・インスタンス・継承・カプセル化・ポリモーフィズムを、動物園を組み立てながら体験できる無料のオブジェクト指向（OOP）学習ゲーム。ブラウザだけで遊べます。">
+<link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OOPクエスト">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="OOPクエスト ― ゲームで学ぶオブジェクト指向入門（動物園チュートリアル）">
+<meta property="og:description" content="クラス・継承・ポリモーフィズムを、動物園を組み立てながら体験できる無料のOOP学習ゲーム。">
+<meta property="og:url" content="https://informatics.habatakijuku.com/oop-game/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "OOPクエスト 序章：動物園チュートリアル",
+  "description": "クラス・インスタンス・継承・カプセル化・ポリモーフィズムを、動物園を組み立てながら体験できる無料のオブジェクト指向（OOP）学習ゲーム。",
+  "url": "https://informatics.habatakijuku.com/oop-game/",
+  "inLanguage": "ja",
+  "learningResourceType": "learning activity",
+  "teaches": "オブジェクト指向プログラミングの基礎（クラス・インスタンス・継承・カプセル化・ポリモーフィズム）",
+  "isAccessibleForFree": true,
+  "author": { "@type": "Person", "name": "ruglerugle" }
+}
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RTQCP2HXM"></script>
 <script>
@@ -507,6 +531,10 @@ code{
   .app-shell:not(.side-collapsed) .side-backdrop{display:block}
 }
 
+.book-recommend-box{margin:12px 0 0;background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:10px 14px}
+.book-recommend-label{display:inline-block;font-size:10px;font-weight:900;color:var(--tm);border:1px solid var(--bds);border-radius:4px;padding:0 4px;margin:0 0 6px}
+.book-recommend-lead{font-size:12px;color:var(--tm);margin:0 0 4px;font-weight:700}
+.book-recommend-box a{font-size:13px;font-weight:900;text-decoration:underline;color:var(--tp)}
 </style>
 </head>
 
@@ -514,7 +542,7 @@ code{
 <div class="app-shell">
   <header class="game-header">
     <div>
-      <div class="brand-title">OOP設計クエスト</div>
+      <h1 class="brand-title">OOP設計クエスト</h1>
       <div class="brand-sub">君だけのオブジェクト指向RPG〜</div>
     </div>
     <div>
@@ -549,6 +577,11 @@ code{
       <button class="footer-next" onclick="footerNext()">次のステップへ ▶</button>
     </div>
   </footer>
+  <div class="book-recommend-box">
+    <p class="book-recommend-label">参考文献</p>
+    <p class="book-recommend-lead">もっと深く学びたい方へ</p>
+    <a href="https://www.amazon.co.jp/dp/4296000187?tag=senjin-22" target="_blank" rel="sponsored noopener">平澤章『オブジェクト指向でなぜつくるのか 第3版』(日経BP)</a>
+  </div>
 </div>
 <div id="gloss-popup">
   <button id="gloss-close" onclick="closeGloss()">×</button>
