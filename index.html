@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OOPクエスト ― ゲームで学ぶオブジェクト指向入門（動物園チュートリアル）</title>
-<meta name="description" content="クラス・継承・ポリモーフィズムを動物園で体験する序章と、銀行システムを設計しながら例外処理・UMLまで実践する本編の2部構成。無料のオブジェクト指向（OOP）学習ゲーム。">
+<meta name="description" content="クラス・インスタンス・継承・カプセル化・ポリモーフィズムを、動物園を組み立てながら体験できる無料のオブジェクト指向（OOP）学習ゲーム。ブラウザだけで遊べます。">
 <link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OOPクエスト">
@@ -2201,8 +2201,7 @@ function renderComplete(){
         <div class="sum-card"><strong>コンストラクタ</strong><p>誕生時に正しい初期状態を作る。</p></div>
         <div class="sum-card"><strong>static</strong><p>全体で1つだけ共有する値を持つ。</p></div>
       </div>
-      <a class="btn btn-p" href="level2" style="text-decoration:none;display:inline-block">🏦 次のレベルへ ― 新人エンジニアの銀行編</a>
-      <button class="btn" onclick="G.phase='story';G.line=0;G.score=0;retryG0();render();">もう一度プレイ</button>
+      <button class="btn btn-p" onclick="G.phase='story';G.line=0;G.score=0;retryG0();render();">もう一度プレイ</button>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
         <a href="https://x.com/intent/post?text=${encodeURIComponent('OOPクエスト 序章クリア！🐾 動物園を組み立てながらオブジェクト指向を学べる無料学習ゲーム')}&url=${encodeURIComponent('https://informatics.habatakijuku.com/oop-game/')}" target="_blank" rel="noopener" style="display:inline-block;padding:10px 18px;border-radius:9px;font-weight:900;font-size:14px;text-decoration:none;background:#111;border:1px solid #222;color:#fff">𝕏 クリアを報告する</a>
         <a href="/" style="display:inline-block;padding:10px 18px;border-radius:9px;font-weight:900;font-size:14px;text-decoration:none;border:1px solid var(--bd);background:var(--s1);color:var(--tp)">🧭 他のクエストも遊ぶ</a>
