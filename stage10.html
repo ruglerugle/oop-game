@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1d2547">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RTQCP2HXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9RTQCP2HXM');
+</script>
+<title>STAGE10 設計の判断 ― オブジェクト指向クエスト</title>
+<meta name="description" content="旅のまとめは設計の判断。飛べないペンギン、動物ではないロボット犬、マイナスの体重。継承・インターフェース・合成・カプセル化のどれを使うべきかを、理由とともに選び、「継承より合成」という考え方を知る。">
+<link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/stage10">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="オブジェクト指向クエスト">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="STAGE10 設計の判断 ― オブジェクト指向クエスト">
+<meta property="og:description" content="継承・インターフェース・合成・カプセル化をどう使い分けるか。設計の判断の総まとめ。">
+<meta property="og:url" content="https://informatics.habatakijuku.com/oop-game/stage10">
+<meta property="og:image" content="https://informatics.habatakijuku.com/images/ogp/oop-game.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦁</text></svg>">
+<link rel="stylesheet" href="design-system.css?v=20261108a">
+<link rel="stylesheet" href="lab.css?v=20261108a">
+<script src="js/stages.js?v=20261108a"></script>
+<script src="js/progress.js?v=20261108a"></script>
+<script src="js/labs.js?v=20261108a"></script>
+</head>
+<body>
+<div class="app-shell side-collapsed" id="app-shell">
+  <header class="game-header">
+    <div class="brand">
+      <div class="brand-title"><a class="head-reset home-badge" href="./" title="トップへ" aria-label="トップへ">🦁</a> <span>オブジェクト指向クエスト</span></div>
+      <div class="brand-sub">STAGE 10 ― 設計の判断 ―</div>
+    </div>
+    <div class="head-progress-wrap">
+      <div class="head-progress-label" id="progress-label">クリア 0 / 10</div>
+      <div class="head-progress" role="progressbar" aria-label="クリア済みステージ数" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div class="head-progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="header-actions">
+      <a class="head-reset" href="/" title="情報の冒険（シリーズの地図）へ">🧭 地図</a>
+      <button class="head-reset" id="btn-reset-all">🔄 最初から</button>
+      <button class="head-reset" id="head-nav-toggle" title="ステージ一覧の表示切替">☰ ナビ</button>
+    </div>
+  </header>
+
+  <div class="game-layout">
+    <div class="side-backdrop" id="side-backdrop"></div>
+    <aside class="side-panel">
+      <div class="side-head">
+        <button class="side-toggle" id="sidebar-toggle" title="ステージ一覧の表示切替" aria-label="ステージ一覧の表示切替">☰</button>
+        <span class="side-head-text">📚 ステージ一覧</span>
+      </div>
+      <div class="side-list" id="side-list"></div>
+    </aside>
+
+    <main class="main-area">
+      <div class="chapter-head">
+        <span class="chapter-badge">STAGE 10</span><h1 class="chapter-title">設計の判断</h1>
+        <div class="chapter-sub">継承より合成</div>
+      </div>
+
+      <div class="mission-box">
+        <div class="mission-label">🎯 ミッション</div>
+        <div class="mission-text">継承・インターフェース・合成・カプセル化の使い分けを、理由とともに説明できるようになろう。3つの設計の判断で良い設計を選び、確認クイズに全問正解すれば合格。</div>
+        <span class="mission-status" id="mission-status">未達成</span>
+      </div>
+
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">最後のステージだ。道具はそろった。でも、道具を持っているだけでは良い設計はできない。どの道具を、どこで使うかの判断が大事なんだ。最初に、ここまでの道具を並べておこう。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step">クラスとインスタンス：データとふるまいをひとまとめにする</span>
+  <span class="step">継承：「〜の一種」（is-a）のときだけ。共通の中身を親に1回書く</span>
+  <span class="step">抽象クラスとオーバーライド：形は親が決め、中身は子が書く</span>
+  <span class="step">ポリモーフィズム：同じ呼び方で中身ごとに違う動き。新しい種類を足しても呼ぶ側を直さない</span>
+  <span class="step">インターフェース：「〜ができる」の約束。いくつでも付けられる</span>
+  <span class="step">カプセル化：データを守り、確かめ付きの入口からだけ変える</span>
+</div>
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">継承について、1つ大事な考え方を足しておこう。ロボット犬（RoboDog）に、動物の「鳴き声を出す機能」を使わせたい。RoboDog extends Animal にすれば、すぐに使える。どう思う？</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">「ロボット犬は動物の一種」とは言えないので、is-a が成り立ちません。継承すると、えさの量の計算や健康記録まで付いてきてしまう。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。機能を使いたいだけなら、その機能を<strong>部品のクラス</strong>（たとえば Voice）に切り出して、Animal も RoboDog も Voice を<strong>持つ</strong>ようにすればいい。部品を組み合わせて作ることを<strong>合成</strong>（コンポジション）と呼び、「〜を持つ」（has-a）の関係だ。（STAGE9 の UML のコンポジションと同じ英語だけれど、ここでは「部品として持つ」こと全般を指している。）</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbitThink.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble"> 部品なら、あとで別の鳴き声の部品に取り替えることもできる。継承だと、親を途中で取り替えることはできないから、合成のほうが柔軟なんですね。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。だから設計の世界では「<strong>継承より合成</strong>」とよく言われる。継承は強い結びつきなので、is-a がはっきり成り立つときだけに使い、機能を分け合いたいだけなら合成やインターフェースを考える。</div>
+        </div>
+      </div>
+<div class="lab" data-lab="design" data-id="oop-s10-design"></div>
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">良い設計の判断は、結局 STAGE1 の問いに戻ってくる。<strong>あとで直すときに、直す場所が少なく、まちがえにくいか</strong>。それを確かめる習慣があれば、新しい道具に出会っても、使いどころを自分で判断できる。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">オブジェクト指向は、プログラムを「物」の集まりとして組み立てる考え方……と最初に聞いたときは、ただの言いかえだと思っていました。でも、変更に強くするための工夫が、全部そこにつながっていたんですね。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">よくここまで来たね。もっと深く知りたくなったら、たくさんの設計者が見つけてきた「よくある問題とその解き方」をまとめた<strong>デザインパターン</strong>や、設計の原則を学ぶといい。動物園で身につけた考え方が、そのまま土台になるよ。</div>
+        </div>
+      </div>
+
+      <h2 class="quiz-head">確認クイズ</h2>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q1. RoboDog に動物の鳴き声の機能を使わせたいとき、良い設計は？</p>
+        <div class="choice-list">
+          <button class="choice-btn">鳴き声の機能を部品のクラスに切り出し、Animal も RoboDog もそれを持つ（合成）</button>
+          <button class="choice-btn">RoboDog を Animal の子クラスにする</button>
+          <button class="choice-btn">Animal の鳴き声のコードを RoboDog にコピーする</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ is-a が成り立たないので継承は不向き。コピーは STAGE1 の問題に逆戻り。部品として持たせれば、取り替えもできる。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q2. 「継承より合成」の意味として正しいのは？</p>
+        <div class="choice-list">
+          <button class="choice-btn">継承は Java では使ってはいけない</button>
+          <button class="choice-btn">合成を使うと、ポリモーフィズムが使えなくなる</button>
+          <button class="choice-btn">継承は強い結びつきなので is-a がはっきりしているときだけ使い、機能を分け合いたいだけなら部品を持たせる</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ 継承は親の変更が全部の子に及ぶ強い関係。合成なら部品を取り替えられ、関係ない機能も付いてこない。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q3. この旅を通じて、良い設計かを判断する物差しは？</p>
+        <div class="choice-list">
+          <button class="choice-btn">コードの行数ができるだけ短いか</button>
+          <button class="choice-btn">あとで直すときに直す場所が少なく、まちがえにくいか</button>
+          <button class="choice-btn">クラスの数ができるだけ多いか</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ プログラムは書いたあとに何度も直す。変更に強く、まちがいを防ぐ仕組みになっているかが物差し。</div>
+      </div>
+
+      <div class="stage-nav">
+        <a class="btn" href="stage9.html">← 前のステージ</a>
+        <button class="btn btn-primary" id="btn-next" disabled>まとめへ →</button>
+      </div>
+
+      <div id="book-recommend"></div>
+    </main>
+  </div>
+</div>
+
+<script>QUEST.initStagePage(10);</script>
+
+<script src="https://my.habatakijuku.com/sync.js" defer></script>
+</body>
+</html>

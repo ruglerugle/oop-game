@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1d2547">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RTQCP2HXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9RTQCP2HXM');
+</script>
+<title>STAGE4 抽象クラスとオーバーライド ― オブジェクト指向クエスト</title>
+<meta name="description" content="動物はみんな鳴くけれど、鳴き声は動物ごとに違う。親クラスでは「鳴く」という名前だけを決め（抽象メソッド）、中身は子クラスが書き直す（オーバーライド）。abstract・@Override の意味と、抽象クラスからは new できない理由を確かめる。">
+<link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/stage4">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="オブジェクト指向クエスト">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="STAGE4 抽象クラスとオーバーライド ― オブジェクト指向クエスト">
+<meta property="og:description" content="名前は親が決め、中身は子が書く。抽象クラスとオーバーライド。">
+<meta property="og:url" content="https://informatics.habatakijuku.com/oop-game/stage4">
+<meta property="og:image" content="https://informatics.habatakijuku.com/images/ogp/oop-game.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦁</text></svg>">
+<link rel="stylesheet" href="design-system.css?v=20261108a">
+<link rel="stylesheet" href="lab.css?v=20261108a">
+<script src="js/stages.js?v=20261108a"></script>
+<script src="js/progress.js?v=20261108a"></script>
+<script src="js/labs.js?v=20261108a"></script>
+</head>
+<body>
+<div class="app-shell side-collapsed" id="app-shell">
+  <header class="game-header">
+    <div class="brand">
+      <div class="brand-title"><a class="head-reset home-badge" href="./" title="トップへ" aria-label="トップへ">🦁</a> <span>オブジェクト指向クエスト</span></div>
+      <div class="brand-sub">STAGE 4 ― 抽象クラスとオーバーライド ―</div>
+    </div>
+    <div class="head-progress-wrap">
+      <div class="head-progress-label" id="progress-label">クリア 0 / 10</div>
+      <div class="head-progress" role="progressbar" aria-label="クリア済みステージ数" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div class="head-progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="header-actions">
+      <a class="head-reset" href="/" title="情報の冒険（シリーズの地図）へ">🧭 地図</a>
+      <button class="head-reset" id="btn-reset-all">🔄 最初から</button>
+      <button class="head-reset" id="head-nav-toggle" title="ステージ一覧の表示切替">☰ ナビ</button>
+    </div>
+  </header>
+
+  <div class="game-layout">
+    <div class="side-backdrop" id="side-backdrop"></div>
+    <aside class="side-panel">
+      <div class="side-head">
+        <button class="side-toggle" id="sidebar-toggle" title="ステージ一覧の表示切替" aria-label="ステージ一覧の表示切替">☰</button>
+        <span class="side-head-text">📚 ステージ一覧</span>
+      </div>
+      <div class="side-list" id="side-list"></div>
+    </aside>
+
+    <main class="main-area">
+      <div class="chapter-head">
+        <span class="chapter-badge">STAGE 4</span><h1 class="chapter-title">抽象クラスとオーバーライド</h1>
+        <div class="chapter-sub">中身は子クラスが書く</div>
+      </div>
+
+      <div class="mission-box">
+        <div class="mission-label">🎯 ミッション</div>
+        <div class="mission-text">抽象クラス・抽象メソッド・オーバーライドの意味を説明できるようになろう。3つの動物の speak() を書き直して全員に呼び、確認クイズに全問正解すれば合格。</div>
+        <span class="mission-status" id="mission-status">未達成</span>
+      </div>
+
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">動物はみんな鳴く。だから「鳴く」という speak() メソッドを Animal に書きたい。でも、Animal の speak() の中身には、何と書けばいいかな。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">犬ならワン、猫ならニャー、鳥ならピヨ……。「動物」としての鳴き声は決められません。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。こういうときは、親クラスには「speak() というメソッドがある」という<strong>名前と形だけ</strong>を書き、中身は書かない。これを<strong>抽象メソッド</strong>と呼び、<code>abstract</code> を付ける。抽象メソッドを持つクラスは、それ自体も <code>abstract class</code> と書く。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step"><pre>abstract class Animal {
+    String name;
+    abstract String speak();   // 中身なし。子クラスが必ず書く
+}
+class Dog extends Animal {
+    @Override
+    String speak() { return "ワン"; }   // 親のメソッドを書き直す
+}</pre></span>
+  <span class="step">String speak() は「文字の並びを答えとして返す」メソッド。return でその答えを返す</span>
+</div>
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">子クラスで、親と同じ名前・同じ形のメソッドを書き直すことを<strong>オーバーライド</strong>（上書き）と呼ぶ。<code>@Override</code> は「親のメソッドを書き直すつもりです」という印で、書かなくても動くけれど、付けておくと、名前をまちがえて書き直したつもりになっていないかをコンパイラが確かめてくれる。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">抽象メソッドを持つ Animal で、<code>new Animal()</code> としたらどうなりますか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">コンパイラが止める。もし作れてしまったら、そのインスタンスに speak() を呼んだとき、実行する中身がどこにも無いからね。抽象クラスは「子クラスの共通の形」を決めるためだけのクラスで、それ自体から実物は作れない。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbitThink.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble"> 逆に、Animal を継承した子クラスは、speak() を書かないと……そのクラスも中身の無いメソッドを抱えたままなので、new できない。だから、子クラスを作る人は、speak() を書き忘れることがないんですね。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。「書き忘れたらコンパイラが教えてくれる」という約束になっている。これは、STAGE1 で困っていた「直し漏れ」と同じ種類の事故を、仕組みで防いでいるんだ。</div>
+        </div>
+      </div>
+<div class="lab" data-lab="override" data-id="oop-s4-override"></div>
+      <div class="dialogue-scene">
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">抽象メソッドではない、ふつうのメソッドもオーバーライドできますか？ たとえば Animal の eat() を、Bird だけ「種をついばむ」に変えたいときは。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">できる。親で中身を書いてあるメソッドでも、子で書き直せば、子のインスタンスでは子の中身が使われる。STAGE3 の「自分 → 親の順に探す」決まりを思い出すと、自分のクラスで先に見つかるからだね。親の中身も使いたいときは、<code>super.eat()</code> と書けば、親の eat() を呼べる。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step">抽象メソッド（abstract）：名前と形だけを親が決め、中身は子が必ず書く</span>
+  <span class="step">抽象クラス：抽象メソッドを持つクラス。new できない。共通の形を決める役</span>
+  <span class="step">オーバーライド：子が親のメソッドを同じ形で書き直す。@Override で確かめてもらえる。親の中身は super.メソッド() で呼べる</span>
+</div>
+      <div class="dialogue-scene">
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">同じ speak() なのに、犬はワン、猫はニャー。呼ぶ側は、相手が犬か猫かを気にしないといけないんですか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そこが次のステージの主題だ。答えは「気にしなくていい」。</div>
+        </div>
+      </div>
+
+      <h2 class="quiz-head">確認クイズ</h2>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q1. 抽象メソッドの説明として正しいのは？</p>
+        <div class="choice-list">
+          <button class="choice-btn">名前と形だけが書かれていて中身が無く、子クラスが必ず中身を書く</button>
+          <button class="choice-btn">中身が書かれていて、子クラスは書き直してはいけない</button>
+          <button class="choice-btn">どのクラスからも呼べない、使われないメソッド</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ abstract を付けた中身の無いメソッド。子クラスがオーバーライドして中身を書く。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q2. 抽象クラス Animal について、<code>new Animal()</code> ができない理由は？</p>
+        <div class="choice-list">
+          <button class="choice-btn">Animal という名前が予約されているから</button>
+          <button class="choice-btn">抽象クラスはフィールドを持てないから</button>
+          <button class="choice-btn">中身の無い抽象メソッドがあり、呼ばれても実行するものが無いから</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ 抽象クラスは共通の形を決める役。実物は、中身を全部書いた子クラスから作る。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q3. <code>@Override</code> を付ける主な理由は？</p>
+        <div class="choice-list">
+          <button class="choice-btn">付けないとオーバーライドが動かないから</button>
+          <button class="choice-btn">親のメソッドを書き直すつもりだと示し、名前のまちがいなどをコンパイラに確かめてもらうため</button>
+          <button class="choice-btn">メソッドを速くするため</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ 付けなくても動くが、spek() のように書きまちがえて新しいメソッドを作ってしまう事故を防げる。</div>
+      </div>
+
+      <div class="stage-nav">
+        <a class="btn" href="stage3.html">← 前のステージ</a>
+        <button class="btn btn-primary" id="btn-next" disabled>次へ →</button>
+      </div>
+
+      <div id="book-recommend"></div>
+    </main>
+  </div>
+</div>
+
+<script>QUEST.initStagePage(4);</script>
+
+<script src="https://my.habatakijuku.com/sync.js" defer></script>
+</body>
+</html>

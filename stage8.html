@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1d2547">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RTQCP2HXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9RTQCP2HXM');
+</script>
+<title>STAGE8 static ― オブジェクト指向クエスト</title>
+<meta name="description" content="名前はインスタンスごとに違うが、「これまでに来た動物の数」は動物園に1つ。static を付けたフィールドやメソッドは、インスタンスではなくクラスに1つだけある。インスタンスごとの値とクラスに1つの値を、動物を作りながら比べる。">
+<link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/stage8">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="オブジェクト指向クエスト">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="STAGE8 static ― オブジェクト指向クエスト">
+<meta property="og:description" content="インスタンスごとの値と、クラスに1つの値。static の意味と使いどころ。">
+<meta property="og:url" content="https://informatics.habatakijuku.com/oop-game/stage8">
+<meta property="og:image" content="https://informatics.habatakijuku.com/images/ogp/oop-game.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦁</text></svg>">
+<link rel="stylesheet" href="design-system.css?v=20261108a">
+<link rel="stylesheet" href="lab.css?v=20261108a">
+<script src="js/stages.js?v=20261108a"></script>
+<script src="js/progress.js?v=20261108a"></script>
+<script src="js/labs.js?v=20261108a"></script>
+</head>
+<body>
+<div class="app-shell side-collapsed" id="app-shell">
+  <header class="game-header">
+    <div class="brand">
+      <div class="brand-title"><a class="head-reset home-badge" href="./" title="トップへ" aria-label="トップへ">🦁</a> <span>オブジェクト指向クエスト</span></div>
+      <div class="brand-sub">STAGE 8 ― static ―</div>
+    </div>
+    <div class="head-progress-wrap">
+      <div class="head-progress-label" id="progress-label">クリア 0 / 10</div>
+      <div class="head-progress" role="progressbar" aria-label="クリア済みステージ数" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div class="head-progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="header-actions">
+      <a class="head-reset" href="/" title="情報の冒険（シリーズの地図）へ">🧭 地図</a>
+      <button class="head-reset" id="btn-reset-all">🔄 最初から</button>
+      <button class="head-reset" id="head-nav-toggle" title="ステージ一覧の表示切替">☰ ナビ</button>
+    </div>
+  </header>
+
+  <div class="game-layout">
+    <div class="side-backdrop" id="side-backdrop"></div>
+    <aside class="side-panel">
+      <div class="side-head">
+        <button class="side-toggle" id="sidebar-toggle" title="ステージ一覧の表示切替" aria-label="ステージ一覧の表示切替">☰</button>
+        <span class="side-head-text">📚 ステージ一覧</span>
+      </div>
+      <div class="side-list" id="side-list"></div>
+    </aside>
+
+    <main class="main-area">
+      <div class="chapter-head">
+        <span class="chapter-badge">STAGE 8</span><h1 class="chapter-title">static</h1>
+        <div class="chapter-sub">クラスに1つの値</div>
+      </div>
+
+      <div class="mission-box">
+        <div class="mission-label">🎯 ミッション</div>
+        <div class="mission-text">static フィールド・static メソッドが、インスタンスのものとどう違うかを説明できるようになろう。犬と猫を合わせて3匹作って数の変わり方を確かめ、確認クイズに全問正解すれば合格。</div>
+        <span class="mission-status" id="mission-status">未達成</span>
+      </div>
+
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">動物園に、これまでに何匹の動物が来たかを数えたい。Animal に <code>int count;</code> というフィールドを作って、コンストラクタで1増やせばいいだろうか。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbitThink.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble"> フィールドはインスタンスごとに別々だから……ポチの count、タマの count、とそれぞれが自分の count を持つ。どれも、自分が作られたときに1増えるだけなので、全員 1 のままです。数えたいのは動物園全体の数なのに。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。全員で<strong>1つだけ</strong>持ちたい値には、<code>static</code> を付ける。static を付けたフィールドは、インスタンスではなく<strong>クラスに1つだけ</strong>ある。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step"><pre>class Animal {
+    static int count = 0;    // Animal クラスに1つだけ
+    String name;             // インスタンスごと
+    Animal(String name) {
+        this.name = name;
+        count++;             // だれが作られても、同じ count が増える
+    }
+}
+class Dog extends Animal { Dog(String n) { super(n); } }
+class Cat extends Animal { Cat(String n) { super(n); } }</pre></span>
+  <span class="step">super(n) は親クラス Animal のコンストラクタを呼ぶ。だから Dog を作っても Cat を作っても count が増える</span>
+</div>
+<div class="lab" data-lab="statics" data-id="oop-s8-static"></div>
+      <div class="dialogue-scene">
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">static のフィールドを読むときは、どう書くんですか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">クラスの名前を付けて <code>Animal.count</code> と書く。インスタンスが1つも無くても読める。メソッドにも static を付けられて、<code>Math.max(3, 5)</code>（大きいほうを返す）のように、インスタンスを作らずにクラス名で呼べる。インスタンスのデータを使わない、道具のような処理に向いている。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">static メソッドの中で、name を使うことはできますか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">できない。static メソッドはインスタンスなしで呼ばれるから、「どのインスタンスの name か」が決まらないんだ。this も使えない。逆に、ふつうのメソッドからは static のフィールドを使える。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step">インスタンスのフィールド：new するたびに1組できる。<code>d1.name</code></span>
+  <span class="step">static フィールド：クラスに1つだけ。全インスタンスで共有。<code>Animal.count</code></span>
+  <span class="step">static メソッド：インスタンスなしで <code>クラス名.メソッド()</code> で呼ぶ。中で this やインスタンスのフィールドは使えない</span>
+</div>
+      <div class="dialogue-scene">
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">だったら、何でも static にしておけば、どこからでも使えて便利なのでは？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そこには落とし穴がある。static のフィールドは、プログラムのどこからでも書き換えられる「みんなの共有物」になりがちだ。STAGE7 で「触れる場所はできるだけ狭く」と言ったね。共有物が増えるほど、「だれが変えたのか」が追えなくなる。それに、テストのときに前の状態が残ってしまうこともある。static は、本当にクラスに1つでいいもの（数の合計、決まった定数など）に限って使うのがいい。決まった定数には、変えられないように <code>static final</code> を付ける（例：<code>static final double PI = 3.14159;</code>）。</div>
+        </div>
+      </div>
+
+      <h2 class="quiz-head">確認クイズ</h2>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q1. <code>static int count;</code> と、ふつうの <code>int count;</code> の違いは？</p>
+        <div class="choice-list">
+          <button class="choice-btn">static はインスタンスごとに1つずつあり、ふつうのフィールドはクラスに1つ</button>
+          <button class="choice-btn">違いは無く、書き方が違うだけ</button>
+          <button class="choice-btn">static はクラスに1つだけで全インスタンスが共有し、ふつうのフィールドはインスタンスごとに1つずつある</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ 動物園全体の数のような共有の値は static。名前のようにインスタンスごとに違う値はふつうのフィールド。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q2. static メソッドの中で、インスタンスのフィールド name を使えない理由は？</p>
+        <div class="choice-list">
+          <button class="choice-btn">static メソッドは private だから</button>
+          <button class="choice-btn">インスタンスなしで呼ばれるので、どのインスタンスの name か決まらないから</button>
+          <button class="choice-btn">name が String 型だから</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ static メソッドはクラスに属し、this が無い。インスタンスのデータは、インスタンスを受け取らない限り使えない。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q3. 何でも static にしない方がよい理由は？</p>
+        <div class="choice-list">
+          <button class="choice-btn">どこからでも書き換えられる共有物が増え、だれがいつ変えたのか追いにくくなるから</button>
+          <button class="choice-btn">static にするとプログラムが必ず遅くなるから</button>
+          <button class="choice-btn">static のフィールドは1回しか読めないから</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ 共有のものは、見えない場所から変わる。本当にクラスに1つでいいもの、変えない定数（static final）に限って使う。</div>
+      </div>
+
+      <div class="stage-nav">
+        <a class="btn" href="stage7.html">← 前のステージ</a>
+        <button class="btn btn-primary" id="btn-next" disabled>次へ →</button>
+      </div>
+
+      <div id="book-recommend"></div>
+    </main>
+  </div>
+</div>
+
+<script>QUEST.initStagePage(8);</script>
+
+<script src="https://my.habatakijuku.com/sync.js" defer></script>
+</body>
+</html>

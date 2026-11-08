@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1d2547">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RTQCP2HXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9RTQCP2HXM');
+</script>
+<title>STAGE2 クラスとインスタンス ― オブジェクト指向クエスト</title>
+<meta name="description" content="クラスは設計図、インスタンスは設計図から作った実物。フィールド・メソッド・コンストラクタ・new の意味と、同じクラスから作ったインスタンスがそれぞれ自分の値を持つことを、犬を何匹か作って確かめる。">
+<link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/stage2">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="オブジェクト指向クエスト">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="STAGE2 クラスとインスタンス ― オブジェクト指向クエスト">
+<meta property="og:description" content="クラスは設計図、インスタンスは実物。new とコンストラクタ。">
+<meta property="og:url" content="https://informatics.habatakijuku.com/oop-game/stage2">
+<meta property="og:image" content="https://informatics.habatakijuku.com/images/ogp/oop-game.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦁</text></svg>">
+<link rel="stylesheet" href="design-system.css?v=20261108a">
+<link rel="stylesheet" href="lab.css?v=20261108a">
+<script src="js/stages.js?v=20261108a"></script>
+<script src="js/progress.js?v=20261108a"></script>
+<script src="js/labs.js?v=20261108a"></script>
+</head>
+<body>
+<div class="app-shell side-collapsed" id="app-shell">
+  <header class="game-header">
+    <div class="brand">
+      <div class="brand-title"><a class="head-reset home-badge" href="./" title="トップへ" aria-label="トップへ">🦁</a> <span>オブジェクト指向クエスト</span></div>
+      <div class="brand-sub">STAGE 2 ― クラスとインスタンス ―</div>
+    </div>
+    <div class="head-progress-wrap">
+      <div class="head-progress-label" id="progress-label">クリア 0 / 10</div>
+      <div class="head-progress" role="progressbar" aria-label="クリア済みステージ数" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><div class="head-progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="header-actions">
+      <a class="head-reset" href="/" title="情報の冒険（シリーズの地図）へ">🧭 地図</a>
+      <button class="head-reset" id="btn-reset-all">🔄 最初から</button>
+      <button class="head-reset" id="head-nav-toggle" title="ステージ一覧の表示切替">☰ ナビ</button>
+    </div>
+  </header>
+
+  <div class="game-layout">
+    <div class="side-backdrop" id="side-backdrop"></div>
+    <aside class="side-panel">
+      <div class="side-head">
+        <button class="side-toggle" id="sidebar-toggle" title="ステージ一覧の表示切替" aria-label="ステージ一覧の表示切替">☰</button>
+        <span class="side-head-text">📚 ステージ一覧</span>
+      </div>
+      <div class="side-list" id="side-list"></div>
+    </aside>
+
+    <main class="main-area">
+      <div class="chapter-head">
+        <span class="chapter-badge">STAGE 2</span><h1 class="chapter-title">クラスとインスタンス</h1>
+        <div class="chapter-sub">設計図と実物、コンストラクタ</div>
+      </div>
+
+      <div class="mission-box">
+        <div class="mission-label">🎯 ミッション</div>
+        <div class="mission-text">クラス・インスタンス・フィールド・メソッド・コンストラクタの意味を説明できるようになろう。犬のインスタンスを3匹作り、確認クイズに全問正解すれば合格。</div>
+        <span class="mission-status" id="mission-status">未達成</span>
+      </div>
+
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">犬のポチとハチは、名前も年齢も違う。でも、どちらも「名前と年齢を持ち、ほえることができる」という同じ形をしている。その<strong>形</strong>を書いたものを<strong>クラス</strong>と呼ぶ。たい焼きの型のようなものだ。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">型からたい焼きを何個も焼けるように、クラスから犬を何匹も作れる、ということですか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。クラスから作った1つ1つの実物を<strong>インスタンス</strong>（実例）と呼ぶ。オブジェクトとほぼ同じ意味で使われる。クラスの中には、2種類のものを書く。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step"><strong>フィールド</strong>：インスタンスが持つデータ（例：<code>String name;</code> 名前、<code>int age;</code> 年齢）。String は文字の並び、int は整数</span>
+  <span class="step"><strong>メソッド</strong>：インスタンスができること（例：<code>void bark()</code> ほえる）。void は「答えを返さない」という意味</span>
+</div>
+      <div class="dialogue-scene">
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">インスタンスを作るには <code>new</code> を使う。<code>Dog d1 = new Dog("ポチ", 3);</code> と書くと、メモリのヒープに新しい Dog の場所が用意され、その番地が変数 d1 に入る。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">ヒープ……『<a href="https://informatics.habatakijuku.com/memory-quest/" target="_blank" rel="noopener" style="color:#8a5a2a;text-decoration:underline">メモリのしくみクエスト</a>』で、好きなときに借りる場所として出てきました。d1 はポインタのように番地を持っている、ということですか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう考えていい。Java では「参照」と呼んで、番地そのものを直接いじることはできないけれど、中身は番地だ。そして <code>new Dog("ポチ", 3)</code> の () の中の値は、<strong>コンストラクタ</strong>に渡される。コンストラクタは、インスタンスができた直後に1回だけ呼ばれる、準備のための特別なメソッドで、クラスと同じ名前で書く。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step"><pre>class Dog {
+    String name;
+    int age;
+    Dog(String name, int age) {   // コンストラクタ（クラスと同じ名前）
+        this.name = name;
+        this.age = age;
+    }
+    void bark() { System.out.println(name + "：ワン！"); }
+}</pre></span>
+  <span class="step">System.out.println(…) は、かっこの中を画面に表示する命令</span>
+</div>
+<div class="lab" data-lab="instances" data-id="oop-s2-new"></div>
+      <div class="dialogue-scene">
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">コンストラクタの中の <code>this.name = name;</code> の this は何ですか？</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">「いま作っている（または、いまメソッドを呼ばれている）インスタンス自身」のことだ。引数の name と、フィールドの name が同じ名前なので、フィールドのほうを this.name と書いて区別している。</div>
+        </div>
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbitThink.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble"> d1.bark() と d2.bark() は、同じ bark の命令なのに、ポチとハチで違う名前が出る。bark の中の name は、呼ばれたインスタンス自身の name、つまり this.name のことだから。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">そう。メソッドは「どのインスタンスに対して呼ぶか」とセットで動く。<code>d1.bark()</code> は「d1 に、ほえろと頼む」と読むといい。データと、それを使う処理が、インスタンスの中でひとまとまりになっているね。</div>
+        </div>
+      </div>
+<div class="formula-box">
+  <span class="step">クラス：設計図（フィールドとメソッドの形）。プログラムに1回書く</span>
+  <span class="step">インスタンス：new で作る実物。フィールドの値はインスタンスごとに別々</span>
+  <span class="step">コンストラクタ：new したときに1回呼ばれ、フィールドに最初の値を入れる</span>
+  <span class="step">メソッドの呼び出し：<code>d1.bark()</code> ＝ d1 自身（this）のデータを使って、ほえる</span>
+</div>
+      <div class="dialogue-scene">
+        <div class="dialog-row right">
+          <div class="dialog-character">
+            <div class="dialog-avatar student"><img src="images/rabbit.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name student">うさ美</div>
+          </div>
+          <div class="dialog-bubble">犬だけでなく、猫や鳥のクラスも作ると、また name や eat() を何度も書くことになりませんか？ STAGE1 のコピーの問題が残っています。</div>
+        </div>
+        <div class="dialog-row">
+          <div class="dialog-character">
+            <div class="dialog-avatar mentor"><img src="images/cat.webp" width="300" height="386" alt=""></div>
+            <div class="dialog-name mentor">ねこ博士</div>
+          </div>
+          <div class="dialog-bubble">その通り。それを解くのが次の継承だ。</div>
+        </div>
+      </div>
+
+      <h2 class="quiz-head">確認クイズ</h2>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q1. クラスとインスタンスの関係として正しいのは？</p>
+        <div class="choice-list">
+          <button class="choice-btn">インスタンスは設計図、クラスはそこから作った実物</button>
+          <button class="choice-btn">クラスとインスタンスは同じもので、呼び方が違うだけ</button>
+          <button class="choice-btn">クラスは設計図、インスタンスはそこから new で作った1つ1つの実物</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ クラスは1回書く形。インスタンスはいくつでも作れ、それぞれ自分のフィールドの値を持つ。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q2. コンストラクタについて正しいのは？</p>
+        <div class="choice-list">
+          <button class="choice-btn">いつでも何度でも呼べる、ふつうのメソッド</button>
+          <button class="choice-btn">new でインスタンスを作った直後に1回呼ばれ、フィールドに最初の値を入れる</button>
+          <button class="choice-btn">インスタンスを消すときに呼ばれる</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ クラスと同じ名前で書く準備用のメソッド。new のかっこの中の値が渡される。</div>
+      </div>
+      <div class="quiz-card" data-quiz>
+        <p class="quiz-q">Q3. <code>Dog d1 = new Dog("ポチ", 3); Dog d2 = new Dog("ハチ", 5);</code> のあと <code>d2.bark()</code> を呼ぶと？</p>
+        <div class="choice-list">
+          <button class="choice-btn">「ハチ：ワン！」と表示される</button>
+          <button class="choice-btn">「ポチ：ワン！」と表示される</button>
+          <button class="choice-btn">両方の名前が表示される</button>
+        </div>
+        <div class="quiz-explain" hidden>正解！ メソッドは呼ばれたインスタンス自身（this）のフィールドを使う。d2 の name はハチ。</div>
+      </div>
+
+      <div class="stage-nav">
+        <a class="btn" href="stage1.html">← 前のステージ</a>
+        <button class="btn btn-primary" id="btn-next" disabled>次へ →</button>
+      </div>
+
+      <div id="book-recommend"></div>
+    </main>
+  </div>
+</div>
+
+<script>QUEST.initStagePage(2);</script>
+
+<script src="https://my.habatakijuku.com/sync.js" defer></script>
+</body>
+</html>

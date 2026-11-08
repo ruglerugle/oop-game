@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1d2547">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9RTQCP2HXM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9RTQCP2HXM');
+</script>
+<title>全ステージクリア ― オブジェクト指向クエスト</title>
+<meta name="description" content="コピーして貼り付けたコードの直し漏れから始めて、クラスとインスタンス・継承・抽象クラスとオーバーライド・ポリモーフィズム・インターフェース・カプセル化・static・UML クラス図・設計の判断まで、動物園の管理プログラムを Java で組み立てながら学ぶ全10ステージの無料学習サイト。ねこ博士とうさ美が案内します。">
+<link rel="canonical" href="https://informatics.habatakijuku.com/oop-game/complete">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="オブジェクト指向クエスト">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="全ステージクリア ― オブジェクト指向クエスト">
+<meta property="og:description" content="変更に強いプログラムはどう作る？ 動物園を舞台に、クラス・継承・ポリモーフィズム・カプセル化を Java で学ぶ全10ステージ。">
+<meta property="og:url" content="https://informatics.habatakijuku.com/oop-game/complete">
+<meta property="og:image" content="https://informatics.habatakijuku.com/images/ogp/oop-game.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦁</text></svg>">
+<link rel="stylesheet" href="design-system.css?v=20261108a">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<div class="shell">
+  <nav class="topbar" aria-label="サイト情報">
+    <span class="brand-badge" aria-hidden="true">🦁</span>
+    <span class="brand-copy">
+      <strong>オブジェクト指向クエスト</strong>
+      <small>OBJECT-ORIENTED QUEST</small>
+    </span>
+    <a class="head-reset" style="margin-left:auto" href="/" title="情報の冒険（シリーズの地図）へ">🧭 シリーズの地図</a>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <h1><span class="line">変更に強い設計、身についた ∎</span></h1>
+      <p>クラスで1つにまとめ、継承で共通部分を1回だけ書き、抽象メソッドで書き忘れを防ぎ、ポリモーフィズムで呼ぶ側を直さずに済ませ、インターフェースで「できること」を付け足し、カプセル化で確かめを1か所に集める。そして、継承より合成。すべては「あとで直しやすく、まちがえにくく」のためだった。旅の記録で振り返ろう。</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="board" aria-labelledby="recap-heading">
+      <div class="board-head">
+        <div><h2 id="recap-heading">ここまでの旅を振り返ろう</h2></div>
+        <p>全10ステージ、おつかれさま</p>
+      </div>
+      <div class="recap-list">
+        <div class="recap-item">
+          <div class="recap-num">1</div>
+          <div class="recap-body">
+            <div class="recap-title">コピペの悩み</div>
+            <div class="recap-desc">プログラムは書いたあとに何度も直す。コピーは直し漏れを生み、データと処理がばらばらだと、値がどこで変わったか追えない。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">2</div>
+          <div class="recap-body">
+            <div class="recap-title">クラスとインスタンス</div>
+            <div class="recap-desc">クラスは1回書く形、インスタンスは new で作る実物で、フィールドの値はそれぞれ別。コンストラクタが最初の値を入れ、メソッドは呼ばれたインスタンス自身（this）のデータを使う。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">3</div>
+          <div class="recap-body">
+            <div class="recap-title">継承</div>
+            <div class="recap-desc">extends で親の中身を受け継ぎ、メソッドは自分→親→…と探す。is-a が自然に言えるときだけ継承する。Java の親は1つ。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">4</div>
+          <div class="recap-body">
+            <div class="recap-title">抽象クラスとオーバーライド</div>
+            <div class="recap-desc">abstract で中身の無いメソッドを決め、子が @Override で書く。抽象クラスは new できず、書き忘れはコンパイラが止める。親の中身は super で呼べる。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">5</div>
+          <div class="recap-body">
+            <div class="recap-title">ポリモーフィズム</div>
+            <div class="recap-desc">呼んでよいかは変数の型、動く中身は中身のクラスで決まる。新しい種類を足しても呼ぶ側は直さない。キャストは instanceof で確かめてから。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">6</div>
+          <div class="recap-body">
+            <div class="recap-title">インターフェース</div>
+            <div class="recap-desc">interface は「できること」の約束で、implements でいくつでも付けられる。型として使えば、親子を越えて同じ呼び方ができる。中身を受け継ぐ親は1つ。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">7</div>
+          <div class="recap-body">
+            <div class="recap-title">カプセル化</div>
+            <div class="recap-desc">private ＜ 何も付けない ＜ protected ＜ public の順に触れる範囲が広がる。迷ったら狭く。入口は、正しい値だけが入るように設計する。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">8</div>
+          <div class="recap-body">
+            <div class="recap-title">static</div>
+            <div class="recap-desc">static はクラスに1つで全インスタンスが共有し、クラス名で使う。static メソッドに this は無い。共有物は追いにくいので、定数や本当に1つでいい値に限る。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">9</div>
+          <div class="recap-body">
+            <div class="recap-title">UML クラス図</div>
+            <div class="recap-desc">箱はクラス名・フィールド・メソッドの3段、＋−＃〜は修飾子。継承は実線白三角、実装は点線白三角、集約は白ひし形、コンポジションは黒ひし形。</div>
+          </div>
+        </div>
+        <div class="recap-item">
+          <div class="recap-num">10</div>
+          <div class="recap-body">
+            <div class="recap-title">設計の判断</div>
+            <div class="recap-desc">継承は is-a のときだけ。機能を分け合うなら部品を持たせる合成（has-a）やインターフェース。物差しは「直す場所が少なく、まちがえにくいか」。</div>
+          </div>
+        </div>
+      </div>
+      <div class="complete-actions">
+        <a class="btn btn-primary" href="/net-quest/">次の旅へ：ネットワーククエスト →</a>
+        <a class="btn" href="./">トップへ戻る</a>
+        <a class="btn" href="https://x.com/intent/post?text=%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%8C%87%E5%90%91%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E3%82%92%E5%85%A810%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E3%82%AF%E3%83%AA%E3%82%A2%E3%81%97%E3%81%9F%EF%BC%81&url=https%3A%2F%2Finformatics.habatakijuku.com%2Foop-game%2F" target="_blank" rel="noopener">𝕏 でシェア</a>
+        <button class="btn" id="btn-reset-all">🔄 最初から</button>
+      </div>
+    </section>
+    <div id="book-recommend"></div>
+  </main>
+
+  <footer>
+    <p>NO DOWNLOAD. NO REGISTRATION. JUST LEARN. &nbsp;© <span id="year"></span> ruglerugle</p>
+    <div class="footer-suits" aria-hidden="true"><span>🦁</span><span>🐶</span><span>🐱</span><span>🐦</span></div>
+  </footer>
+</div>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="js/stages.js?v=20261108a"></script>
+<script src="js/progress.js?v=20261108a"></script>
+<script>QUEST.initCompletePage();</script>
+<script src="https://my.habatakijuku.com/sync.js" defer></script>
+</body>
+</html>
